@@ -6,6 +6,18 @@ Decyzje z 18.09.2026. Region: **eu-central-1 (Frankfurt)**. Infrastruktura jako 
 
 Strona jest statyczna i budowana z `oferta.json`, który CRM wypycha na S3 przy „Publikuj”. Strona nie odpytuje CRM przy wejściu użytkownika — dzięki temu działa, nawet gdy CRM leży.
 
+## Co już stoi: CRM
+
+CRM (`advfactory-crm`) to aplikacja **Laravel na Laravel Forge**, w dwóch środowiskach:
+testowym i produkcyjnym. Forge zarządza serwerem — nginx, PHP-FPM, baza, kolejki,
+certyfikaty, deploy z gita.
+
+To przesądza o dwóch rzeczach w tej architekturze:
+
+- **Publikacja oferty** to zwykły zapis do S3 z Laravela (`Storage::disk('s3')`),
+  a nie osobna usługa.
+- **Leady idą wprost do Laravela**, nie przez Lambdę. Powód niżej.
+
 ## Schemat
 
 ```
@@ -43,22 +55,56 @@ Strona jest statyczna i budowana z `oferta.json`, który CRM wypycha na S3 przy 
 
 ## Publikacja i przebudowa
 
-1. „Publikuj” w CRM → `PUT s3://advfactory-oferta-{env}/oferta.json` + invalidacja `/data/oferta.json`.
-2. Zdarzenie S3 → EventBridge → CodeBuild: `npm ci && npm run build`, sync do bucketu strony, invalidacja `/*`.
-3. Build trwa ~1–2 min. Do jego końca CloudFront serwuje **poprzedni** build — nie ma okna z pustą stroną.
-4. Rollback = przywrócenie wcześniejszej wersji `oferta.json` (S3 versioning) — to samo, co „historia publikacji" w widoku Ustawienia strony.
+1. „Publikuj” w CRM → Laravel składa `oferta.json` i zapisuje go przez
+   `Storage::disk('s3')->put(...)`, po czym unieważnia `/data/oferta.json` w CloudFroncie.
+2. Ten sam kontroler woła `repository_dispatch` w GitHubie, co odpala przebudowę strony
+   w GitHub Actions: `npm ci && npm run build`, sync do bucketu, invalidacja `/*`.
+3. Build trwa ~1–2 min. Do jego końca CloudFront serwuje **poprzedni** build — nie ma
+   okna z pustą stroną.
+4. Rollback = przywrócenie wcześniejszej wersji `oferta.json` (S3 versioning) — to samo,
+   co „historia publikacji" w widoku Ustawienia strony.
+
+**Dlaczego GitHub Actions, a nie CodeBuild + EventBridge** (jak było w pierwszej wersji):
+kod strony i tak leży na GitHubie, więc build jest tam, gdzie repozytorium i gdzie i tak
+patrzy się na czerwone CI. To o dwa zasoby AWS mniej w Terraformie i o jedną rolę IAM
+mniej do ustawienia. Koszt porównywalny.
 
 ## Leady — strona → CRM
 
-`POST /leads` idzie przez **API Gateway (HTTP API) → Lambda → SQS → CRM**, nie prosto do CRM.
+`POST /leads` idzie **wprost do Laravela**: strona → `https://crm.advfactory.com/api/leads`.
+Kontroler weryfikuje token Turnstile, trzyma limit częstości per IP, waliduje payload,
+robi deduplikację po e-mailu i telefonie, zakłada wątek w Skrzynce i — dla źródeł
+`konfigurator` i `karta_wyprawy` — kartę w lejku. Zwraca `numer_sprawy`.
 
-Lambda robi trzy rzeczy: weryfikuje token Turnstile, trzyma limit częstości per IP, waliduje payload wg `schema.ts`. Potem wrzuca lead do SQS i od razu zwraca `numer_sprawy`. CRM konsumuje kolejkę.
+**Zmiana wobec pierwszej wersji tego dokumentu.** Planowałem tu API Gateway → Lambda →
+SQS jako bufor na wypadek, gdyby CRM leżał. Przy Laravelu na Forge to się nie opłaca:
 
-**Dlaczego kolejka:** lead to pieniądze. Jeśli CRM jest w trakcie deployu albo leży, lead czeka w SQS zamiast zniknąć. Dead-letter queue po 3 próbach + alarm na Slacka/mail.
+- Walidacja, deduplikacja i reguła lejka i tak muszą być w CRM, bo tam są dane.
+  Lambda dublowałaby połowę z tego w innym języku.
+- To osobny cel wdrożenia, osobny kawałek Terraforma i osobne miejsce do debugowania
+  — w zespole, który pracuje w PHP.
+- Strona ma już własne zabezpieczenie: przy błędzie wysyłki treść formularza zostaje,
+  pojawia się przycisk „Wyślij na WhatsApp” z wypełnioną wiadomością i kod zgłoszenia.
 
-Antyspam: **Cloudflare Turnstile** (darmowy) zamiast AWS WAF ($5/mies + $1 za regułę). Przy tej skali WAF się nie zwraca.
+**Czego to nie rozwiązuje.** Forge domyślnie **nie deployuje bez przerwy** — w trakcie
+`composer install` i migracji aplikacja potrafi na kilkanaście sekund oddać 5xx.
+W tym oknie lead poleci w fallback na WhatsApp, a nie do CRM. Trzy wyjścia, w kolejności
+od najsensowniejszego:
 
-`POST /zainteresowani` — ta sama ścieżka, inna kolejka, trafia na listę „Zainteresowani terminem”.
+1. **Envoyer** (produkt Laravela do deployu bez przerwy). Rozwiązuje problem dla całego
+   CRM, nie tylko dla leadów. Płatny — sprawdź aktualny cennik.
+2. Deploy w oknie o niskim ruchu, skoro leady idą głównie w dzień roboczy.
+3. Dopiero gdyby to realnie bolało: bufor przed CRM (Lambda + SQS albo Cloudflare Worker
+   + kolejka). Warto dołożyć na podstawie danych, nie na zapas.
+
+Antyspam: **Cloudflare Turnstile** (darmowy). W Laravelu jedna reguła walidacji
+plus `throttle` na trasie.
+
+`POST /zainteresowani` — ta sama ścieżka, ta sama walidacja, inna tabela: lista
+„Zainteresowani terminem”, nie Skrzynka i nie lejek.
+
+Szczegóły po stronie Laravela — trasy, walidacja, routing do lejka, publikacja oferty —
+w `docs/crm-integracja-laravel.md`.
 
 ## Panel klienta
 
@@ -70,11 +116,14 @@ Przeglądarka → CloudFront (`/api/*`) → API Gateway → CRM. Sesja na httpOn
 infra/
   modules/
     static-site/      # S3 + CloudFront + OAC + ACM + Route 53
-    lead-api/         # API Gateway + Lambda + SQS + DLQ + IAM
-    build-pipeline/   # EventBridge + CodeBuild + IAM
+    publikacja/       # bucket na oferta.json + użytkownik IAM dla Laravela
+                      # + rola OIDC dla GitHub Actions (deploy bez kluczy w sekretach)
   envs/
     dev/  staging/  prod/     # osobny state per środowisko
 ```
+
+Laravel potrzebuje z AWS dokładnie dwóch uprawnień: zapis `oferta.json` do bucketu
+i `CreateInvalidation` na dystrybucji. Nic więcej — CRM nie dotyka ani strony, ani buildu.
 
 Certyfikat ACM dla CloudFront musi stać w **us-east-1** — to jedyny zasób poza Frankfurtem.
 
@@ -87,12 +136,12 @@ Założenie: 30–50 tys. odsłon/mies., ~10 GB transferu, ~60 publikacji, ~500 
 | S3 (strona + oferta.json, 5 GB) | ~1,00 USD |
 | CloudFront (10 GB + 300 tys. żądań) | 0–1,30 USD |
 | Route 53 (strefa + zapytania) | ~0,60 USD |
-| CodeBuild (60 buildów × 2 min) | ~0,60 USD |
-| Lambda + API Gateway + SQS | ~0,10 USD |
 | CloudWatch Logs (~1 GB) | ~0,60 USD |
-| Secrets Manager (1 sekret) | ~0,40 USD |
 | ACM | 0,00 USD |
-| **Razem prod** | **~3,30–4,60 USD** |
+| **Razem prod** | **~2,20–3,50 USD** |
+
+Poza rachunkiem AWS: GitHub Actions (60 buildów × ~2 min — w darmowym limicie
+repozytorium prywatnego), serwer CRM w Forge i sam Forge.
 
 Dev i staging bez własnej strefy Route 53 (subdomeny w tej samej): **~1,50 USD każde**.
 
@@ -101,7 +150,10 @@ Dev i staging bez własnej strefy Route 53 (subdomeny w tej samej): **~1,50 USD 
 Zastrzeżenia:
 - CloudFront ma darmowy próg 1 TB transferu/mies. na starszych kontach; na nowych rozliczenie jest kredytowe. Stąd widełki 0–1,30 USD.
 - Jeśli przeniesiemy zdjęcia wypraw z WordPressa do S3 (~50 GB), dojdzie ~1,20 USD storage plus transfer. Warto to zrobić — dziś wszystkie zdjęcia w `oferta.json` wskazują na `advfactory.com/wp-content/`, czyli nowa strona zależy od starego WordPressa.
-- Koszt CRM jest poza tym rachunkiem.
+- Koszt CRM jest poza tym rachunkiem: serwer w Forge, licencja Forge i ewentualnie Envoyer.
+- **Nie wiem, u jakiego dostawcy stoi serwer Forge.** Jeśli to nie AWS, transfer
+  Laravel → S3 idzie przez publiczny internet: przy jednym pliku `oferta.json` na
+  publikację to nieistotne, ale warto to wiedzieć przed decyzją o mediach.
 
 ## Ryzyka do domknięcia przed startem
 

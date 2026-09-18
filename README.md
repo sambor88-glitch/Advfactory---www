@@ -27,6 +27,7 @@ Repozytorium nowej strony advfactory.com, spiętej z CRM (`sambor88-glitch/advfa
 **Dokumentacja (`docs/`) — kontrakt wdrożeniowy**
 - `integracja-crm.md` — przepływ danych: oferta CRM → strona, leady strona → CRM, publikacja, panel, powiadomienia, stany błędów.
 - `architektura.md` — hosting, publikacja, ścieżka leada, Terraform, szacunkowy koszt AWS.
+- `crm-integracja-laravel.md` — co dołożyć w CRM (Laravel na Forge): trasy leadów, walidacja, routing do lejka, publikacja oferty.
 - `schema.ts` — kontrakt typów dla obu strumieni i panelu.
 - `oferta.json` — przykładowa opublikowana oferta (9 wypraw, 7 kierunków, 6 regionów, 10 FAQ, ustawienia).
 
@@ -56,6 +57,7 @@ Pliki `.dc.html` otwierają się w przeglądarce bezpośrednio z dysku (potrzebu
 2. **Zakres oferty z CRM:** wyprawy i transport. Bez trzeciej encji.
 3. **Strony kierunków i regionów:** treść przenosi się z kodu do CRM — rozbudowa widoku Terminarz + nowy widok „Strony regionów”.
 4. **Architektura:** CRM publikuje `oferta.json` na S3, strona budowana statycznie (SSG) na AWS eu-central-1. Szczegóły i koszty w `docs/architektura.md`.
+5. **CRM stoi na Laravel Forge** (środowisko testowe i produkcyjne). Leady idą wprost do Laravela — bez bufora Lambda + SQS, który planowałem, zanim to było wiadome. Uzasadnienie i kompromis w `docs/architektura.md`.
 
 ## Kod strony (`web/`)
 

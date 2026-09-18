@@ -1,5 +1,7 @@
 # Integracja strony advfactory.com z CRM
 
+**Strona CRM:** `docs/crm-integracja-laravel.md` — trasy, walidacja i publikacja w Laravelu.
+
 **Pliki dla programisty:** `docs/schema.ts` (kontrakt typów, oba strumienie + panel), `docs/oferta.json` (przykładowa opublikowana oferta z dzisiejszych danych), `crm/Skrzynka — panel leada WWW.dc.html` (jak lead ze strony wygląda w istniejącej Skrzynce), `Stany strony.dc.html` (7 stanów błędów i ładowania z zasadami).
 
 Krótka specyfikacja przepływu danych między stroną publiczną a CRM. Obowiązuje dla wdrożenia.
@@ -32,7 +34,7 @@ Geokodowanie: współrzędne kierunku ustala CRM przy zapisie (Nominatim po nazw
 
 ## Leady ze strony
 
-`POST /leads` — token anty-spam (Turnstile/hCaptcha), limit częstości per IP, walidacja po stronie serwera.
+`POST /leads` — token anty-spam (Turnstile), limit częstości per IP, walidacja po stronie serwera. Endpoint stoi w CRM (Laravel na Forge), strona woła go wprost — implementacja w `docs/crm-integracja-laravel.md`.
 
 Pola: imię i nazwisko, e-mail, telefon, treść, `zrodlo` (`formularz` / `konfigurator` / `karta_wyprawy`), `jezyk` (`pl` / `en`), `preferowany_kanal` (`whatsapp` / `email` / `telefon`), `wyprawa_id` (opcjonalnie), `konfiguracja` (kierunek, jedna/obie strony, pojazd, widelec ceny — opcjonalnie), `zgoda_rodo` (timestamp, IP, wersja polityki), `sciezka` (strona wejścia → strona formularza).
 
