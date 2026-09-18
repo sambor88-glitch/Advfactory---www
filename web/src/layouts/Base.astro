@@ -1,0 +1,72 @@
+---
+import { pobierzOferte } from '../data/oferta';
+import Naglowek from '../components/Naglowek.astro';
+import Stopka from '../components/Stopka.astro';
+import BannerCookies from '../components/BannerCookies.astro';
+import PrzyciskiPlywajace from '../components/PrzyciskiPlywajace.astro';
+import SzufladaZapytania from '../components/SzufladaZapytania.astro';
+import '../styles/fonty.css';
+import '../styles/global.css';
+
+interface Props {
+  /** Tytuł strony bez sufiksu — szablon z ustawień CRM dokleja resztę. */
+  tytul: string;
+  opis?: string;
+  ogImage?: string;
+  /** Wyłącza szablon tytułu, gdy strona chce pełną kontrolę (np. strona główna). */
+  tytulPelny?: boolean;
+  /** Strony bez wartości w wyszukiwarce: potwierdzenie wysyłki, 404. */
+  noindex?: boolean;
+}
+
+const { tytul, opis, ogImage, tytulPelny = false, noindex = false } = Astro.props;
+const oferta = await pobierzOferte();
+const { seo } = oferta.ustawienia;
+
+const tytulStrony = tytulPelny ? tytul : seo.szablon_tytulu.replace('{title}', tytul);
+const opisStrony = opis ?? seo.opis;
+const obrazek = ogImage ?? seo.og_image;
+const kanoniczny = new URL(Astro.url.pathname, Astro.site ?? 'https://advfactory.com').href;
+---
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{tytulStrony}</title>
+    <meta name="description" content={opisStrony} />
+    {noindex
+      ? <meta name="robots" content="noindex, follow" />
+      : <link rel="canonical" href={kanoniczny} />}
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <meta name="theme-color" content="#1C1B17" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={tytulStrony} />
+    <meta property="og:description" content={opisStrony} />
+    <meta property="og:image" content={obrazek} />
+    <meta property="og:url" content={kanoniczny} />
+    <meta property="og:locale" content="pl_PL" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+
+    <!--
+      GA4 i Meta Pixel siedzą w ustawieniach CRM, ale skrypt ładuje się dopiero
+      po zgodzie na cookies analityczne/marketingowe. Identyfikatory jadą do
+      przeglądarki jako atrybuty, samo wstrzyknięcie robi BannerCookies.
+    -->
+  </head>
+  <body>
+    <a class="pomin-nawigacje" href="#tresc">Przejdź do treści</a>
+    <Naglowek />
+    <main id="tresc">
+      <slot />
+    </main>
+    <Stopka />
+    <PrzyciskiPlywajace />
+    <SzufladaZapytania />
+    <BannerCookies />
+  </body>
+</html>

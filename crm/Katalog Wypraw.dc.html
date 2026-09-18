@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap&subset=latin-ext" rel="stylesheet">
+<script src="../assets/lucide.min.js"></script>
+<script src="../assets/image-slot.js"></script>
+<script src="admin-shell.js"></script>
+<style>@keyframes _rs{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}@keyframes _in{from{transform:translateX(30px);opacity:.5}to{transform:none;opacity:1}}[data-screen-label]>*{animation:_rs .5s cubic-bezier(.2,.7,.3,1) both}[data-screen-label]>*:nth-child(2){animation-delay:.07s}[data-screen-label]>*:nth-child(3){animation-delay:.13s}button,a,[style*="cursor:pointer"]{transition:background .15s,border-color .15s,color .15s,transform .12s}button:active{transform:scale(.98)}*{box-sizing:border-box}body{margin:0;background:#0F0E0C}a{color:var(--accent)}a:hover{color:var(--accent-hover)}.ic{display:inline-grid;place-items:center}.ic svg{width:1em;height:1em;stroke-width:2px;display:block}::-webkit-scrollbar{width:9px}::-webkit-scrollbar-thumb{background:#332F29;border-radius:6px}input:focus,textarea:focus,select:focus{border-color:var(--accent) !important;box-shadow:0 0 0 3px rgba(242,106,27,.18)}</style>
+</helmet>
+<div data-theme="dark" data-screen-label="Katalog wypraw" style="width:1440px;max-width:100%;min-height:900px;background:#0F0E0C;color:#F2EFE7;font-family:'Archivo',system-ui,sans-serif;padding:20px 24px;position:relative;--accent:#F26A1B;--accent-hover:#FF7D2E;--surface:#1B1A16;--sunken:#131210;--line:#332F29;--t2:#B9B3A6;--t3:#7E796E;--ok:#6FA352;--warn:#D98E1B;--danger:#D9483C;--info:#5E8FB5">
+
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;font:700 10.5px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t3);flex-wrap:wrap">
+    <img src="../assets/logo-white.png" alt="ADVfactory" style="height:18px;display:block;margin-right:6px">
+    <span style="color:var(--t2)">Oferta na stronie</span><span>·</span>
+    <span style="color:var(--accent-hover);border-bottom:2px solid var(--accent);padding-bottom:2px">Wyprawy</span>
+    <a href="Terminarz%20Transport%C3%B3w.dc.html" style="color:var(--t3);text-decoration:none">Transport</a>
+    <a href="Tre%C5%9Bci%20Strony.dc.html" style="color:var(--t3);text-decoration:none">Treści strony</a>
+    <a href="Zainteresowani%20Terminem.dc.html" style="color:var(--t3);text-decoration:none">Zainteresowani terminem</a>
+    <a href="Ustawienia%20Strony.dc.html" style="color:var(--t3);text-decoration:none">Ustawienia</a>
+    <a href="../Strona%20ADVfactory.dc.html" style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;color:var(--t2);text-decoration:none"><span class="ic" style="font-size:13px"><i data-lucide="external-link"></i></span>Podgląd strony</a>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;flex-wrap:wrap">
+    <div><div style="font-family:'Anton';font-size:30px;text-transform:uppercase;line-height:1">Katalog wypraw</div><div style="font:12px 'IBM Plex Mono';color:var(--t3);margin-top:5px">{{ summary }}</div></div>
+    <div style="margin-left:auto;display:flex;gap:9px;align-items:center;flex-wrap:wrap">
+      <div style="position:relative;width:260px"><input value="{{ q }}" onInput="{{ onQ }}" placeholder="Szukaj wyprawy…" style="width:100%;height:40px;padding:0 12px 0 36px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:8px;font:13px 'Archivo';outline:none"><span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--t3)"><span class="ic" style="font-size:15px"><i data-lucide="search"></i></span></span></div>
+      <button onClick="{{ addTrip }}" style="height:40px;padding:0 16px;display:flex;align-items:center;gap:8px;background:var(--accent);color:#fff;border:none;border-radius:8px;font:700 12px 'Archivo';text-transform:uppercase;letter-spacing:.03em;cursor:pointer;box-shadow:0 2px 0 #A83D03"><span class="ic" style="font-size:15px"><i data-lucide="plus"></i></span>Dodaj wyprawę</button>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+    <sc-for list="{{ filters }}" as="f" hint-placeholder-count="4"><div onClick="{{ f.onClick }}" style="height:34px;padding:0 14px;display:flex;align-items:center;gap:7px;background:{{ f.bg }};border:1px solid {{ f.border }};border-radius:99px;font:700 11.5px 'Archivo';color:{{ f.color }};cursor:pointer">{{ f.label }}<span style="font:700 10px 'IBM Plex Mono';opacity:.8">{{ f.count }}</span></div></sc-for>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:8px;font:11px 'IBM Plex Mono';color:var(--t3)"><span class="ic" style="font-size:13px;color:var(--ok)"><i data-lucide="refresh-cw"></i></span>Strona odświeża ofertę do minuty po publikacji</div>
+  </div>
+
+  <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden">
+    <div style="display:grid;grid-template-columns:2.4fr 1.2fr 1.1fr .7fr .8fr 1fr 1.3fr;gap:12px;padding:10px 18px;background:var(--sunken);border-bottom:1px solid var(--line);font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t3)"><div>Wyprawa</div><div>Termin</div><div>Cena</div><div>Trudność</div><div>Sprzęt</div><div>Status</div><div style="text-align:right">Akcje</div></div>
+    <sc-for list="{{ rows }}" as="r" hint-placeholder-count="6">
+      <div style="display:grid;grid-template-columns:2.4fr 1.2fr 1.1fr .7fr .8fr 1fr 1.3fr;gap:12px;padding:12px 18px;border-bottom:1px solid var(--line);align-items:center;background:{{ r.rowBg }}">
+        <div style="display:flex;align-items:center;gap:11px;min-width:0"><div style="width:52px;height:38px;flex:none;border-radius:6px;background:#26241F url('{{ r.img }}') center/cover;border:1px solid var(--line)"></div><div style="min-width:0"><div style="font:700 13.5px 'Archivo';white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.title }}</div><div style="font:10.5px 'IBM Plex Mono';color:var(--t3)">{{ r.region }} · {{ r.days }}</div></div></div>
+        <div style="font:600 12px 'IBM Plex Mono';color:var(--t2)">{{ r.dates }}</div>
+        <div style="font:700 13px 'IBM Plex Mono'">{{ r.price }}</div>
+        <div style="display:flex;align-items:center;gap:7px"><div style="width:44px;height:5px;background:var(--line);border-radius:99px;overflow:hidden"><div style="height:100%;width:{{ r.diffPct }};background:{{ r.diffColor }}"></div></div><span style="font:700 11px 'IBM Plex Mono'">{{ r.diff }}</span></div>
+        <div><span style="font:700 9px 'Archivo';text-transform:uppercase;letter-spacing:.04em;color:{{ r.gearC }};background:{{ r.gearB }};padding:2px 7px;border-radius:4px;white-space:nowrap">{{ r.gear }}</span></div>
+        <div><span style="display:inline-flex;align-items:center;gap:6px;font:700 9.5px 'Archivo';text-transform:uppercase;letter-spacing:.03em;color:{{ r.stC }};background:{{ r.stB }};padding:4px 9px;border-radius:5px;white-space:nowrap"><span style="width:7px;height:7px;border-radius:50%;background:{{ r.stC }}"></span>{{ r.status }}</span></div>
+        <div style="display:flex;gap:6px;justify-content:flex-end">
+          <span onClick="{{ r.edit }}" style="height:32px;padding:0 12px;display:inline-flex;align-items:center;gap:6px;background:var(--sunken);border:1px solid var(--line);border-radius:6px;color:#F2EFE7;font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.03em;cursor:pointer"><span class="ic" style="font-size:13px"><i data-lucide="pencil"></i></span>Edytuj</span>
+          <span onClick="{{ r.toggle }}" title="{{ r.toggleTitle }}" style="height:32px;padding:0 12px;display:inline-flex;align-items:center;gap:6px;background:{{ r.tglBg }};border:1px solid {{ r.tglBorder }};border-radius:6px;color:{{ r.tglColor }};font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.03em;cursor:pointer;white-space:nowrap"><span class="ic" style="font-size:13px"><i data-lucide="{{ r.tglIcon }}"></i></span>{{ r.toggleLabel }}</span>
+        </div>
+      </div>
+    </sc-for>
+    <sc-if value="{{ empty }}" hint-placeholder-val="">
+      <div style="padding:52px 20px;text-align:center">
+        <div style="width:56px;height:56px;margin:0 auto;border-radius:50%;background:var(--sunken);border:1px solid var(--line);color:var(--t3);display:grid;place-items:center"><span class="ic" style="font-size:26px;width:56px;height:56px"><i data-lucide="map"></i></span></div>
+        <div style="font:700 15px 'Archivo';margin-top:14px">Nic w tym filtrze</div>
+        <div style="font:12px 'IBM Plex Mono';color:var(--t3);margin-top:5px">Zmień filtr albo dodaj nową wyprawę — trafi na stronę po publikacji.</div>
+      </div>
+    </sc-if>
+  </div>
+
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:80;display:flex;align-items:center;gap:10px;background:#1B1A16;border:1px solid var(--line);border-left:3px solid var(--ok);border-radius:9px;padding:12px 16px;box-shadow:0 10px 30px rgba(0,0,0,.5);animation:_rs .25s ease both"><span class="ic" style="font-size:16px;color:var(--ok)"><i data-lucide="check-circle-2"></i></span><span style="font:600 13px 'Archivo'">{{ toastText }}</span></div>
+  </sc-if>
+
+  <!-- SZUFLADA EDYCJI -->
+  <sc-if value="{{ drawerOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeDrawer }}" style="position:fixed;inset:0;background:rgba(10,9,8,.7);display:flex;justify-content:flex-end;z-index:60">
+      <div onClick="{{ stop }}" style="width:620px;max-width:100%;height:100%;background:var(--surface);border-left:1px solid var(--line);display:flex;flex-direction:column;animation:_in .25s cubic-bezier(.2,.7,.3,1) both;box-shadow:-20px 0 60px rgba(0,0,0,.5)">
+        <div style="padding:16px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;background:#161512">
+          <div style="flex:1;min-width:0"><div style="font-family:'Anton';font-size:20px;text-transform:uppercase;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ d.headTitle }}</div><div style="font:11px 'IBM Plex Mono';color:var(--t3);margin-top:4px">{{ d.headSub }}</div></div>
+          <span style="display:inline-flex;align-items:center;gap:6px;font:700 9.5px 'Archivo';text-transform:uppercase;letter-spacing:.03em;color:{{ d.stC }};background:{{ d.stB }};padding:4px 9px;border-radius:5px;white-space:nowrap"><span style="width:7px;height:7px;border-radius:50%;background:{{ d.stC }}"></span>{{ d.status }}</span>
+          <button onClick="{{ closeDrawer }}" style="width:34px;height:34px;flex:none;background:var(--sunken);border:1px solid var(--line);border-radius:8px;color:var(--t2);cursor:pointer"><span class="ic" style="font-size:16px;width:34px;height:34px"><i data-lucide="x"></i></span></button>
+        </div>
+
+        <div style="flex:1;overflow:auto;padding:20px 22px;display:grid;gap:18px">
+          <label style="display:block"><span style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">Tytuł na stronie</span>
+            <input value="{{ d.title }}" onInput="{{ set.title }}" style="width:100%;height:44px;margin-top:6px;padding:0 13px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:8px;font:14px 'Archivo';outline:none"></label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <label style="display:block"><span style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">Region</span>
+              <div style="position:relative"><select value="{{ d.region }}" onChange="{{ set.region }}" style="width:100%;height:44px;margin-top:6px;padding:0 32px 0 13px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:8px;font:14px 'Archivo';appearance:none;outline:none"><option>Azja</option><option>Ameryka Płd.</option><option>Ameryka Płn.</option><option>Afryka</option><option>Europa</option></select><span style="position:absolute;right:11px;top:calc(50% + 3px);transform:translateY(-50%);color:var(--t3);pointer-events:none"><span class="ic" style="font-size:14px"><i data-lucide="chevron-down"></i></span></span></div></label>
+            <label style="display:block"><span style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">Termin</span>
+              <input value="{{ d.dates }}" onInput="{{ set.dates }}" placeholder="07.10.2026 – 27.10.2026" style="width:100%;height:44px;margin-top:6px;padding:0 13px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:8px;font:13.5px 'IBM Plex Mono';outline:none"></label>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <label style="display:block"><span style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">Cena kierowca (EUR)</span>
+              <input value="{{ d.price }}" onInput="{{ set.price }}" style="width:100%;height:44px;margin-top:6px;padding:0 13px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:8px;font:14px 'IBM Plex Mono';outline:none"></label>
+            <label style="display:block"><span style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">Cena pasażer (EUR)</span>
+              <input value="{{ d.pricePax }}" onInput="{{ set.pricePax }}" placeholder="— jeśli brak" style="width:100%;height:44px;margin-top:6px;padding:0 13px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:8px;font:14px 'IBM Plex Mono';outline:none"></label>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div onClick="{{ set.transportIncl }}" style="display:flex;align-items:center;gap:12px;padding:12px 13px;background:var(--sunken);border:1px solid {{ d.tiBorder }};border-radius:8px;cursor:pointer"><div style="flex:1"><div style="font:700 13px 'Archivo'">Transport motocykla w cenie</div><div style="font:10px 'IBM Plex Mono';color:var(--t3);margin-top:2px">pokazuje się pod ceną</div></div><div style="width:40px;height:22px;border-radius:99px;background:{{ d.tiTrack }};position:relative"><div style="position:absolute;top:3px;left:{{ d.tiKnob }};width:16px;height:16px;border-radius:50%;background:#F2EFE7;transition:left .15s"></div></div></div>
+            <div onClick="{{ set.ourGear }}" style="display:flex;align-items:center;gap:12px;padding:12px 13px;background:var(--sunken);border:1px solid {{ d.ogBorder }};border-radius:8px;cursor:pointer"><div style="flex:1"><div style="font:700 13px 'Archivo'">Na naszym sprzęcie</div><div style="font:10px 'IBM Plex Mono';color:var(--t3);margin-top:2px">Honda CRF300L w cenie</div></div><div style="width:40px;height:22px;border-radius:99px;background:{{ d.ogTrack }};position:relative"><div style="position:absolute;top:3px;left:{{ d.ogKnob }};width:16px;height:16px;border-radius:50%;background:#F2EFE7;transition:left .15s"></div></div></div>
+          </div>
+          <div>
+            <div style="display:flex;align-items:center;justify-content:space-between"><span style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">Trudność</span><span style="font:700 13px 'IBM Plex Mono';color:{{ d.diffColor }}">{{ d.diff }}/10 · {{ d.diffLabel }}</span></div>
+            <input type="range" min="1" max="10" value="{{ d.diff }}" onInput="{{ set.diff }}" style="width:100%;margin-top:10px;accent-color:#F26A1B">
+          </div>
+          <div>
+            <span style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">Zdjęcie główne</span>
+            <div style="display:grid;grid-template-columns:200px 1fr;gap:12px;margin-top:6px;align-items:center">
+              <div style="height:112px;border-radius:8px;overflow:hidden;border:1px solid var(--line);background:#26241F url('{{ d.img }}') center/cover"></div>
+              <div><div style="font:12px 'Archivo';color:var(--t2);line-height:1.5">Poziome, min. 1600 px. Ciepłe, naturalne, bez filtrów. Na stronie ląduje jako tło karty i nagłówka.</div><button style="margin-top:9px;height:36px;padding:0 13px;display:inline-flex;align-items:center;gap:7px;background:var(--sunken);border:1px solid var(--line);border-radius:7px;color:#F2EFE7;font:700 10.5px 'Archivo';text-transform:uppercase;letter-spacing:.03em;cursor:pointer"><span class="ic" style="font-size:14px"><i data-lucide="upload"></i></span>Zmień zdjęcie</button></div>
+            </div>
+          </div>
+          <label style="display:block"><span style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">Opis</span>
+            <textarea value="{{ d.desc }}" onInput="{{ set.desc }}" placeholder="Dwa–trzy akapity: gdzie jedziemy, dla kogo, co jest trudne." style="width:100%;min-height:120px;margin-top:6px;padding:12px 13px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:8px;font:14px 'Archivo';line-height:1.5;resize:vertical;outline:none"></textarea></label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <label style="display:block"><span style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--ok)">Cena zawiera</span><span style="font:10px 'IBM Plex Mono';color:var(--t3)"> · jedna pozycja w linii</span>
+              <textarea value="{{ d.incl }}" onInput="{{ set.incl }}" style="width:100%;min-height:130px;margin-top:6px;padding:12px 13px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:8px;font:13px 'Archivo';line-height:1.55;resize:vertical;outline:none"></textarea></label>
+            <label style="display:block"><span style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--danger)">Cena nie zawiera</span>
+              <textarea value="{{ d.excl }}" onInput="{{ set.excl }}" style="width:100%;min-height:130px;margin-top:6px;padding:12px 13px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:8px;font:13px 'Archivo';line-height:1.55;resize:vertical;outline:none"></textarea></label>
+          </div>
+          <div>
+            <div style="display:flex;align-items:center;justify-content:space-between"><span style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">Plan dnia</span><span style="font:11px 'IBM Plex Mono';color:var(--t3)">{{ d.dayCount }}</span></div>
+            <div style="display:grid;gap:8px;margin-top:8px">
+              <sc-for list="{{ d.days }}" as="day" hint-placeholder-count="3">
+                <div style="display:grid;grid-template-columns:64px 1fr 32px;gap:8px;align-items:start">
+                  <div style="height:40px;display:flex;align-items:center;justify-content:center;background:var(--sunken);border:1px solid var(--line);border-radius:7px;font:700 11px 'IBM Plex Mono';color:var(--accent-hover)">{{ day.n }}</div>
+                  <input value="{{ day.text }}" onInput="{{ day.onText }}" placeholder="Skąd – dokąd · co ważnego" style="width:100%;height:40px;padding:0 12px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:7px;font:13px 'Archivo';outline:none">
+                  <button onClick="{{ day.remove }}" title="Usuń dzień" style="width:32px;height:40px;background:transparent;border:1px solid var(--line);border-radius:7px;color:var(--t3);cursor:pointer"><span class="ic" style="font-size:14px;width:30px;height:38px"><i data-lucide="trash-2"></i></span></button>
+                </div>
+              </sc-for>
+            </div>
+            <button onClick="{{ addDay }}" style="margin-top:10px;height:36px;padding:0 13px;display:inline-flex;align-items:center;gap:7px;background:transparent;border:1px dashed var(--line);border-radius:7px;color:var(--t2);font:700 10.5px 'Archivo';text-transform:uppercase;letter-spacing:.03em;cursor:pointer"><span class="ic" style="font-size:14px"><i data-lucide="plus"></i></span>Dodaj dzień</button>
+          </div>
+          <div style="background:var(--sunken);border:1px solid var(--line);border-radius:9px;padding:14px">
+            <div style="display:flex;align-items:center;gap:10px"><span class="ic" style="font-size:15px;color:var(--accent-hover)"><i data-lucide="search"></i></span><div style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.06em;color:var(--t3)">SEO — jak wygląda w Google</div><div style="margin-left:auto;font:10px 'IBM Plex Mono';color:var(--t3)">advfactory.com/wyprawy/<span style="color:#F2EFE7">{{ d.slug }}</span></div></div>
+            <div style="display:grid;gap:10px;margin-top:12px">
+              <label style="display:block"><div style="display:flex;justify-content:space-between"><span style="font:700 9.5px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">Tytuł w Google</span><span style="font:10px 'IBM Plex Mono';color:{{ d.seoTitleC }}">{{ d.seoTitleLen }}</span></div>
+                <input value="{{ d.seoTitle }}" onInput="{{ set.seoTitle }}" placeholder="{{ d.seoTitlePh }}" style="width:100%;height:40px;margin-top:5px;padding:0 11px;background:var(--surface);color:#F2EFE7;border:1px solid var(--line);border-radius:7px;font:13px 'Archivo';outline:none"></label>
+              <label style="display:block"><div style="display:flex;justify-content:space-between"><span style="font:700 9.5px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">Opis w Google</span><span style="font:10px 'IBM Plex Mono';color:{{ d.seoDescC }}">{{ d.seoDescLen }}</span></div>
+                <textarea value="{{ d.seoDesc }}" onInput="{{ set.seoDesc }}" placeholder="Jedno–dwa zdania: gdzie, kiedy, za ile, dla kogo. Puste = pierwsze zdania opisu." style="width:100%;min-height:64px;margin-top:5px;padding:10px 11px;background:var(--surface);color:#F2EFE7;border:1px solid var(--line);border-radius:7px;font:12.5px 'Archivo';line-height:1.45;resize:vertical;outline:none"></textarea></label>
+              <label style="display:block"><span style="font:700 9.5px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">Adres (slug)</span>
+                <input value="{{ d.slug }}" onInput="{{ set.slug }}" style="width:100%;height:38px;margin-top:5px;padding:0 11px;background:var(--surface);color:#F2EFE7;border:1px solid var(--line);border-radius:7px;font:12px 'IBM Plex Mono';outline:none"></label>
+            </div>
+            <div style="background:#fff;border-radius:7px;padding:12px 14px;margin-top:12px;font-family:Arial,sans-serif">
+              <div style="font-size:11px;color:#4d5156">advfactory.com › wyprawy › {{ d.slug }}</div>
+              <div style="font-size:17px;color:#1a0dab;margin-top:5px;line-height:1.3">{{ d.seoTitleShown }}</div>
+              <div style="font-size:12.5px;color:#4d5156;margin-top:3px;line-height:1.5">{{ d.seoDescShown }}</div>
+            </div>
+          </div>
+          <div style="background:var(--sunken);border:1px solid var(--line);border-radius:8px;padding:12px 14px;display:grid;gap:6px">
+            <div style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t3)">Historia</div>
+            <sc-for list="{{ d.log }}" as="l" hint-placeholder-count="2"><div style="display:flex;gap:10px;font:11.5px 'IBM Plex Mono';color:var(--t2)"><span style="color:var(--t3);white-space:nowrap">{{ l.when }}</span><span>{{ l.what }}</span></div></sc-for>
+          </div>
+        </div>
+
+        <div style="padding:14px 22px;border-top:1px solid var(--line);display:flex;gap:10px;align-items:center;background:var(--sunken);flex-wrap:wrap">
+          <div style="font:11px 'IBM Plex Mono';color:var(--t3);flex:1;min-width:180px">{{ d.footNote }}</div>
+          <button onClick="{{ saveDraft }}" style="min-height:44px;padding:0 16px;background:transparent;color:#F2EFE7;border:1px solid var(--line);border-radius:9px;font:700 12px 'Archivo';text-transform:uppercase;letter-spacing:.03em;cursor:pointer">Zapisz szkic</button>
+          <button onClick="{{ publish }}" style="min-height:44px;padding:0 18px;display:flex;align-items:center;gap:8px;background:var(--accent);color:#fff;border:none;border-radius:9px;font:700 12px 'Archivo';text-transform:uppercase;letter-spacing:.03em;cursor:pointer;box-shadow:0 2px 0 #A83D03"><span class="ic" style="font-size:15px"><i data-lucide="globe"></i></span>{{ d.publishLabel }}</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:900}}">
+class Component extends DCLogic {
+  state = { filter:"all", q:"", sel:null, draft:null, toast:"", trips:[
+    { id:1, title:"2026. Przez Tybet do Bangkoku", region:"Azja", dates:"07.10.2026 – 27.10.2026", days:"21 dni", price:"9750", pricePax:"3200", diff:5, ti:true, og:false, st:"pub", img:"https://advfactory.com/wp-content/uploads/2023/10/20230925_211321-scaled.jpg", desc:"Nasze motocykle na początku października wyślemy samolotem do Nepalu. Będą na nas czekały w Katmandu.", incl:"noclegi i wszystkie śniadania\nasysta samochodu na całej trasie\nkomplet chińskich dokumentów\ntransport motocykla z Polski do Nepalu — samolot", excl:"biletów lotniczych\nwiz\npaliwa", plan:["Katmandu — odbiór motocykli","Katmandu — granica z Chinami","Granica — Gyirong"], log:[["12.08.2026 14:02","Sambor — publikacja"],["11.08.2026 09:15","Asia — zmiana ceny 9 450 → 9 750 €"]] },
+    { id:2, title:"2027 Od zera do bohatera. Wchodzimy na Ojos, 6893 m", region:"Ameryka Płd.", dates:"28.12.2026 – 12.01.2027", days:"16 dni", price:"4950", pricePax:"3100", diff:8, ti:false, og:true, st:"pub", img:"https://advfactory.com/wp-content/uploads/2026/03/WhatsApp-Image-2026-03-04-at-08.48.28.jpeg", desc:"", incl:"", excl:"", plan:[], log:[["02.09.2026 10:40","Sambor — publikacja"]] },
+    { id:3, title:"RTW 2027 Patagonia – wyprawa na koniec świata", region:"Ameryka Płd.", dates:"04.01.2027 – 26.01.2027", days:"23 dni", price:"5950", pricePax:"2940", diff:5, ti:true, og:false, st:"pub", img:"https://advfactory.com/wp-content/uploads/2025/06/DSC_3057-Enhanced-NR.jpg", desc:"", incl:"", excl:"", plan:[], log:[["15.07.2026 08:00","Sambor — publikacja"]] },
+    { id:4, title:"RTW 2027. Z RPA do Kenii czyli Afryka da się lubić", region:"Afryka", dates:"25.02.2027 – 24.03.2027", days:"28 dni", price:"8550", pricePax:"", diff:4, ti:false, og:false, st:"pub", img:"https://advfactory.com/wp-content/uploads/2023/10/DSC_1675.jpg", desc:"", incl:"", excl:"", plan:[], log:[["15.07.2026 08:02","Sambor — publikacja"]] },
+    { id:5, title:"2027 Afganistan – Wakhan, śladem Marco Polo", region:"Azja", dates:"25.07.2027 – 12.08.2027", days:"19 dni", price:"4200", pricePax:"3000", diff:6, ti:false, og:true, st:"pub", img:"https://advfactory.com/wp-content/uploads/2026/08/WhatsApp-Image-2026-08-16-at-09.43.01-2.jpeg", desc:"", incl:"", excl:"", plan:[], log:[["16.08.2026 10:12","Sambor — publikacja"]] },
+    { id:6, title:"2027 RTW. Władywostok nie taki straszny…", region:"Azja", dates:"23.08.2027 – 19.09.2027", days:"28 dni", price:"6900", pricePax:"", diff:5, ti:false, og:false, st:"pub", img:"https://advfactory.com/wp-content/uploads/2025/04/ChatGPT-Image-Apr-24-2025-12_11_42-PM.png", desc:"", incl:"", excl:"", plan:[], log:[] },
+    { id:7, title:"2027 Lekka kawaleria Pamir", region:"Azja", dates:"05.07.2027 – 16.07.2027", days:"12 dni", price:"3340", pricePax:"", diff:7, ti:false, og:true, st:"draft", img:"https://advfactory.com/wp-content/uploads/2019/06/Pamir-trip-Advfactory-1.jpg", desc:"", incl:"", excl:"", plan:[], log:[["16.09.2026 17:30","Asia — utworzono szkic"]] },
+    { id:8, title:"2027 Motosafari Kenia / Tanzania", region:"Afryka", dates:"03.06.2027 – 15.06.2027", days:"13 dni", price:"3040", pricePax:"", diff:5, ti:false, og:true, st:"draft", img:"https://advfactory.com/wp-content/uploads/2023/10/DSC_1675.jpg", desc:"", incl:"", excl:"", plan:[], log:[["17.09.2026 09:05","Sambor — utworzono szkic, cena do potwierdzenia"]] },
+    { id:9, title:"2026 Lekka kawaleria Pamir", region:"Azja", dates:"05.07.2026 – 16.07.2026", days:"12 dni", price:"3240", pricePax:"", diff:7, ti:false, og:true, st:"arch", img:"https://advfactory.com/wp-content/uploads/2019/06/Pamir-trip-Advfactory-1.jpg", desc:"", incl:"", excl:"", plan:[], log:[["17.07.2026 00:00","system — zakończona, przeniesiona do archiwum"]] },
+    { id:10, title:"2026 Motosafari Kenia / Tanzania", region:"Afryka", dates:"04.06.2026 – 16.06.2026", days:"13 dni", price:"2940", pricePax:"", diff:5, ti:false, og:true, st:"arch", img:"https://advfactory.com/wp-content/uploads/2023/10/DSC_1675.jpg", desc:"", incl:"", excl:"", plan:[], log:[] }
+  ] };
+  componentDidMount(){ const t=()=>{ if(window.lucide) window.lucide.createIcons(); else setTimeout(t,60); }; t(); }
+  componentDidUpdate(){ if(window.lucide) window.lucide.createIcons(); document.body.style.overflow = this.state.sel!==null ? "hidden" : ""; }
+  flash(msg){ this.setState({ toast:msg }); clearTimeout(this._tt); this._tt = setTimeout(()=>this.setState({ toast:"" }), 2600); }
+  openTrip(id){ const t = this.state.trips.find(x => x.id===id); this.setState({ sel:id, draft: JSON.parse(JSON.stringify(t)) }); }
+  commit(status, msg){
+    const s = this.state; const d = Object.assign({}, s.draft);
+    const who = "Sambor"; const now = "17.09.2026 " + new Date().toTimeString().slice(0,5);
+    d.log = [[now, who + " — " + (status==="pub" ? "publikacja" : "zapis szkicu")]].concat(d.log || []);
+    if (status) d.st = status;
+    const trips = s.trips.some(t => t.id===d.id) ? s.trips.map(t => t.id===d.id ? d : t) : [d].concat(s.trips);
+    this.setState({ trips, sel:null, draft:null });
+    this.flash(msg);
+  }
+  renderVals(){
+    const s = this.state;
+    const ST = { pub:["Opublikowana","var(--ok)","rgba(111,163,82,.15)"], draft:["Szkic","var(--warn)","rgba(217,142,27,.15)"], arch:["Archiwum","var(--t3)","rgba(255,255,255,.06)"] };
+    const slugify = (t) => (t || "").toLowerCase().replace(/[ąćęłńóśźż]/g, c => ({"ą":"a","ć":"c","ę":"e","ł":"l","ń":"n","ó":"o","ś":"s","ź":"z","ż":"z"})[c]).replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 70);
+    const diffColor = (n) => n>=7 ? "var(--danger)" : n>=5 ? "var(--warn)" : "var(--ok)";
+    const diffLabel = (n) => n>=7 ? "mocno" : n>=5 ? "wymagająco" : "spokojnie";
+    const cnt = { all:s.trips.length, pub:0, draft:0, arch:0 }; s.trips.forEach(t => cnt[t.st]++);
+    const q = s.q.trim().toLowerCase();
+    const shown = s.trips.filter(t => (s.filter==="all" || t.st===s.filter) && (!q || t.title.toLowerCase().indexOf(q)>=0));
+    const priceTxt = (t) => t.price ? (Number(t.price).toLocaleString("pl-PL") + " €" + (t.pricePax ? " · pas. " + Number(t.pricePax).toLocaleString("pl-PL") + " €" : "")) : "—";
+    const d = s.draft;
+    const setField = (k) => (e) => this.setState(st => ({ draft: Object.assign({}, st.draft, { [k]: e.target.value }) }));
+    const flip = (k) => () => this.setState(st => ({ draft: Object.assign({}, st.draft, { [k]: !st.draft[k] }) }));
+    return {
+      summary: cnt.pub + " opublikowanych · " + cnt.draft + " szkice · " + cnt.arch + " w archiwum",
+      q: s.q, onQ: (e)=>this.setState({ q:e.target.value }),
+      filters: [["all","Wszystkie"],["pub","Opublikowane"],["draft","Szkice"],["arch","Archiwum"]].map(([id,label]) => ({ label, count:cnt[id], onClick:()=>this.setState({ filter:id }),
+        bg: s.filter===id ? "var(--accent)" : "var(--sunken)", border: s.filter===id ? "var(--accent)" : "var(--line)", color: s.filter===id ? "#fff" : "var(--t2)" })),
+      rows: shown.map(t => ({ title:t.title, region:t.region, days:t.days, dates:t.dates, img:t.img, price:priceTxt(t),
+        diff:t.diff+"/10", diffPct:(t.diff*10)+"%", diffColor:diffColor(t.diff),
+        gear: t.og ? "Nasz CRF300L" : "Własny", gearC: t.og ? "var(--accent-hover)" : "var(--t2)", gearB: t.og ? "rgba(242,106,27,.14)" : "rgba(255,255,255,.07)",
+        status:ST[t.st][0], stC:ST[t.st][1], stB:ST[t.st][2], rowBg: s.sel===t.id ? "rgba(242,106,27,.06)" : "transparent",
+        edit: ()=>this.openTrip(t.id),
+        toggleLabel: t.st==="pub" ? "Ukryj" : "Publikuj", toggleTitle: t.st==="pub" ? "Zdejmij ze strony (wraca do szkiców)" : "Pokaż na stronie",
+        tglIcon: t.st==="pub" ? "eye-off" : "globe",
+        tglBg: t.st==="pub" ? "var(--sunken)" : "rgba(242,106,27,.14)", tglBorder: t.st==="pub" ? "var(--line)" : "#5a3a1e", tglColor: t.st==="pub" ? "var(--t2)" : "var(--accent-hover)",
+        toggle: ()=>{ const next = t.st==="pub" ? "draft" : "pub"; this.setState(st => ({ trips: st.trips.map(x => x.id===t.id ? Object.assign({}, x, { st:next, log:[["17.09.2026 " + new Date().toTimeString().slice(0,5), "Sambor — " + (next==="pub" ? "publikacja" : "zdjęta ze strony")]].concat(x.log)}) : x) })); this.flash(next==="pub" ? "Opublikowano: " + t.title : "Zdjęto ze strony: " + t.title); } })),
+      empty: shown.length===0 ? true : "",
+      addTrip: ()=>this.setState({ sel:0, draft:{ id: Date.now(), title:"", region:"Azja", dates:"", days:"", price:"", pricePax:"", diff:5, ti:false, og:false, st:"draft", img:"", desc:"", incl:"", excl:"", plan:[], log:[] } }),
+      toast: s.toast ? true : false, toastText: s.toast,
+      drawerOpen: s.sel!==null ? true : false,
+      closeDrawer: ()=>this.setState({ sel:null, draft:null }),
+      stop: (e)=>e.stopPropagation(),
+      d: d ? {
+        headTitle: d.title || "Nowa wyprawa", headSub: d.st==="pub" ? "widoczna na stronie · zmiany wejdą po publikacji" : "niewidoczna na stronie do publikacji",
+        status:ST[d.st][0], stC:ST[d.st][1], stB:ST[d.st][2],
+        title:d.title, region:d.region, dates:d.dates, price:d.price, pricePax:d.pricePax, img:d.img, desc:d.desc, incl:d.incl, excl:d.excl,
+        slug: d.slug != null ? d.slug : slugify(d.title),
+        seoTitle: d.seoTitle || "", seoTitlePh: (d.title || "Tytuł wyprawy") + " — wyprawa motocyklowa | ADVfactory",
+        seoTitleLen: ((d.seoTitle || d.title || "").length) + " / 60", seoTitleC: (d.seoTitle || d.title || "").length > 60 ? "var(--warn)" : "var(--ok)",
+        seoDesc: d.seoDesc || "", seoDescLen: ((d.seoDesc || "").length) + " / 155", seoDescC: (d.seoDesc || "").length > 155 ? "var(--warn)" : "var(--ok)",
+        seoTitleShown: (d.seoTitle || ((d.title || "Tytuł wyprawy") + " — wyprawa motocyklowa | ADVfactory")).slice(0, 60),
+        seoDescShown: (d.seoDesc || (d.desc || "").split(". ").slice(0,2).join(". ") || "Termin " + d.dates + ", cena od " + d.price + " €. Auto wsparcia, przewodnik, formalności po naszej stronie.").slice(0, 155),
+        diff:d.diff, diffColor:diffColor(d.diff), diffLabel:diffLabel(d.diff),
+        tiBorder: d.ti ? "var(--accent)" : "var(--line)", tiTrack: d.ti ? "var(--accent)" : "var(--line)", tiKnob: d.ti ? "21px" : "3px",
+        ogBorder: d.og ? "var(--accent)" : "var(--line)", ogTrack: d.og ? "var(--accent)" : "var(--line)", ogKnob: d.og ? "21px" : "3px",
+        dayCount: d.plan.length + (d.plan.length===1 ? " dzień" : " dni"),
+        days: d.plan.map((p,i) => ({ n:"Dzień " + (i+1), text:p, onText:(e)=>this.setState(st => { const plan = st.draft.plan.slice(); plan[i]=e.target.value; return { draft: Object.assign({}, st.draft, { plan }) }; }), remove:()=>this.setState(st => ({ draft: Object.assign({}, st.draft, { plan: st.draft.plan.filter((_,j)=>j!==i) }) })) })),
+        log: d.log.map(l => ({ when:l[0], what:l[1] })),
+        footNote: d.st==="pub" ? "Publikacja podmienia kartę na stronie. Klienci z zapytaniem o tę wyprawę nie dostają powiadomienia." : "Szkic widzi tylko biuro. Publikuj, gdy cena i termin są pewne.",
+        publishLabel: d.st==="pub" ? "Publikuj zmiany" : "Publikuj na stronie"
+      } : {},
+      set: { seoTitle:setField("seoTitle"), seoDesc:setField("seoDesc"), slug:(e)=>this.setState(st => ({ draft: Object.assign({}, st.draft, { slug: slugify(e.target.value) }) })),
+        title:setField("title"), region:setField("region"), dates:setField("dates"), price:setField("price"), pricePax:setField("pricePax"), desc:setField("desc"), incl:setField("incl"), excl:setField("excl"),
+        diff:(e)=>this.setState(st => ({ draft: Object.assign({}, st.draft, { diff:Number(e.target.value) }) })), transportIncl:flip("ti"), ourGear:flip("og") },
+      addDay: ()=>this.setState(st => ({ draft: Object.assign({}, st.draft, { plan: st.draft.plan.concat([""]) }) })),
+      saveDraft: ()=>this.commit(d && d.st==="pub" ? null : "draft", "Zapisano szkic"),
+      publish: ()=>this.commit("pub", "Opublikowano na stronie: " + (d ? d.title : ""))
+    };
+  }
+}
+</script>
+</body>
+</html>

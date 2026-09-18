@@ -1,0 +1,54 @@
+---
+import Ikona from './Ikona.astro';
+
+interface Props {
+  pytania: { q: string; a: string }[];
+  /** Pierwsze pytanie otwarte — dobre na stronie kierunku, złe na pełnej liście FAQ. */
+  pierwszeOtwarte?: boolean;
+  /** Dane strukturalne FAQPage. Tylko raz na stronę, inaczej Google je odrzuca. */
+  daneStrukturalne?: boolean;
+}
+
+const { pytania, pierwszeOtwarte = false, daneStrukturalne = false } = Astro.props;
+
+const schema = daneStrukturalne
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: pytania.map((p) => ({
+        '@type': 'Question',
+        name: p.q,
+        acceptedAnswer: { '@type': 'Answer', text: p.a },
+      })),
+    }
+  : null;
+---
+<div class="faq">
+  {pytania.map((p, i) => (
+    <details open={pierwszeOtwarte && i === 0}>
+      <summary>{p.q}<Ikona nazwa="chevron-down" rozmiar="18" /></summary>
+      <p>{p.a}</p>
+    </details>
+  ))}
+</div>
+
+{schema && <script type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />}
+
+<style>
+  .faq { border-top: 1px solid var(--kreska); }
+  .faq details { border-bottom: 1px solid var(--kreska); }
+  .faq summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 0;
+    font: 600 16px var(--font-tekst);
+    cursor: pointer;
+    list-style: none;
+  }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary > :global(svg) { color: var(--tekst-4); transition: transform .18s ease; flex: none; }
+  .faq details[open] summary > :global(svg) { transform: rotate(180deg); }
+  .faq p { padding: 0 0 20px; margin: 0; color: var(--tekst-2); max-width: 74ch; }
+</style>

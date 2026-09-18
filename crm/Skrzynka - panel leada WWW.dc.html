@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap&subset=latin-ext" rel="stylesheet">
+<script src="../assets/lucide.min.js"></script>
+<style>@keyframes _rs{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}*{box-sizing:border-box}body{margin:0;background:#0F0E0C}a{color:var(--accent)}a:hover{color:var(--accent-hover)}.ic{display:inline-grid;place-items:center}.ic svg{width:1em;height:1em;stroke-width:2px;display:block}button,[style*="cursor:pointer"]{transition:background .15s,border-color .15s,color .15s,transform .12s}button:active{transform:scale(.98)}</style>
+</helmet>
+<div data-theme="dark" data-screen-label="Skrzynka — panel leada WWW (makieta do wklejenia)" style="width:1440px;max-width:100%;min-height:900px;background:#0F0E0C;color:#F2EFE7;font-family:'Archivo',system-ui,sans-serif;padding:20px 24px;--accent:#F26A1B;--accent-hover:#FF7D2E;--surface:#1B1A16;--sunken:#131210;--line:#332F29;--t2:#B9B3A6;--t3:#7E796E;--ok:#6FA352;--warn:#D98E1B;--danger:#D9483C;--info:#5E8FB5">
+
+  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+    <img src="../assets/logo-white.png" alt="ADVfactory" style="height:18px;display:block">
+    <div style="font:700 10.5px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t3)">Skrzynka Zapytań · specyfikacja prawego panelu dla leadów ze strony</div>
+  </div>
+  <div style="display:flex;align-items:flex-end;gap:16px;margin-top:12px;flex-wrap:wrap">
+    <div><div style="font-family:'Anton';font-size:30px;text-transform:uppercase;line-height:1">Panel „Lead ze strony”</div><div style="font:12px 'IBM Plex Mono';color:var(--t3);margin-top:5px">to NIE jest nowy widok — to zawartość prawej kolumny Twojej Skrzynki, gdy wątek ma źródło „www”</div></div>
+    <div style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap">
+      <sc-for list="{{ cases }}" as="c" hint-placeholder-count="4"><div onClick="{{ c.pick }}" style="height:36px;padding:0 14px;display:flex;align-items:center;gap:7px;background:{{ c.bg }};border:1px solid {{ c.border }};border-radius:8px;font:700 11.5px 'Archivo';color:{{ c.color }};cursor:pointer"><span class="ic" style="font-size:13px"><i data-lucide="{{ c.icon }}"></i></span>{{ c.label }}</div></sc-for>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:320px 1fr;gap:24px;margin-top:22px;align-items:start">
+
+    <!-- PANEL — dokładnie tak jak ma wyglądać w Skrzynce -->
+    <div style="background:#161512;border:1px solid var(--line);border-radius:12px;padding:18px 16px;animation:_rs .35s ease both">
+      <div style="display:flex;align-items:center;gap:9px"><div style="width:34px;height:34px;flex:none;border-radius:9px;background:rgba(94,143,181,.15);color:var(--info);display:grid;place-items:center"><span class="ic" style="font-size:17px"><i data-lucide="globe"></i></span></div><div><div style="font-family:'Anton';font-size:17px;text-transform:uppercase;line-height:1">Lead ze strony</div><div style="font:10px 'IBM Plex Mono';color:var(--t3);margin-top:3px">{{ L.stamp }}</div></div></div>
+
+      <div style="margin-top:14px;background:var(--surface);border:1px solid var(--line);border-radius:9px;overflow:hidden">
+        <sc-for list="{{ L.facts }}" as="f" hint-placeholder-count="5">
+          <div style="display:grid;grid-template-columns:92px 1fr;gap:10px;padding:9px 12px;border-bottom:1px solid var(--line);align-items:start"><div style="font:700 9.5px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t3);padding-top:2px">{{ f.k }}</div><div style="font:600 12px 'Archivo';color:{{ f.color }};line-height:1.45">{{ f.v }}</div></div>
+        </sc-for>
+      </div>
+
+      <sc-if value="{{ L.hasCfg }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:12px;font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.06em;color:var(--t3);margin-bottom:8px">Konfiguracja z kalkulatora</div>
+        <div style="background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:12px">
+          <sc-for list="{{ L.cfg }}" as="c" hint-placeholder-count="4"><div style="display:flex;justify-content:space-between;gap:10px;padding:4px 0;font-size:12px"><span style="color:var(--t2)">{{ c.k }}</span><span style="font:700 12px 'IBM Plex Mono';text-align:right">{{ c.v }}</span></div></sc-for>
+          <div style="height:1px;background:var(--line);margin:8px 0"></div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">Wycena ze strony</span><span style="font-family:'Anton';font-size:20px;color:var(--accent-hover)">{{ L.quote }}</span></div>
+          <div style="font:10px 'IBM Plex Mono';color:var(--t3);margin-top:4px">widelec, który klient widział — oferta może się różnić</div>
+          <button onClick="{{ flashOrder }}" style="width:100%;margin-top:12px;min-height:40px;display:flex;align-items:center;justify-content:center;gap:8px;background:var(--accent);color:#fff;border:none;border-radius:8px;font:700 11px 'Archivo';text-transform:uppercase;letter-spacing:.03em;cursor:pointer;box-shadow:0 2px 0 #A83D03"><span class="ic" style="font-size:14px"><i data-lucide="container"></i></span>Utwórz zlecenie z tej konfiguracji</button>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ L.hasTrip }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:12px;font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.06em;color:var(--t3);margin-bottom:8px">{{ L.tripHead }}</div>
+        <div style="background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:12px;display:flex;gap:11px;align-items:center">
+          <div style="width:56px;height:42px;flex:none;border-radius:6px;background:#26241F url('{{ L.tripImg }}') center/cover;border:1px solid var(--line)"></div>
+          <div style="flex:1;min-width:0"><div style="font:700 12.5px 'Archivo';line-height:1.3">{{ L.trip }}</div><div style="font:10px 'IBM Plex Mono';color:var(--t3);margin-top:3px">{{ L.tripMeta }}</div></div>
+        </div>
+        <a href="{{ L.tripHref }}" style="margin-top:8px;display:flex;align-items:center;justify-content:center;gap:7px;min-height:36px;background:var(--sunken);border:1px solid var(--line);border-radius:8px;color:#F2EFE7;font:700 10.5px 'Archivo';text-transform:uppercase;letter-spacing:.03em;text-decoration:none">{{ L.tripLink }}<span class="ic" style="font-size:13px"><i data-lucide="arrow-right"></i></span></a>
+      </sc-if>
+
+      <div style="margin-top:12px;font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.06em;color:var(--t3);margin-bottom:8px">Zgody</div>
+      <div style="background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:11px 12px">
+        <div style="display:flex;align-items:center;gap:9px"><span class="ic" style="font-size:14px;color:var(--ok)"><i data-lucide="shield-check"></i></span><span style="flex:1;font-size:12px;color:var(--t2)">Kontakt w sprawie zapytania</span><span style="font:600 9.5px 'IBM Plex Mono';color:var(--ok)">{{ L.rodo }}</span></div>
+        <div style="font:10px 'IBM Plex Mono';color:var(--t3);margin-top:6px;padding-left:23px">polityka v. 09.09.2026 · IP {{ L.ip }}</div>
+        <div style="display:flex;align-items:center;gap:9px;margin-top:8px"><span class="ic" style="font-size:14px;color:{{ L.mktColor }}"><i data-lucide="{{ L.mktIcon }}"></i></span><span style="flex:1;font-size:12px;color:var(--t2)">Cookies marketingowe</span><span style="font:600 9.5px 'IBM Plex Mono';color:{{ L.mktColor }}">{{ L.mkt }}</span></div>
+      </div>
+
+      <div style="margin-top:12px;font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.06em;color:var(--t3);margin-bottom:8px">Kontakt w bazie</div>
+      <div style="background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:11px 12px;display:flex;align-items:center;gap:10px"><span class="ic" style="font-size:15px;color:{{ L.dupColor }}"><i data-lucide="{{ L.dupIcon }}"></i></span><div style="flex:1;font-size:12px;color:var(--t2);line-height:1.45">{{ L.dup }}</div></div>
+    </div>
+
+    <!-- SPEC DLA PROGRAMISTY -->
+    <div style="display:grid;gap:14px;align-content:start">
+      <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px">
+        <div style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.06em;color:var(--t3)">Kiedy panel się pokazuje</div>
+        <div style="font-size:14px;line-height:1.6;color:#F2EFE7;margin-top:8px">Wątek w Skrzynce ma <span style="font-family:'IBM Plex Mono';color:var(--accent-hover)">zapytanie.zrodlo ∈ {formularz, konfigurator, karta_wyprawy, strona_kierunku}</span>. Dla WhatsApp/mail/telefon prawy panel zostaje taki, jaki jest dziś (kontekst klienta). Pola pochodzą z <span style="font-family:'IBM Plex Mono'">LeadWWW</span> w <span style="font-family:'IBM Plex Mono'">docs/schema.ts</span>.</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden">
+        <div style="display:grid;grid-template-columns:1.3fr 1.4fr 2fr;gap:12px;padding:10px 16px;background:var(--sunken);border-bottom:1px solid var(--line);font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t3)"><div>Blok w panelu</div><div>Pole</div><div>Zasada</div></div>
+        <sc-for list="{{ spec }}" as="r" hint-placeholder-count="10">
+          <div style="display:grid;grid-template-columns:1.3fr 1.4fr 2fr;gap:12px;padding:11px 16px;border-bottom:1px solid var(--line);align-items:start">
+            <div style="font:700 12.5px 'Archivo'">{{ r.block }}</div>
+            <div style="font:11.5px 'IBM Plex Mono';color:var(--accent-hover);line-height:1.5">{{ r.field }}</div>
+            <div style="font-size:12.5px;color:var(--t2);line-height:1.5">{{ r.rule }}</div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px">
+        <div style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.06em;color:var(--t3)">Zmiany w liście wątków (lewa kolumna)</div>
+        <div style="display:grid;gap:8px;margin-top:10px">
+          <sc-for list="{{ listChanges }}" as="x" hint-placeholder-count="3"><div style="display:flex;gap:10px;align-items:flex-start"><span class="ic" style="font-size:14px;color:var(--ok);margin-top:2px"><i data-lucide="check"></i></span><div style="font-size:13px;color:#F2EFE7;line-height:1.5">{{ x.t }}</div></div></sc-for>
+        </div>
+      </div>
+      <div style="background:var(--sunken);border:1px solid var(--line);border-left:3px solid var(--warn);border-radius:0 8px 8px 0;padding:12px 14px;font:12.5px 'Archivo';color:var(--t2);line-height:1.5">Zapisy na powiadomienia (<span style="font-family:'IBM Plex Mono'">POST /zainteresowani</span>) NIE tworzą wątku w Skrzynce. Trafiają na listę „Zainteresowani terminem”.</div>
+    </div>
+  </div>
+
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:80;display:flex;align-items:center;gap:10px;background:#1B1A16;border:1px solid var(--line);border-left:3px solid var(--ok);border-radius:9px;padding:12px 16px;box-shadow:0 10px 30px rgba(0,0,0,.5);animation:_rs .25s ease both"><span class="ic" style="font-size:16px;color:var(--ok)"><i data-lucide="check-circle-2"></i></span><span style="font:600 13px 'Archivo'">{{ toastText }}</span></div>
+  </sc-if>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:900}}">
+class Component extends DCLogic {
+  state = { c:"cfg", toast:"" };
+  componentDidMount(){ const t=()=>{ if(window.lucide) window.lucide.createIcons(); else setTimeout(t,60); }; t(); }
+  componentDidUpdate(){ if(window.lucide) window.lucide.createIcons(); }
+  flash(m){ this.setState({ toast:m }); clearTimeout(this._tt); this._tt = setTimeout(()=>this.setState({ toast:"" }), 2600); }
+  renderVals(){
+    const s = this.state;
+    const CASES = {
+      cfg: { label:"Konfigurator", icon:"calculator", stamp:"16.09.2026 14:07 · ZP-2026-0418", src:"Konfigurator · advfactory.com", trail:"Start → Transport → Konfigurator → Formularz · 6 min", lang:"Polski", langC:"#F2EFE7", pref:"WhatsApp", wait:"31 h — po terminie", waitC:"var(--danger)",
+        cfg:[["Pojazd","Motocykl"],["Kierunek","Kirgistan (Biszkek)"],["Kierunek podróży","⇔ w obie strony"],["Najbliższe pakowanie","25.06.2026"]], quote:"1 800 – 2 016 €", trip:null,
+        dup:"Nowy kontakt — nie ma go w bazie. Po odpowiedzi utworzy się karta klienta.", dupNew:true, mkt:true, ip:"83.24.112.9" },
+      trip: { label:"Karta wyprawy", icon:"map", stamp:"16.09.2026 18:40 · ZP-2026-0419", src:"Karta wyprawy · advfactory.com", trail:"Google → Wyprawy → Przez Tybet do Bangkoku → Formularz", lang:"Polski", langC:"#F2EFE7", pref:"Telefon (po 17)", wait:"27 h — po terminie", waitC:"var(--danger)",
+        cfg:null, trip:"2026. Przez Tybet do Bangkoku", tripHead:"Wyprawa, o którą pyta", tripMeta:"07.10 – 27.10.2026 · 9 750 € · trudność 5/10", tripImg:"https://advfactory.com/wp-content/uploads/2023/10/20230925_211321-scaled.jpg", tripLink:"Karta w katalogu", tripHref:"Katalog%20Wypraw.dc.html",
+        dup:"Ten e-mail jest w bazie: Paweł Nowicki, Kirgistan 2024. Wątek dopięty do istniejącego kontaktu.", dupNew:false, mkt:false, ip:"5.173.44.201" },
+      dest: { label:"Strona kierunku", icon:"container", stamp:"17.09.2026 11:22 · ZP-2026-0420", src:"Strona kierunku · advfactory.com/transport/chile", trail:"Google „transport motocykla Chile” → Chile → Formularz", lang:"Polski", langC:"#F2EFE7", pref:"E-mail", wait:"3 h", waitC:"#F2EFE7",
+        cfg:null, trip:"Chile (Valparaíso) — powrót z Punta Arenas lub Arica", tripHead:"Kierunek, o który pyta", tripMeta:"⇒ 1 550 € · ⇔ 2 300 € · pakowanie 15.11 i 15.12.2026", tripImg:"https://advfactory.com/wp-content/uploads/2025/06/DSC_3057-Enhanced-NR.jpg", tripLink:"Kierunek w terminarzu", tripHref:"Terminarz%20Transport%C3%B3w.dc.html",
+        dup:"Nowy kontakt.", dupNew:true, mkt:true, ip:"178.43.9.77" },
+      en: { label:"Formularz EN", icon:"file-text", stamp:"17.09.2026 16:02 · ZP-2026-0421", src:"Formularz · en.advfactory.com", trail:"en.advfactory.com → Transport → Contact form", lang:"English — odpowiadaj po angielsku", langC:"var(--warn)", pref:"E-mail", wait:"5 h", waitC:"#F2EFE7",
+        cfg:null, trip:null, dup:"Nowy kontakt. Język EN — szablony odpowiedzi EN dostępne.", dupNew:true, mkt:true, ip:"86.140.22.5" }
+    };
+    const C = CASES[s.c];
+    return {
+      cases: Object.keys(CASES).map(k => ({ label:CASES[k].label, icon:CASES[k].icon, pick:()=>this.setState({ c:k }),
+        bg: s.c===k ? "var(--accent)" : "var(--sunken)", border: s.c===k ? "var(--accent)" : "var(--line)", color: s.c===k ? "#fff" : "var(--t2)" })),
+      L: { stamp:C.stamp,
+        facts:[ { k:"Źródło", v:C.src, color:"#F2EFE7" }, { k:"Ścieżka", v:C.trail, color:"var(--t2)" }, { k:"Język", v:C.lang, color:C.langC }, { k:"Woli kanał", v:C.pref, color:"var(--ok)" }, { k:"Czeka", v:C.wait, color:C.waitC } ],
+        hasCfg: C.cfg ? true : false, cfg:(C.cfg||[]).map(x => ({ k:x[0], v:x[1] })), quote:C.quote||"",
+        hasTrip: C.trip ? true : false, trip:C.trip||"", tripHead:C.tripHead||"", tripMeta:C.tripMeta||"", tripImg:C.tripImg||"", tripLink:C.tripLink||"", tripHref:C.tripHref||"#",
+        rodo: C.stamp.slice(0,16), ip:C.ip, mkt: C.mkt ? "zgoda" : "brak", mktColor: C.mkt ? "var(--ok)" : "var(--t3)", mktIcon: C.mkt ? "check-circle-2" : "circle-dashed",
+        dup:C.dup, dupIcon: C.dupNew ? "user-plus" : "link", dupColor: C.dupNew ? "var(--info)" : "var(--ok)" },
+      flashOrder: ()=>this.flash("Zlecenie ZT-2026-0187 utworzone — pojazd, kierunek i termin przepisane z konfiguracji"),
+      spec: [
+        { block:"Nagłówek", field:"zapytanie.numer, created_at", rule:"Zawsze. Ikona globe odróżnia od WhatsApp/mail." },
+        { block:"Źródło", field:"lead.zrodlo, lead.jezyk", rule:"Etykieta PL: formularz / konfigurator / karta wyprawy / strona kierunku. Domena en. gdy jezyk = en." },
+        { block:"Ścieżka", field:"lead.sciezka[]", rule:"Strzałki między krokami. Max 5 kroków, dłuższe ucinane od początku." },
+        { block:"Język", field:"lead.jezyk", rule:"Gdy en — kolor ostrzegawczy + tekst „odpowiadaj po angielsku”; szablony odpowiedzi filtrowane do EN." },
+        { block:"Woli kanał", field:"lead.preferowany_kanal", rule:"Ten kanał ma znaczek „klient woli” w pasku odpowiedzi i jest domyślnie wybrany." },
+        { block:"Czeka", field:"now − created_at vs ustawienia.odpowiedz_w_godzinach", rule:"Po przekroczeniu progu: czerwony tekst „po terminie” + wątek na czerwono w liście. Próg z Ustawień strony, nie stała." },
+        { block:"Konfiguracja", field:"lead.konfiguracja", rule:"Tylko gdy nie null. Przycisk „Utwórz zlecenie” prefilluje: pojazd, kierunek_id, jedna/obie, najbliższy termin. Wycena to widelec ze strony — pokazać z adnotacją, nigdy nie kopiować jako cenę oferty." },
+        { block:"Wyprawa / kierunek", field:"lead.wyprawa_id · lead.kierunek_id", rule:"Kafel z miniaturą i linkiem do Katalogu lub Terminarza. Gdy oba null — blok ukryty." },
+        { block:"Zgody", field:"lead.zgoda_rodo{timestamp, ip, wersja_polityki}", rule:"Zawsze. Cookies marketingowe z consentu strony — informacyjnie (czy można pikselować konwersję)." },
+        { block:"Kontakt w bazie", field:"dedup po email OR telefon", rule:"Trafienie → wątek dopięty do istniejącego kontaktu, link do karty. Brak → „nowy kontakt”, karta powstaje przy pierwszej odpowiedzi." }
+      ],
+      listChanges: [
+        { t:"Badge źródła na wątku: „Formularz” / „Konfigurator” / „Karta wyprawy” / „Strona kierunku” — obok istniejących WhatsApp / Mail / Telefon." },
+        { t:"Badge języka „EN” gdy lead.jezyk = en." },
+        { t:"Filtr źródła w pasku Skrzynki dostaje pozycję „WWW” (wszystkie cztery źródła ze strony razem)." },
+        { t:"Podgląd wątku (druga linia) dla konfiguratora: „Pojazd, Kierunek ⇔, wycena X – Y €” zamiast pierwszych słów treści." }
+      ],
+      toast: s.toast ? true : false, toastText: s.toast
+    };
+  }
+}
+</script>
+</body>
+</html>

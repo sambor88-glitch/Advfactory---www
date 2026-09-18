@@ -1,0 +1,1248 @@
+{
+  "_meta": {
+    "wersja": 2,
+    "opublikowano": "2026-09-18T01:54:03Z",
+    "przez": "Sambor",
+    "uwaga": "Przykład kontraktu. Docelowo generuje CRM przy „Publikuj”. Strony kierunków i regionów przeniesione z kodu prototypu — docelowo edytowane w CRM."
+  },
+  "firma": {
+    "nazwa": "Advfactory.com Krzysztof Samborski",
+    "adres": "ul. Mazowiecka 11 m. 49, 00-052 Warszawa",
+    "nip": "6941077972",
+    "regon": "356526605",
+    "email": "info@advfactory.com",
+    "telefon": "+48 739 299 980",
+    "whatsapp": "+48 739 299 980",
+    "nadawca_panelu": "panel@advfactory.com"
+  },
+  "magazyny": [
+    {
+      "miasto": "Łowicz",
+      "adres": "ul. Małszyce 9",
+      "uwagi": "na terenie firmy Bufamco",
+      "widoczny": true
+    },
+    {
+      "miasto": "Ciechanów",
+      "adres": null,
+      "uwagi": "adres do uzupełnienia",
+      "widoczny": true
+    }
+  ],
+  "ustawienia": {
+    "odpowiedz_w_godzinach": 24,
+    "godziny_biura": {
+      "tekst": "pn–pt 9–17",
+      "pokazuj": true
+    },
+    "hero": {
+      "nadtytul": "Wyprawy motocyklowe · transport pojazdów · od 2008",
+      "tytul": "Po prostu znamy się na dobrych przygodach",
+      "lead": "Kirgistan, Pamir, Tybet, Pakistan, Patagonia, Afryka, Alaska. Nigdy nie zabierzemy Was w miejsce, w którym nie byliśmy sami. A Wasze motocykle zawieziemy tam, gdzie chcecie jechać.",
+      "zdjecie": "https://advfactory.com/wp-content/uploads/2023/10/20230925_211321-scaled.jpg"
+    },
+    "baner": {
+      "wlaczony": false,
+      "tekst": null,
+      "link": null,
+      "wygasa": null,
+      "ton": "accent"
+    },
+    "wideo_youtube": [
+      "https://www.youtube.com/watch?v=6GJFceBLbOA",
+      "https://www.youtube.com/watch?v=gYEL-u-NJu4"
+    ],
+    "seo": {
+      "szablon_tytulu": "{title} — ADVfactory · wyprawy motocyklowe i transport pojazdów",
+      "opis": "Wyprawy motocyklowe do Kirgistanu, Tybetu, Patagonii i Afryki oraz transport motocykli kontenerem — door to door, cena ostateczna. Od 2008 roku.",
+      "og_image": "https://advfactory.com/wp-content/uploads/2023/10/20230925_211321-scaled.jpg"
+    },
+    "analityka": {
+      "ga4": null,
+      "meta_pixel": null
+    }
+  },
+  "wyprawy": [
+    {
+      "id": "wyp-001",
+      "slug": "2026-przez-tybet-do-bangkoku",
+      "status": "opublikowana",
+      "tytul": "2026. Przez Tybet do Bangkoku",
+      "region": "Azja",
+      "region_strony": "tybet",
+      "termin": {
+        "od": "2026-10-07",
+        "do": "2026-10-27"
+      },
+      "cena": {
+        "kierowca_eur": 9750,
+        "pasazer_eur": 3200,
+        "opis": "9750 EUR, pasażer 3200 EUR"
+      },
+      "trudnosc": 5,
+      "na_naszym_sprzecie": false,
+      "zdjecie": "https://advfactory.com/wp-content/uploads/2023/10/20230925_211321-scaled.jpg",
+      "opis": null,
+      "zawiera": [],
+      "nie_zawiera": [],
+      "plan_dni": [],
+      "seo": {
+        "tytul": null,
+        "opis": null
+      },
+      "en": {
+        "tytul": null,
+        "lead": null
+      }
+    },
+    {
+      "id": "wyp-002",
+      "slug": "2027-od-zera-do-bohatera-wchodzimy-na-ojos-6893-m",
+      "status": "opublikowana",
+      "tytul": "2027 Od zera do bohatera. Wchodzimy na Ojos, 6893 m",
+      "region": "Ameryka Płd.",
+      "region_strony": "patagonia",
+      "termin": {
+        "od": "2026-12-28",
+        "do": "2027-01-12"
+      },
+      "cena": {
+        "kierowca_eur": 4950,
+        "pasazer_eur": 3100,
+        "opis": "4950 EUR, pasażer samochodu 3100 EUR"
+      },
+      "trudnosc": 8,
+      "na_naszym_sprzecie": false,
+      "zdjecie": "https://advfactory.com/wp-content/uploads/2026/03/WhatsApp-Image-2026-03-04-at-08.48.28.jpeg",
+      "opis": null,
+      "zawiera": [],
+      "nie_zawiera": [],
+      "plan_dni": [],
+      "seo": {
+        "tytul": null,
+        "opis": null
+      },
+      "en": {
+        "tytul": null,
+        "lead": null
+      }
+    },
+    {
+      "id": "wyp-003",
+      "slug": "rtw-2027-patagonia-wyprawa-na-koniec-swiata",
+      "status": "opublikowana",
+      "tytul": "RTW 2027 Patagonia — wyprawa na koniec świata",
+      "region": "Ameryka Płd.",
+      "region_strony": "patagonia",
+      "termin": {
+        "od": "2027-01-04",
+        "do": "2027-01-26"
+      },
+      "cena": {
+        "kierowca_eur": 5950,
+        "pasazer_eur": null,
+        "opis": "5950 € kierowca, 2940 € pasażer (cena zawiera transport motocykla)"
+      },
+      "trudnosc": 5,
+      "na_naszym_sprzecie": false,
+      "zdjecie": "https://advfactory.com/wp-content/uploads/2025/06/DSC_3057-Enhanced-NR.jpg",
+      "opis": null,
+      "zawiera": [],
+      "nie_zawiera": [],
+      "plan_dni": [],
+      "seo": {
+        "tytul": null,
+        "opis": null
+      },
+      "en": {
+        "tytul": null,
+        "lead": null
+      }
+    },
+    {
+      "id": "wyp-004",
+      "slug": "2027-od-zera-do-bohatera-ojos-6893-m-vol-2",
+      "status": "opublikowana",
+      "tytul": "2027 Od zera do bohatera. Ojos, 6893 m — vol. 2",
+      "region": "Ameryka Płd.",
+      "region_strony": "patagonia",
+      "termin": {
+        "od": "2027-01-18",
+        "do": "2027-02-03"
+      },
+      "cena": {
+        "kierowca_eur": 4950,
+        "pasazer_eur": 3100,
+        "opis": "4950 EUR, pasażer samochodu 3100 EUR"
+      },
+      "trudnosc": 8,
+      "na_naszym_sprzecie": false,
+      "zdjecie": "https://advfactory.com/wp-content/uploads/2026/03/WhatsApp-Image-2026-03-04-at-08.48.28.jpeg",
+      "opis": null,
+      "zawiera": [],
+      "nie_zawiera": [],
+      "plan_dni": [],
+      "seo": {
+        "tytul": null,
+        "opis": null
+      },
+      "en": {
+        "tytul": null,
+        "lead": null
+      }
+    },
+    {
+      "id": "wyp-005",
+      "slug": "rtw-2027-z-rpa-do-kenii-czyli-afryka-da-sie-lubic",
+      "status": "opublikowana",
+      "tytul": "RTW 2027. Z RPA do Kenii czyli Afryka da się lubić",
+      "region": "Afryka",
+      "region_strony": "afryka",
+      "termin": {
+        "od": "2027-02-25",
+        "do": "2027-03-24"
+      },
+      "cena": {
+        "kierowca_eur": 8550,
+        "pasazer_eur": null,
+        "opis": "8550 EUR"
+      },
+      "trudnosc": 4,
+      "na_naszym_sprzecie": false,
+      "zdjecie": "https://advfactory.com/wp-content/uploads/2023/10/DSC_1675.jpg",
+      "opis": null,
+      "zawiera": [],
+      "nie_zawiera": [],
+      "plan_dni": [],
+      "seo": {
+        "tytul": null,
+        "opis": null
+      },
+      "en": {
+        "tytul": null,
+        "lead": null
+      }
+    },
+    {
+      "id": "wyp-006",
+      "slug": "2027-rtw-przystanek-alaska",
+      "status": "opublikowana",
+      "tytul": "2027 RTW. Przystanek Alaska…",
+      "region": "Ameryka Płn.",
+      "region_strony": "alaska",
+      "termin": {
+        "od": "2027-06-15",
+        "do": "2027-07-15"
+      },
+      "cena": {
+        "kierowca_eur": 10800,
+        "pasazer_eur": null,
+        "opis": "10800 EUR"
+      },
+      "trudnosc": 6,
+      "na_naszym_sprzecie": false,
+      "zdjecie": "https://advfactory.com/wp-content/uploads/2026/08/ChatGPT-Image-15-sie-2026-16_23_53.png",
+      "opis": null,
+      "zawiera": [],
+      "nie_zawiera": [],
+      "plan_dni": [],
+      "seo": {
+        "tytul": null,
+        "opis": null
+      },
+      "en": {
+        "tytul": null,
+        "lead": null
+      }
+    },
+    {
+      "id": "wyp-007",
+      "slug": "2027-afganistan-wakhan-sladem-marco-polo",
+      "status": "opublikowana",
+      "tytul": "2027 Afganistan — Wakhan, śladem Marco Polo",
+      "region": "Azja",
+      "region_strony": "kirgistan",
+      "termin": {
+        "od": "2027-07-25",
+        "do": "2027-08-12"
+      },
+      "cena": {
+        "kierowca_eur": 4200,
+        "pasazer_eur": null,
+        "opis": "4200 € Honda CRF300, 3000 € pasażer auta"
+      },
+      "trudnosc": 6,
+      "na_naszym_sprzecie": true,
+      "zdjecie": "https://advfactory.com/wp-content/uploads/2026/08/WhatsApp-Image-2026-08-16-at-09.43.01-2.jpeg",
+      "opis": null,
+      "zawiera": [],
+      "nie_zawiera": [],
+      "plan_dni": [],
+      "seo": {
+        "tytul": null,
+        "opis": null
+      },
+      "en": {
+        "tytul": null,
+        "lead": null
+      }
+    },
+    {
+      "id": "wyp-008",
+      "slug": "2027-rtw-wladywostok-nie-taki-straszny",
+      "status": "opublikowana",
+      "tytul": "2027 RTW. Władywostok nie taki straszny…",
+      "region": "Azja",
+      "region_strony": "wladywostok",
+      "termin": {
+        "od": "2027-08-23",
+        "do": "2027-09-19"
+      },
+      "cena": {
+        "kierowca_eur": 6900,
+        "pasazer_eur": null,
+        "opis": "6900 EUR"
+      },
+      "trudnosc": 5,
+      "na_naszym_sprzecie": false,
+      "zdjecie": "https://advfactory.com/wp-content/uploads/2025/04/ChatGPT-Image-Apr-24-2025-12_11_42-PM.png",
+      "opis": null,
+      "zawiera": [],
+      "nie_zawiera": [],
+      "plan_dni": [],
+      "seo": {
+        "tytul": null,
+        "opis": null
+      },
+      "en": {
+        "tytul": null,
+        "lead": null
+      }
+    },
+    {
+      "id": "wyp-009",
+      "slug": "2027-rtw-od-pacyfiku-do-atlantyku",
+      "status": "opublikowana",
+      "tytul": "2027 RTW. Od Pacyfiku do Atlantyku",
+      "region": "Ameryka Płn.",
+      "region_strony": "alaska",
+      "termin": {
+        "od": "2027-09-14",
+        "do": "2027-10-08"
+      },
+      "cena": {
+        "kierowca_eur": 7350,
+        "pasazer_eur": null,
+        "opis": "7350 EUR"
+      },
+      "trudnosc": 6,
+      "na_naszym_sprzecie": false,
+      "zdjecie": "https://advfactory.com/wp-content/uploads/2026/08/ChatGPT-Image-16-sie-2026-10_54_01.png",
+      "opis": null,
+      "zawiera": [],
+      "nie_zawiera": [],
+      "plan_dni": [],
+      "seo": {
+        "tytul": null,
+        "opis": null
+      },
+      "en": {
+        "tytul": null,
+        "lead": null
+      }
+    }
+  ],
+  "kierunki": [
+    {
+      "id": "kier-kg",
+      "slug": "kirgistan-biszkek",
+      "status": "opublikowany",
+      "nazwa": "Kirgistan (Biszkek)",
+      "kraj": "Kirgistan",
+      "miasto_odbioru": "Biszkek",
+      "uwagi": "powrót możliwy z Osz",
+      "geo": {
+        "lat": 42.87,
+        "lon": 74.59,
+        "zrodlo": "geokoder"
+      },
+      "cena_jedna_eur": 1250,
+      "cena_obie_eur": 1800,
+      "na_mapie": true,
+      "w_konfiguratorze": true,
+      "terminy": [
+        {
+          "pakowanie_pl": "2026-04-25",
+          "dostawa": "2026-05-25",
+          "powrot_z_miejsca": "2026-07-04",
+          "powrot_pl": "2026-08-04"
+        },
+        {
+          "pakowanie_pl": "2026-06-03",
+          "dostawa": "2026-07-03",
+          "powrot_z_miejsca": "2026-08-01",
+          "powrot_pl": "2026-09-01"
+        },
+        {
+          "pakowanie_pl": "2026-06-25",
+          "dostawa": "2026-07-25",
+          "powrot_z_miejsca": "2026-09-15",
+          "powrot_pl": "2026-10-15"
+        },
+        {
+          "pakowanie_pl": "2026-07-10",
+          "dostawa": "2026-08-10",
+          "powrot_z_miejsca": "2026-10-12",
+          "powrot_pl": "2026-11-12"
+        }
+      ],
+      "strona": {
+        "h1": "Transport motocykla do Kirgistanu",
+        "lead": "Kontenerem z Łowicza do Biszkeku, cztery terminy w sezonie. Odbierasz motocykl w magazynie, przekręcasz kluczyk i jedziesz w Tienszan. Wracać możesz z Biszkeku albo z Osz.",
+        "zdjecie": "https://advfactory.com/wp-content/uploads/2019/06/Pamir-trip-Advfactory-1.jpg",
+        "chips": [
+          [
+            "ship",
+            "kontener · ok. 30 dni"
+          ],
+          [
+            "calendar",
+            "4 terminy: kwiecień–lipiec"
+          ],
+          [
+            "map-pin",
+            "powrót: Biszkek lub Osz"
+          ]
+        ],
+        "akapity": [
+          "Kirgistan to nasz najczęstszy kierunek od 2019 roku — dlatego mamy tu cztery terminy w sezonie i dwa porty powrotu. Kontener idzie morzem do Chin, dalej koleją i ciężarówką do Biszkeku. Stąd około miesiąca drogi i sztywne daty pakowania.",
+          "Na miejscu współpracujemy ze stałą agencją celną. Odprawa czasowa motocykla trwa 1–2 dni robocze i nie wymaga Carnet de Passage. Oryginał dowodu rejestracyjnego jest potrzebny dopiero na miejscu, nie do transportu.",
+          "Powrót z Osz ma sens, gdy kończysz trasę na południu: Pamir Highway, Wakhan, Alaj. Oszczędzasz dwa dni jazdy do Biszkeku."
+        ],
+        "faq": [
+          {
+            "q": "Czy potrzebuję Carnet de Passage do Kirgistanu?",
+            "a": "Nie. Motocykl wjeżdża na odprawie czasowej na podstawie dowodu rejestracyjnego i paszportu."
+          },
+          {
+            "q": "Ile trwa transport do Biszkeku?",
+            "a": "Około 30 dni od daty pakowania. Daty dostawy są w tabeli — pod nie kupuj bilet."
+          },
+          {
+            "q": "Mogę odebrać motocykl w Osz?",
+            "a": "Odbiór jest w Biszkeku. Powrót — do wyboru z Biszkeku lub z Osz, w tej samej cenie."
+          },
+          {
+            "q": "Mogę zostawić motocykl w Kirgistanie na następny sezon?",
+            "a": "Tak, magazyn w Biszkeku przyjmuje motocykle na zimę. Cenę podajemy w ofercie."
+          }
+        ],
+        "regiony_wypraw": [
+          "kirgistan"
+        ]
+      },
+      "seo": {
+        "tytul": null,
+        "opis": null
+      }
+    },
+    {
+      "id": "kier-is",
+      "slug": "islandia-reykjavik",
+      "status": "opublikowany",
+      "nazwa": "Islandia (Reykjavík)",
+      "kraj": "Islandia",
+      "miasto_odbioru": "Reykjavík",
+      "uwagi": "tylko w obie strony",
+      "geo": {
+        "lat": 64.15,
+        "lon": -21.94,
+        "zrodlo": "geokoder"
+      },
+      "cena_jedna_eur": null,
+      "cena_obie_eur": 1550,
+      "na_mapie": true,
+      "w_konfiguratorze": true,
+      "terminy": [
+        {
+          "pakowanie_pl": "2026-07-01",
+          "dostawa": "2026-07-25",
+          "powrot_z_miejsca": "2026-08-20",
+          "powrot_pl": "2026-09-10"
+        }
+      ],
+      "strona": {
+        "h1": "Transport motocykla na Islandię",
+        "lead": "Jeden kontener w lipcu, w obie strony. Pakowanie 1 lipca, motocykl czeka w Reykjavíku 25 lipca, wraca 20 sierpnia. Bez promu z Danii i bez dwóch dni na morzu.",
+        "zdjecie": "https://advfactory.com/wp-content/uploads/2020/10/advfactory_how_we_pack_transport_motorcycles_03.jpg",
+        "chips": [
+          [
+            "ship",
+            "kontener · ok. 3 tygodnie"
+          ],
+          [
+            "calendar",
+            "1 termin: lipiec"
+          ],
+          [
+            "repeat",
+            "tylko w obie strony"
+          ]
+        ],
+        "akapity": [
+          "Islandię wysyłamy raz w roku, w środku sezonu — bo tylko wtedy interior jest przejezdny. Kontener wraca 20 sierpnia, więc masz prawie cztery tygodnie na wyspie.",
+          "Kierunek obsługujemy wyłącznie w obie strony: motocykl wraca tym samym kontenerem. To upraszcza formalności i trzyma cenę na 1 550 €.",
+          "Islandia jest w EOG — nie ma klasycznej odprawy celnej, ale są formalności portowe. Załatwiamy je po obu stronach."
+        ],
+        "faq": [
+          {
+            "q": "Dlaczego nie prom przez Danię?",
+            "a": "Prom to 2–3 dni w każdą stronę i dojazd do Hirtshals. Kontener jest tańszy i nie zabiera dni urlopu."
+          },
+          {
+            "q": "Mogę wrócić innym terminem?",
+            "a": "Nie — w tym kierunku jest jeden kontener w obie strony."
+          },
+          {
+            "q": "Potrzebuję dodatkowego ubezpieczenia?",
+            "a": "Zielona karta wystarczy. Sam transport ubezpieczamy osobno."
+          }
+        ],
+        "regiony_wypraw": []
+      },
+      "seo": {
+        "tytul": null,
+        "opis": null
+      }
+    },
+    {
+      "id": "kier-vl",
+      "slug": "wladywostok",
+      "status": "opublikowany",
+      "nazwa": "Władywostok",
+      "kraj": "Rosja",
+      "miasto_odbioru": "Władywostok",
+      "uwagi": "w jedną stronę",
+      "geo": {
+        "lat": 43.12,
+        "lon": 131.89,
+        "zrodlo": "geokoder"
+      },
+      "cena_jedna_eur": 1800,
+      "cena_obie_eur": null,
+      "na_mapie": true,
+      "w_konfiguratorze": true,
+      "terminy": [
+        {
+          "pakowanie_pl": null,
+          "dostawa": null,
+          "powrot_z_miejsca": "2026-09-30",
+          "powrot_pl": "2026-11-15"
+        }
+      ],
+      "strona": {
+        "h1": "Transport motocykla z Władywostoku do Polski",
+        "lead": "Kończysz trasę na Pacyfiku — motocykl wraca kontenerem, Ty samolotem. Pakowanie we Władywostoku 30 września, dostawa do Polski w listopadzie.",
+        "zdjecie": "https://advfactory.com/wp-content/uploads/2025/04/ChatGPT-Image-Apr-24-2025-12_11_42-PM.png",
+        "chips": [
+          [
+            "ship",
+            "kontener · ok. 6 tygodni"
+          ],
+          [
+            "calendar",
+            "1 termin: wrzesień"
+          ],
+          [
+            "arrow-left",
+            "tylko powrót do Polski"
+          ]
+        ],
+        "akapity": [
+          "To kierunek powrotny: wjeżdżasz do Rosji na kołach, a z Władywostoku wracasz bez motocykla. Pakujemy na miejscu z naszą agencją, po wyprawie „Władywostok nie taki straszny” — możesz się podpiąć, nawet jeśli jechałeś sam.",
+          "Odprawa eksportowa wymaga oryginału dowodu rejestracyjnego i Twojej obecności przy zdaniu motocykla — planuj wylot dzień po pakowaniu."
+        ],
+        "faq": [
+          {
+            "q": "Mogę wysłać motocykl do Władywostoku, żeby tam zacząć?",
+            "a": "W tym sezonie tylko powrót. Przy kilku motocyklach uruchomimy kontener w drugą stronę — zapytaj."
+          },
+          {
+            "q": "Ile trwa powrót?",
+            "a": "Około 6 tygodni. Dostawa do Polski w połowie listopada."
+          }
+        ],
+        "regiony_wypraw": [
+          "wladywostok"
+        ]
+      },
+      "seo": {
+        "tytul": null,
+        "opis": null
+      }
+    },
+    {
+      "id": "kier-pk",
+      "slug": "islamabad-pakistan",
+      "status": "opublikowany",
+      "nazwa": "Islamabad (Pakistan)",
+      "kraj": "Pakistan",
+      "miasto_odbioru": "Islamabad",
+      "uwagi": "w jedną stronę",
+      "geo": {
+        "lat": 33.69,
+        "lon": 73.06,
+        "zrodlo": "geokoder"
+      },
+      "cena_jedna_eur": 1500,
+      "cena_obie_eur": null,
+      "na_mapie": true,
+      "w_konfiguratorze": true,
+      "terminy": [
+        {
+          "pakowanie_pl": null,
+          "dostawa": null,
+          "powrot_z_miejsca": "2026-10-20",
+          "powrot_pl": "2026-12-20"
+        }
+      ],
+      "strona": {
+        "h1": "Transport motocykla z Pakistanu do Polski",
+        "lead": "Karakorum Highway kończysz w Islamabadzie, a motocykl wraca kontenerem. Pakowanie 20 października, dostawa do Polski w grudniu.",
+        "zdjecie": "https://advfactory.com/wp-content/uploads/2023/10/DSC_1675.jpg",
+        "chips": [
+          [
+            "ship",
+            "kontener · ok. 2 miesiące"
+          ],
+          [
+            "calendar",
+            "1 termin: październik"
+          ],
+          [
+            "arrow-left",
+            "tylko powrót do Polski"
+          ]
+        ],
+        "akapity": [
+          "Pakistan to naturalny koniec trasy przez Azję Centralną: Kirgistan, Chiny, Karakorum. Wjeżdżasz na kołach, wracasz samolotem, motocykl dojedzie do Łowicza przed świętami.",
+          "Odprawa w Islamabadzie wymaga Carnet de Passage — tego samego, na którym wjechałeś. Zamykamy go razem przy zdaniu motocykla."
+        ],
+        "faq": [
+          {
+            "q": "Potrzebuję Carnet de Passage?",
+            "a": "Do wjazdu do Pakistanu tak. Przy zdaniu motocykla zamykamy go razem."
+          },
+          {
+            "q": "Mogę zdać motocykl gdzie indziej?",
+            "a": "Magazyn i odprawa są w Islamabadzie."
+          }
+        ],
+        "regiony_wypraw": []
+      },
+      "seo": {
+        "tytul": null,
+        "opis": null
+      }
+    },
+    {
+      "id": "kier-cl",
+      "slug": "chile-valparaiso",
+      "status": "opublikowany",
+      "nazwa": "Chile (Valparaíso)",
+      "kraj": "Chile",
+      "miasto_odbioru": "Valparaíso",
+      "uwagi": "powrót z Punta Arenas lub Arica",
+      "geo": {
+        "lat": -33.05,
+        "lon": -71.62,
+        "zrodlo": "geokoder"
+      },
+      "cena_jedna_eur": 1550,
+      "cena_obie_eur": 2300,
+      "na_mapie": true,
+      "w_konfiguratorze": true,
+      "terminy": [
+        {
+          "pakowanie_pl": "2026-11-15",
+          "dostawa": "2026-12-21",
+          "powrot_z_miejsca": "2027-02-04",
+          "powrot_pl": "2027-03-15"
+        },
+        {
+          "pakowanie_pl": "2026-12-15",
+          "dostawa": "2027-01-28",
+          "powrot_z_miejsca": "2027-03-04",
+          "powrot_pl": "2027-04-15"
+        }
+      ],
+      "strona": {
+        "h1": "Transport motocykla do Chile i Patagonii",
+        "lead": "Dwa kontenery na sezon patagoński: pakowanie w listopadzie i grudniu, odbiór w Valparaíso. Wracasz z Punta Arenas na końcu świata albo z Ariki na północy.",
+        "zdjecie": "https://advfactory.com/wp-content/uploads/2025/06/DSC_3057-Enhanced-NR.jpg",
+        "chips": [
+          [
+            "ship",
+            "kontener · ok. 6 tygodni"
+          ],
+          [
+            "calendar",
+            "2 terminy: listopad, grudzień"
+          ],
+          [
+            "map-pin",
+            "powrót: Punta Arenas lub Arica"
+          ]
+        ],
+        "akapity": [
+          "Sezon w Patagonii to styczeń–marzec, dlatego kontenery wychodzą jesienią. Odbierasz motocykl w Valparaíso i wybierasz: na południe do Ushuaia i Punta Arenas, albo na północ przez Atacamę do Ariki, Peru i Boliwii.",
+          "Dwa porty powrotu to największa różnica względem konkurencji: nie wracasz 3 000 km do Valparaíso. Cena w obie strony jest ta sama niezależnie od portu.",
+          "Chile, Argentyna, Boliwia i Peru nie wymagają Carnet de Passage — odprawa czasowa na dowód rejestracyjny."
+        ],
+        "faq": [
+          {
+            "q": "Potrzebuję Carnet de Passage w Ameryce Południowej?",
+            "a": "Do Chile, Argentyny, Boliwii i Peru nie."
+          },
+          {
+            "q": "Mogę wrócić z Ushuaia?",
+            "a": "Powrót jest z Punta Arenas — 600 km od Ushuaia, po drodze na północ. Albo z Ariki."
+          },
+          {
+            "q": "Ile trwa transport do Valparaíso?",
+            "a": "Około 6 tygodni. Grudniowy kontener jest na miejscu pod koniec stycznia."
+          },
+          {
+            "q": "Mogę zostawić motocykl w Chile na kolejny sezon?",
+            "a": "Tak, po zamknięciu odprawy czasowej. Układamy to indywidualnie."
+          }
+        ],
+        "regiony_wypraw": [
+          "patagonia"
+        ]
+      },
+      "seo": {
+        "tytul": null,
+        "opis": null
+      }
+    },
+    {
+      "id": "kier-za",
+      "slug": "kapsztad-rpa",
+      "status": "opublikowany",
+      "nazwa": "Kapsztad (RPA)",
+      "kraj": "RPA",
+      "miasto_odbioru": "Kapsztad",
+      "uwagi": "w jedną stronę",
+      "geo": {
+        "lat": -33.92,
+        "lon": 18.42,
+        "zrodlo": "geokoder"
+      },
+      "cena_jedna_eur": 1500,
+      "cena_obie_eur": null,
+      "na_mapie": true,
+      "w_konfiguratorze": true,
+      "terminy": [
+        {
+          "pakowanie_pl": "2027-01-06",
+          "dostawa": "2027-02-25",
+          "powrot_z_miejsca": null,
+          "powrot_pl": null
+        }
+      ],
+      "strona": {
+        "h1": "Transport motocykla do RPA — Kapsztad",
+        "lead": "Pakowanie 6 stycznia, motocykl w Kapsztadzie 25 lutego — na start trasy przez Afrykę do Kenii. W jedną stronę, powrót z Mombasy.",
+        "zdjecie": "https://advfactory.com/wp-content/uploads/2023/10/DSC_1675.jpg",
+        "chips": [
+          [
+            "ship",
+            "kontener · ok. 7 tygodni"
+          ],
+          [
+            "calendar",
+            "1 termin: styczeń"
+          ],
+          [
+            "arrow-right",
+            "tylko w jedną stronę"
+          ]
+        ],
+        "akapity": [
+          "Kapsztad to początek trasy „Z RPA do Kenii” — 7 000 km przez Namibię, Botswanę, Zambię, Malawi i Tanzanię. Kontener do RPA i kontener z Kenii domykają logistykę: nie wracasz tą samą drogą.",
+          "RPA wymaga Carnet de Passage. Pomagamy wyrobić go w PZM i sprawdzamy dokumenty przed wysyłką — brak carnetu blokuje odprawę w Kapsztadzie."
+        ],
+        "faq": [
+          {
+            "q": "Potrzebuję Carnet de Passage do RPA?",
+            "a": "Tak. Pomagamy w PZM, potrzebny jest depozyt."
+          },
+          {
+            "q": "Mogę wrócić z Kapsztadu?",
+            "a": "W tym sezonie powrót jest z Mombasy. Przy kilku motocyklach uruchomimy powrót z RPA."
+          }
+        ],
+        "regiony_wypraw": [
+          "afryka"
+        ]
+      },
+      "seo": {
+        "tytul": null,
+        "opis": null
+      }
+    },
+    {
+      "id": "kier-ke",
+      "slug": "mombasa-kenia",
+      "status": "opublikowany",
+      "nazwa": "Mombasa (Kenia)",
+      "kraj": "Kenia",
+      "miasto_odbioru": "Mombasa",
+      "uwagi": "w jedną stronę",
+      "geo": {
+        "lat": -4.04,
+        "lon": 39.67,
+        "zrodlo": "geokoder"
+      },
+      "cena_jedna_eur": 1400,
+      "cena_obie_eur": null,
+      "na_mapie": true,
+      "w_konfiguratorze": true,
+      "terminy": [
+        {
+          "pakowanie_pl": null,
+          "dostawa": null,
+          "powrot_z_miejsca": "2027-04-10",
+          "powrot_pl": "2027-05-30"
+        }
+      ],
+      "strona": {
+        "h1": "Transport motocykla z Kenii do Polski",
+        "lead": "Koniec afrykańskiej trasy w Mombasie. Pakowanie 10 kwietnia, motocykl w Polsce pod koniec maja — na sezon w Europie.",
+        "zdjecie": "https://advfactory.com/wp-content/uploads/2023/10/DSC_1675.jpg",
+        "chips": [
+          [
+            "ship",
+            "kontener · ok. 7 tygodni"
+          ],
+          [
+            "calendar",
+            "1 termin: kwiecień"
+          ],
+          [
+            "arrow-left",
+            "tylko powrót do Polski"
+          ]
+        ],
+        "akapity": [
+          "Mombasa zamyka trasę z Kapsztadu. Zdajesz motocykl w porcie, zamykamy carnet i jedziesz na plażę albo na lotnisko.",
+          "Kenia wymaga Carnet de Passage — zamykamy go przy zdaniu motocykla."
+        ],
+        "faq": [
+          {
+            "q": "Mogę zdać motocykl w Nairobi?",
+            "a": "Magazyn i odprawa są w Mombasie. Z Nairobi to dzień jazdy."
+          },
+          {
+            "q": "Ile trwa powrót?",
+            "a": "Około 7 tygodni. Dostawa pod koniec maja."
+          }
+        ],
+        "regiony_wypraw": [
+          "afryka"
+        ]
+      },
+      "seo": {
+        "tytul": null,
+        "opis": null
+      }
+    }
+  ],
+  "regiony": [
+    {
+      "id": "reg-kir",
+      "slug": "kirgistan",
+      "status": "opublikowany",
+      "nazwa": "Kirgistan i Pamir",
+      "h1": "Wyprawy motocyklowe do Kirgistanu i na Pamir",
+      "lead": "Nasz najczęstszy kierunek od 2019 roku. Tienszan, Pamir Highway, Wakhan — szutry, przełęcze powyżej 4 000 m i jurty zamiast hoteli. Na swoim motocyklu albo na naszej Hondzie CRF300L.",
+      "zdjecie": "https://advfactory.com/wp-content/uploads/2019/06/Pamir-trip-Advfactory-1.jpg",
+      "kierunek_id": "kier-kg",
+      "fakty": [
+        [
+          "Sezon",
+          "czerwiec – wrzesień"
+        ],
+        [
+          "Trudność",
+          "3–8 / 10, zależnie od trasy"
+        ],
+        [
+          "Motocykl",
+          "swój (kontener) lub nasza CRF300L"
+        ],
+        [
+          "Formalności",
+          "bez wizy i bez carnetu"
+        ]
+      ],
+      "h2": "Dlaczego wracamy tu co roku",
+      "akapity": [
+        "Kirgistan ma to, czego nie ma już Europa: drogi bez asfaltu, które prowadzą gdzieś naprawdę, i ludzi, którzy zapraszają na herbatę, bo tak wypada. Do tego 4 000-metrowe przełęcze osiągalne dla każdego, kto opanował jazdę po szutrze.",
+        "Pamir to inna liga: Bartang, Wakhan, granica z Afganistanem. Trudność 7–8 nie jest przechwałką — dlatego mamy „Lekką kawalerię” w wersji dla początkujących i dla zaawansowanych. Uczciwie mówimy, która jest dla kogo.",
+        "Logistykę mamy tu najlepiej dopracowaną: cztery kontenery w sezonie, powrót z Biszkeku albo z Osz, własna baza i magazyn zimowy w Biszkeku."
+      ],
+      "kiedy_jechac": [
+        [
+          "czerwiec",
+          "Przełęcze jeszcze ze śniegiem, rzeki wysokie. Dobre dla północy kraju."
+        ],
+        [
+          "lipiec–sierpień",
+          "Pełnia sezonu. Pamir przejezdny, upały w dolinach, chłodno w górach."
+        ],
+        [
+          "wrzesień",
+          "Najpiękniejsze światło, puste drogi. Ryzyko pierwszych śniegów powyżej 3 500 m."
+        ]
+      ],
+      "faq": [],
+      "relacje": [],
+      "kolejnosc": 1,
+      "seo": {
+        "tytul": null,
+        "opis": null
+      }
+    },
+    {
+      "id": "reg-tyb",
+      "slug": "tybet",
+      "status": "opublikowany",
+      "nazwa": "Tybet i Himalaje",
+      "h1": "Wyprawy motocyklowe do Tybetu",
+      "lead": "Katmandu, Everest Base Camp, Lhasa, droga 318 do Bangkoku. Trasa mierzona pod duże motocykle, bez namiotów, z chińskimi dokumentami załatwionymi przez nas.",
+      "zdjecie": "https://advfactory.com/wp-content/uploads/2023/10/20230925_211321-scaled.jpg",
+      "kierunek_id": null,
+      "fakty": [
+        [
+          "Sezon",
+          "wrzesień – listopad"
+        ],
+        [
+          "Trudność",
+          "4–5 / 10 · wysokość do 5 200 m"
+        ],
+        [
+          "Motocykl",
+          "swój — samolotem do Nepalu"
+        ],
+        [
+          "Formalności",
+          "zezwolenia na Tybet w cenie"
+        ]
+      ],
+      "h2": "Najtrudniejsza logistyka, najłatwiejsza jazda",
+      "akapity": [
+        "Tybet jest zamknięty dla samotnych motocyklistów — wjazd tylko w zorganizowanej grupie, z chińskim przewodnikiem, tymczasowym prawem jazdy i tablicami. To załatwiamy my. Ty masz jechać i patrzeć.",
+        "Droga 318 to najbardziej znana trasa w Chinach, marzenie lokalnych bajkerów. Asfalt, przełęcze powyżej 5 000 m, klasztory i Everest z okna hotelu w Rongbuk.",
+        "Motocykle lecą samolotem do Nepalu i wracają kontenerem z Bangkoku — w cenie wyprawy."
+      ],
+      "kiedy_jechac": [
+        [
+          "październik",
+          "Jedyny realny termin: po monsunie, przed zimą. Czyste niebo nad Everestem."
+        ],
+        [
+          "kwiecień–maj",
+          "Alternatywa dla Sikkimu i Himalajów indyjskich — Tybet wtedy zamknięty."
+        ]
+      ],
+      "faq": [],
+      "relacje": [],
+      "kolejnosc": 2,
+      "seo": {
+        "tytul": null,
+        "opis": null
+      }
+    },
+    {
+      "id": "reg-pat",
+      "slug": "patagonia",
+      "status": "opublikowany",
+      "nazwa": "Patagonia i Andy",
+      "h1": "Wyprawy motocyklowe do Patagonii, Chile i Argentyny",
+      "lead": "Koniec świata w styczniu: Carretera Austral, Ruta 40, Ushuaia. Albo w górę — Ojos del Salado, 6 893 m, najwyżej, gdzie da się wjechać motocyklem.",
+      "zdjecie": "https://advfactory.com/wp-content/uploads/2025/06/DSC_3057-Enhanced-NR.jpg",
+      "kierunek_id": "kier-cl",
+      "fakty": [
+        [
+          "Sezon",
+          "grudzień – marzec"
+        ],
+        [
+          "Trudność",
+          "5–8 / 10"
+        ],
+        [
+          "Motocykl",
+          "swój — kontener do Valparaíso"
+        ],
+        [
+          "Formalności",
+          "bez carnetu, bez wiz"
+        ]
+      ],
+      "h2": "Dwa końce Andów",
+      "akapity": [
+        "Patagonia to wiatr, szuter i przestrzeń, której nie da się sfotografować. Trasa z Valparaíso na południe, przez Carreterę Austral, do Ushuaia — z powrotem kontenerem z Punta Arenas, żeby nie wracać 3 000 km.",
+        "„Od zera do bohatera” to wyprawa wysokościowa: z poziomu morza na Ojos del Salado. Trudność 8 to nie tylko teren, ale głównie wysokość — aklimatyzacja jest częścią programu.",
+        "Chile i Argentyna nie wymagają carnetu ani wiz. Kontener do Valparaíso i dwa porty powrotu mamy od lat."
+      ],
+      "kiedy_jechac": [
+        [
+          "grudzień–styczeń",
+          "Patagonia: najdłuższe dni, najsilniejszy wiatr. Ojos: okno pogodowe na szczyt."
+        ],
+        [
+          "luty–marzec",
+          "Spokojniej i taniej. Dobre dla Atacamy i północy."
+        ]
+      ],
+      "faq": [],
+      "relacje": [],
+      "kolejnosc": 3,
+      "seo": {
+        "tytul": null,
+        "opis": null
+      }
+    },
+    {
+      "id": "reg-afr",
+      "slug": "afryka",
+      "status": "opublikowany",
+      "nazwa": "Afryka",
+      "h1": "Wyprawy motocyklowe przez Afrykę — z RPA do Kenii",
+      "lead": "7 000 km w miesiąc: Kapsztad, Namibia, Botswana, Zambia, Malawi, Tanzania, Mombasa. Trudność 4 — Afryka da się lubić, nawet na dużym motocyklu.",
+      "zdjecie": "https://advfactory.com/wp-content/uploads/2023/10/DSC_1675.jpg",
+      "kierunek_id": "kier-za",
+      "fakty": [
+        [
+          "Sezon",
+          "luty – kwiecień"
+        ],
+        [
+          "Trudność",
+          "3–5 / 10 · Madagaskar 9"
+        ],
+        [
+          "Motocykl",
+          "swój — kontener do Kapsztadu"
+        ],
+        [
+          "Formalności",
+          "Carnet de Passage wymagany"
+        ]
+      ],
+      "h2": "Kontynent, nie kraj",
+      "akapity": [
+        "Afryka to jedyna nasza wyprawa, która przekracza sześć granic. Każda to inna odprawa, inna waluta, inne zwyczaje — i to jest jej sens. Trasa jest ułożona tak, żeby dało się ją zrobić na GS-ie, bez heroizmu.",
+        "Motocykl leci kontenerem do Kapsztadu i wraca z Mombasy. Nie wracasz tą samą drogą — to 28 dni w jednym kierunku.",
+        "Carnet de Passage jest tu obowiązkowy. Pomagamy go wyrobić i pilnujemy, żeby depozyt wrócił po zamknięciu."
+      ],
+      "kiedy_jechac": [
+        [
+          "luty–marzec",
+          "Koniec pory deszczowej na południu, sucho w Namibii."
+        ],
+        [
+          "czerwiec",
+          "Motosafari Kenia/Tanzania — pora sucha, migracja w Serengeti."
+        ]
+      ],
+      "faq": [],
+      "relacje": [],
+      "kolejnosc": 4,
+      "seo": {
+        "tytul": null,
+        "opis": null
+      }
+    },
+    {
+      "id": "reg-ala",
+      "slug": "alaska",
+      "status": "opublikowany",
+      "nazwa": "Alaska i Ameryka Północna",
+      "h1": "Wyprawy motocyklowe na Alaskę",
+      "lead": "Dalton Highway do Prudhoe Bay, Denali, Jukon. Miesiąc na północy, gdzie słońce nie zachodzi.",
+      "zdjecie": "https://advfactory.com/wp-content/uploads/2026/08/ChatGPT-Image-15-sie-2026-16_23_53.png",
+      "kierunek_id": null,
+      "fakty": [
+        [
+          "Sezon",
+          "czerwiec – lipiec"
+        ],
+        [
+          "Trudność",
+          "6 / 10"
+        ],
+        [
+          "Motocykl",
+          "swój lub nasz"
+        ],
+        [
+          "Formalności",
+          "wiza / ESTA, bez carnetu"
+        ]
+      ],
+      "h2": "Daleko, ale prosto",
+      "akapity": [
+        "Alaska to najłatwiejsza logistycznie z naszych dalekich wypraw: żadnych carnetów, angielski wszędzie, stacje co 300 km. Trudność bierze się z dystansów i pogody, nie z terenu.",
+        "Dalton Highway to 800 km szutru do Oceanu Arktycznego. Jedzie się go dla samego faktu, że się go zrobiło."
+      ],
+      "kiedy_jechac": [
+        [
+          "czerwiec–lipiec",
+          "Jedyne okno: białe noce, otwarte przełęcze, komary w komplecie."
+        ]
+      ],
+      "faq": [],
+      "relacje": [],
+      "kolejnosc": 5,
+      "seo": {
+        "tytul": null,
+        "opis": null
+      }
+    },
+    {
+      "id": "reg-wla",
+      "slug": "wladywostok",
+      "status": "opublikowany",
+      "nazwa": "Syberia i Władywostok",
+      "h1": "Wyprawa motocyklowa do Władywostoku",
+      "lead": "Z Polski na Pacyfik na kołach, 12 000 km w miesiąc. Motocykl wraca kontenerem, Ty samolotem.",
+      "zdjecie": "https://advfactory.com/wp-content/uploads/2025/04/ChatGPT-Image-Apr-24-2025-12_11_42-PM.png",
+      "kierunek_id": "kier-vl",
+      "fakty": [
+        [
+          "Sezon",
+          "sierpień – wrzesień"
+        ],
+        [
+          "Trudność",
+          "5 / 10"
+        ],
+        [
+          "Motocykl",
+          "swój — powrót kontenerem"
+        ],
+        [
+          "Formalności",
+          "wiza rosyjska"
+        ]
+      ],
+      "h2": "Nie taki straszny",
+      "akapity": [
+        "Ta wyprawa to głównie asfalt i dystans. Trudność 5 wynika z długości dnia w siodle i pogody za Bajkałem, nie z terenu.",
+        "Powrót jest tym, co odróżnia nas od samotnych przejazdów: kontener z Władywostoku jest zorganizowany, odprawę robimy razem, motocykl jest w Polsce w listopadzie."
+      ],
+      "kiedy_jechac": [
+        [
+          "sierpień–wrzesień",
+          "Po letnich deszczach, przed pierwszymi mrozami za Uralem."
+        ]
+      ],
+      "faq": [],
+      "relacje": [],
+      "kolejnosc": 6,
+      "seo": {
+        "tytul": null,
+        "opis": null
+      }
+    }
+  ],
+  "faq": [
+    {
+      "id": "faq-1",
+      "pytanie": "Dokąd mam dostarczyć pojazd?",
+      "odpowiedz": "Mamy dwa magazyny: w Łowiczu przy ul. Małszyce 9 (na terenie firmy Bufamco) oraz w Ciechanowie. Przed przyjazdem potwierdzamy, do którego jedziesz.",
+      "sekcja": "transport",
+      "kolejnosc": 1,
+      "opublikowane": true
+    },
+    {
+      "id": "faq-2",
+      "pytanie": "Czy możecie odebrać mój motocykl albo quada z garażu?",
+      "odpowiedz": "Tak, ale wiąże się to z dodatkowymi kosztami — w Polsce ok. 350 zł za motocykl.",
+      "sekcja": "transport",
+      "kolejnosc": 2,
+      "opublikowane": true
+    },
+    {
+      "id": "faq-3",
+      "pytanie": "Czy wraz z motocyklem mogę przetransportować bagaż i kufry?",
+      "odpowiedz": "Tak, wszystko, co jest niezbędne do podróży. Dostaniesz od nas szczegółową listę. Możesz zabrać komplet kufrów lub sakw i jedną wodoodporną torbę do 40 litrów. Wszystkie torby i kufry muszą być wyraźnie opisane numerem rejestracyjnym motocykla.",
+      "sekcja": "transport",
+      "kolejnosc": 3,
+      "opublikowane": true
+    },
+    {
+      "id": "faq-4",
+      "pytanie": "Jak przygotować motocykl do podróży?",
+      "odpowiedz": "Umyć motocykl, zdemontować kufry, spuścić paliwo, rozłączyć akumulator. Zdemontować szybę, jeśli wysokość motocykla przekracza 135 cm.\n\nNa KAŻDEJ torbie, kufrze i szybie musi być przyklejona (szarą taśmą) informacja o numerze rejestracyjnym pojazdu, któremu ten bagaż towarzyszy.",
+      "sekcja": "transport",
+      "kolejnosc": 4,
+      "opublikowane": true
+    },
+    {
+      "id": "faq-5",
+      "pytanie": "Kto się zajmie pakowaniem?",
+      "odpowiedz": "Pakowanie to nasza sprawa. Ty oddajesz nam motocykl, my odpowiadamy za jego prawidłowe zamocowanie w klatce lub na platformie.",
+      "sekcja": "transport",
+      "kolejnosc": 5,
+      "opublikowane": true
+    },
+    {
+      "id": "faq-6",
+      "pytanie": "Czy mam zostawić kluczyki i dokumenty?",
+      "odpowiedz": "Kluczyki tylko wtedy, gdy kufry w Twoim zestawie są szersze niż 100 cm (lub centralny kufer sięga wyżej niż 135 cm) i nie można ich zdjąć bez kluczyka. Oryginałów dokumentów nie potrzebujemy.",
+      "sekcja": "transport",
+      "kolejnosc": 6,
+      "opublikowane": true
+    },
+    {
+      "id": "faq-7",
+      "pytanie": "Czy motocykle są ubezpieczone podczas podróży?",
+      "odpowiedz": "Tak, wszystkie transporty są ubezpieczone do pełnej wartości pojazdu.",
+      "sekcja": "transport",
+      "kolejnosc": 7,
+      "opublikowane": true
+    },
+    {
+      "id": "faq-8",
+      "pytanie": "Kiedy mogę kupować bilet?",
+      "odpowiedz": "Jeśli poprosiliśmy Cię o zaliczkę albo przesłaliśmy mailem treść umowy, to znaczy, że wyjazd jest potwierdzony i możesz kupować bilety.",
+      "sekcja": "transport",
+      "kolejnosc": 8,
+      "opublikowane": true
+    },
+    {
+      "id": "faq-9",
+      "pytanie": "Kiedy mogę odebrać motocykl w miejscu docelowym?",
+      "odpowiedz": "Kiedykolwiek po terminie wskazanym w umowie jako czas dostawy. Kupując bilet, weź pod uwagę, że w niektórych krajach magazyny mogą być zamknięte w niedzielę, a nawet w sobotę.",
+      "sekcja": "transport",
+      "kolejnosc": 9,
+      "opublikowane": true
+    },
+    {
+      "id": "faq-10",
+      "pytanie": "Co się stanie, jeśli w transporcie powstaną uszkodzenia?",
+      "odpowiedz": "Dbamy o Twój motocykl, ale to dalekie podróże i wszystko może się zdarzyć. W przypadku uszkodzeń postępujemy zgodnie z umową: musisz poinformować nas mailowo o szkodzie w ciągu 7 dni od dostarczenia motocykla i przedstawić dokumentację fotograficzną.",
+      "sekcja": "transport",
+      "kolejnosc": 10,
+      "opublikowane": true
+    }
+  ],
+  "relacje": [],
+  "opinie": []
+}

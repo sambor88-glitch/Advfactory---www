@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap&subset=latin-ext" rel="stylesheet">
+<script src="../assets/lucide.min.js"></script>
+<script src="admin-shell.js"></script>
+<style>@keyframes _rs{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}@keyframes _in{from{transform:translateX(30px);opacity:.5}to{transform:none;opacity:1}}[data-screen-label]>*{animation:_rs .5s cubic-bezier(.2,.7,.3,1) both}[data-screen-label]>*:nth-child(2){animation-delay:.07s}[data-screen-label]>*:nth-child(3){animation-delay:.13s}button,a,[style*="cursor:pointer"]{transition:background .15s,border-color .15s,color .15s,transform .12s}button:active{transform:scale(.98)}*{box-sizing:border-box}body{margin:0;background:#0F0E0C}a{color:var(--accent)}a:hover{color:var(--accent-hover)}.ic{display:inline-grid;place-items:center}.ic svg{width:1em;height:1em;stroke-width:2px;display:block}::-webkit-scrollbar{width:9px}::-webkit-scrollbar-thumb{background:#332F29;border-radius:6px}input:focus,textarea:focus,select:focus{border-color:var(--accent) !important;box-shadow:0 0 0 3px rgba(242,106,27,.18)}</style>
+</helmet>
+<div data-theme="dark" data-screen-label="Terminarz transportów" style="width:1440px;max-width:100%;min-height:900px;background:#0F0E0C;color:#F2EFE7;font-family:'Archivo',system-ui,sans-serif;padding:20px 24px;position:relative;--accent:#F26A1B;--accent-hover:#FF7D2E;--surface:#1B1A16;--sunken:#131210;--line:#332F29;--t2:#B9B3A6;--t3:#7E796E;--ok:#6FA352;--warn:#D98E1B;--danger:#D9483C;--info:#5E8FB5">
+
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;font:700 10.5px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t3);flex-wrap:wrap">
+    <img src="../assets/logo-white.png" alt="ADVfactory" style="height:18px;display:block;margin-right:6px">
+    <span style="color:var(--t2)">Oferta na stronie</span><span>·</span>
+    <a href="Katalog%20Wypraw.dc.html" style="color:var(--t3);text-decoration:none">Wyprawy</a>
+    <span style="color:var(--accent-hover);border-bottom:2px solid var(--accent);padding-bottom:2px">Transport</span>
+    <a href="Tre%C5%9Bci%20Strony.dc.html" style="color:var(--t3);text-decoration:none">Treści strony</a>
+    <a href="Zainteresowani%20Terminem.dc.html" style="color:var(--t3);text-decoration:none">Zainteresowani terminem</a>
+    <a href="Ustawienia%20Strony.dc.html" style="color:var(--t3);text-decoration:none">Ustawienia</a>
+    <a href="Skrzynka%20Zapyta%C5%84%20WWW.dc.html" style="color:var(--t3);text-decoration:none">Leady WWW</a>
+    <a href="../Strona%20ADVfactory.dc.html" style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;color:var(--t2);text-decoration:none"><span class="ic" style="font-size:13px"><i data-lucide="external-link"></i></span>Podgląd strony</a>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;flex-wrap:wrap">
+    <div><div style="font-family:'Anton';font-size:30px;text-transform:uppercase;line-height:1">Terminarz transportów</div><div style="font:12px 'IBM Plex Mono';color:var(--t3);margin-top:5px">{{ summary }}</div></div>
+    <div style="margin-left:auto;display:flex;gap:9px;align-items:center;flex-wrap:wrap">
+      <sc-if value="{{ hasPending }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;align-items:center;gap:8px;height:40px;padding:0 13px;background:rgba(217,142,27,.12);border:1px solid #6b551f;border-radius:8px;font:600 12px 'Archivo';color:var(--warn)"><span style="width:8px;height:8px;border-radius:50%;background:var(--warn)"></span>{{ pendingLabel }}</div>
+        <button onClick="{{ publishAll }}" style="height:40px;padding:0 16px;display:flex;align-items:center;gap:8px;background:var(--accent);color:#fff;border:none;border-radius:8px;font:700 12px 'Archivo';text-transform:uppercase;letter-spacing:.03em;cursor:pointer;box-shadow:0 2px 0 #A83D03"><span class="ic" style="font-size:15px"><i data-lucide="globe"></i></span>Publikuj na stronie</button>
+      </sc-if>
+      <sc-if value="{{ noPending }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;align-items:center;gap:8px;height:40px;padding:0 13px;background:rgba(111,163,82,.12);border:1px solid #2f5b3f;border-radius:8px;font:600 12px 'Archivo';color:var(--ok)"><span class="ic" style="font-size:14px"><i data-lucide="check-circle-2"></i></span>Strona zgodna z terminarzem</div>
+      </sc-if>
+      <button onClick="{{ addRoute }}" style="height:40px;padding:0 16px;display:flex;align-items:center;gap:8px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:8px;font:700 12px 'Archivo';text-transform:uppercase;letter-spacing:.03em;cursor:pointer"><span class="ic" style="font-size:15px"><i data-lucide="plus"></i></span>Nowy kierunek</button>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px">
+    <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+      <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px">
+        <div style="width:38px;height:38px;flex:none;border-radius:9px;background:{{ k.bg }};color:{{ k.color }};display:grid;place-items:center"><span class="ic" style="font-size:18px"><i data-lucide="{{ k.icon }}"></i></span></div>
+        <div><div style="font-family:'Anton';font-size:22px;line-height:1">{{ k.value }}</div><div style="font:10.5px 'IBM Plex Mono';color:var(--t3);margin-top:3px">{{ k.label }}</div></div>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden">
+    <div style="display:grid;grid-template-columns:2fr 1.1fr 1.1fr 1.1fr 1.1fr .9fr 1fr 1.2fr;gap:12px;padding:10px 18px;background:var(--sunken);border-bottom:1px solid var(--line);font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t3)"><div>Kierunek</div><div>Pakowanie PL</div><div>Dostawa</div><div>Pakowanie powrót</div><div>Powrót PL</div><div>Ceny ⇒ / ⇔</div><div>Status</div><div style="text-align:right">Akcje</div></div>
+    <sc-for list="{{ rows }}" as="r" hint-placeholder-count="7">
+      <div style="display:grid;grid-template-columns:2fr 1.1fr 1.1fr 1.1fr 1.1fr .9fr 1fr 1.2fr;gap:12px;padding:12px 18px;border-bottom:1px solid var(--line);align-items:start;background:{{ r.rowBg }}">
+        <div style="min-width:0"><div style="font:700 13.5px 'Archivo'">{{ r.name }}</div><div style="font:10.5px 'IBM Plex Mono';color:var(--t3);margin-top:3px">{{ r.note }}</div><sc-if value="{{ r.dirty }}" hint-placeholder-val="{{ false }}"><div style="display:inline-flex;align-items:center;gap:5px;margin-top:6px;font:700 9px 'Archivo';text-transform:uppercase;letter-spacing:.04em;color:var(--warn);background:rgba(217,142,27,.15);padding:2px 7px;border-radius:4px"><span style="width:6px;height:6px;border-radius:50%;background:var(--warn)"></span>Niepublikowane zmiany</div></sc-if></div>
+        <div style="font:600 12px 'IBM Plex Mono';color:var(--t2);line-height:1.7;white-space:pre-line">{{ r.pack }}</div>
+        <div style="font:600 12px 'IBM Plex Mono';color:var(--t2);line-height:1.7;white-space:pre-line">{{ r.deliver }}</div>
+        <div style="font:600 12px 'IBM Plex Mono';color:var(--t2);line-height:1.7;white-space:pre-line">{{ r.back }}</div>
+        <div style="font:600 12px 'IBM Plex Mono';color:var(--t2);line-height:1.7;white-space:pre-line">{{ r.backPl }}</div>
+        <div style="font:700 12.5px 'IBM Plex Mono';line-height:1.7;white-space:pre-line">{{ r.price }}</div>
+        <div><span style="display:inline-flex;align-items:center;gap:6px;font:700 9.5px 'Archivo';text-transform:uppercase;letter-spacing:.03em;color:{{ r.stC }};background:{{ r.stB }};padding:4px 9px;border-radius:5px;white-space:nowrap"><span style="width:7px;height:7px;border-radius:50%;background:{{ r.stC }}"></span>{{ r.status }}</span></div>
+        <div style="display:flex;gap:6px;justify-content:flex-end">
+          <span onClick="{{ r.edit }}" style="height:32px;padding:0 12px;display:inline-flex;align-items:center;gap:6px;background:var(--sunken);border:1px solid var(--line);border-radius:6px;color:#F2EFE7;font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.03em;cursor:pointer"><span class="ic" style="font-size:13px"><i data-lucide="pencil"></i></span>Edytuj</span>
+          <span onClick="{{ r.toggle }}" style="height:32px;width:32px;display:inline-grid;place-items:center;background:var(--sunken);border:1px solid var(--line);border-radius:6px;color:var(--t2);cursor:pointer" title="{{ r.toggleTitle }}"><span class="ic" style="font-size:14px"><i data-lucide="{{ r.tglIcon }}"></i></span></span>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+  <div style="margin-top:12px;font:11px 'IBM Plex Mono';color:var(--t3);display:flex;gap:18px;flex-wrap:wrap"><span>⇒ w jedną stronę · ⇔ w obie strony</span><span>Terminarz zasila na stronie: tabelę, mapę kierunków i konfigurator wyceny.</span></div>
+
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:80;display:flex;align-items:center;gap:10px;background:#1B1A16;border:1px solid var(--line);border-left:3px solid var(--ok);border-radius:9px;padding:12px 16px;box-shadow:0 10px 30px rgba(0,0,0,.5);animation:_rs .25s ease both"><span class="ic" style="font-size:16px;color:var(--ok)"><i data-lucide="check-circle-2"></i></span><span style="font:600 13px 'Archivo'">{{ toastText }}</span></div>
+  </sc-if>
+
+  <!-- SZUFLADA -->
+  <sc-if value="{{ drawerOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeDrawer }}" style="position:fixed;inset:0;background:rgba(10,9,8,.7);display:flex;justify-content:flex-end;z-index:60">
+      <div onClick="{{ stop }}" style="width:600px;max-width:100%;height:100%;background:var(--surface);border-left:1px solid var(--line);display:flex;flex-direction:column;animation:_in .25s cubic-bezier(.2,.7,.3,1) both;box-shadow:-20px 0 60px rgba(0,0,0,.5)">
+        <div style="padding:16px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;background:#161512">
+          <div style="flex:1;min-width:0"><div style="font-family:'Anton';font-size:20px;text-transform:uppercase;line-height:1">{{ d.head }}</div><div style="font:11px 'IBM Plex Mono';color:var(--t3);margin-top:4px">zmiany trafiają na stronę po „Publikuj”</div></div>
+          <button onClick="{{ closeDrawer }}" style="width:34px;height:34px;flex:none;background:var(--sunken);border:1px solid var(--line);border-radius:8px;color:var(--t2);cursor:pointer"><span class="ic" style="font-size:16px;width:34px;height:34px"><i data-lucide="x"></i></span></button>
+        </div>
+        <div style="flex:1;overflow:auto;padding:20px 22px;display:grid;gap:18px">
+          <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:12px">
+            <label style="display:block"><span style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">Kierunek (miasto, kraj)</span>
+              <input value="{{ d.name }}" onInput="{{ set.name }}" placeholder="Biszkek (Kirgistan)" style="width:100%;height:44px;margin-top:6px;padding:0 13px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:8px;font:14px 'Archivo';outline:none"></label>
+            <label style="display:block"><span style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">Notka</span>
+              <input value="{{ d.note }}" onInput="{{ set.note }}" placeholder="możliwy powrót z Osz" style="width:100%;height:44px;margin-top:6px;padding:0 13px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:8px;font:13px 'Archivo';outline:none"></label>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <label style="display:block"><span style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">Cena ⇒ w jedną stronę (EUR)</span>
+              <input value="{{ d.one }}" onInput="{{ set.one }}" placeholder="— nie oferujemy" style="width:100%;height:44px;margin-top:6px;padding:0 13px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:8px;font:14px 'IBM Plex Mono';outline:none"></label>
+            <label style="display:block"><span style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">Cena ⇔ w obie strony (EUR)</span>
+              <input value="{{ d.both }}" onInput="{{ set.both }}" placeholder="— nie oferujemy" style="width:100%;height:44px;margin-top:6px;padding:0 13px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:8px;font:14px 'IBM Plex Mono';outline:none"></label>
+          </div>
+          <div>
+            <div style="display:flex;align-items:center;justify-content:space-between"><span style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">Terminy</span><span style="font:11px 'IBM Plex Mono';color:var(--t3)">dd.mm.rrrr · puste = brak</span></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 32px;gap:8px;margin-top:8px;font:700 9.5px 'Archivo';text-transform:uppercase;letter-spacing:.04em;color:var(--t3)"><div>Pakowanie PL</div><div>Dostawa</div><div>Pak. powrót</div><div>Powrót PL</div><div></div></div>
+            <div style="display:grid;gap:8px;margin-top:6px">
+              <sc-for list="{{ d.slots }}" as="sl" hint-placeholder-count="2">
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 32px;gap:8px">
+                  <input value="{{ sl.a }}" onInput="{{ sl.onA }}" style="width:100%;height:40px;padding:0 10px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:7px;font:12.5px 'IBM Plex Mono';outline:none">
+                  <input value="{{ sl.b }}" onInput="{{ sl.onB }}" style="width:100%;height:40px;padding:0 10px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:7px;font:12.5px 'IBM Plex Mono';outline:none">
+                  <input value="{{ sl.c }}" onInput="{{ sl.onC }}" style="width:100%;height:40px;padding:0 10px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:7px;font:12.5px 'IBM Plex Mono';outline:none">
+                  <input value="{{ sl.d }}" onInput="{{ sl.onD }}" style="width:100%;height:40px;padding:0 10px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:7px;font:12.5px 'IBM Plex Mono';outline:none">
+                  <button onClick="{{ sl.remove }}" style="width:32px;height:40px;background:transparent;border:1px solid var(--line);border-radius:7px;color:var(--t3);cursor:pointer"><span class="ic" style="font-size:14px;width:30px;height:38px"><i data-lucide="trash-2"></i></span></button>
+                </div>
+              </sc-for>
+            </div>
+            <button onClick="{{ addSlot }}" style="margin-top:10px;height:36px;padding:0 13px;display:inline-flex;align-items:center;gap:7px;background:transparent;border:1px dashed var(--line);border-radius:7px;color:var(--t2);font:700 10.5px 'Archivo';text-transform:uppercase;letter-spacing:.03em;cursor:pointer"><span class="ic" style="font-size:14px"><i data-lucide="plus"></i></span>Dodaj termin</button>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div onClick="{{ set.onMap }}" style="display:flex;align-items:center;gap:12px;padding:12px 13px;background:var(--sunken);border:1px solid {{ d.mapBorder }};border-radius:8px;cursor:pointer"><div style="flex:1"><div style="font:700 13px 'Archivo'">Pokaż na mapie</div><div style="font:10px 'IBM Plex Mono';color:var(--t3);margin-top:2px">linia z magazynu + cena</div></div><div style="width:40px;height:22px;border-radius:99px;background:{{ d.mapTrack }};position:relative"><div style="position:absolute;top:3px;left:{{ d.mapKnob }};width:16px;height:16px;border-radius:50%;background:#F2EFE7;transition:left .15s"></div></div></div>
+            <div onClick="{{ set.inCfg }}" style="display:flex;align-items:center;gap:12px;padding:12px 13px;background:var(--sunken);border:1px solid {{ d.cfgBorder }};border-radius:8px;cursor:pointer"><div style="flex:1"><div style="font:700 13px 'Archivo'">W konfiguratorze</div><div style="font:10px 'IBM Plex Mono';color:var(--t3);margin-top:2px">klient może policzyć wycenę</div></div><div style="width:40px;height:22px;border-radius:99px;background:{{ d.cfgTrack }};position:relative"><div style="position:absolute;top:3px;left:{{ d.cfgKnob }};width:16px;height:16px;border-radius:50%;background:#F2EFE7;transition:left .15s"></div></div></div>
+          </div>
+          <div style="background:var(--sunken);border:1px solid var(--line);border-radius:9px;padding:14px">
+            <div style="display:flex;align-items:center;gap:10px"><span class="ic" style="font-size:15px;color:var(--accent-hover)"><i data-lucide="map-pin"></i></span><div style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.06em;color:var(--t3)">Punkt na mapie</div><div style="margin-left:auto;font:10px 'IBM Plex Mono';color:{{ d.geoColor }}">{{ d.geoStatus }}</div></div>
+            <div style="display:flex;gap:8px;margin-top:10px">
+              <input value="{{ d.city }}" onInput="{{ set.city }}" onKeyDown="{{ geoKey }}" placeholder="miasto odbioru, np. Biszkek" style="flex:1;min-width:0;height:42px;padding:0 12px;background:var(--surface);color:#F2EFE7;border:1px solid var(--line);border-radius:8px;font:13.5px 'Archivo';outline:none">
+              <button onClick="{{ geocode }}" style="height:42px;padding:0 14px;display:flex;align-items:center;gap:7px;background:var(--accent);color:#fff;border:none;border-radius:8px;font:700 11px 'Archivo';text-transform:uppercase;letter-spacing:.03em;cursor:pointer;white-space:nowrap"><span class="ic" style="font-size:14px"><span data-ic="{{ d.geoIcon }}" style="display:contents"></span></span>Znajdź</button>
+            </div>
+            <sc-if value="{{ d.geoHits }}" hint-placeholder-val="{{ false }}">
+              <div style="display:grid;gap:6px;margin-top:8px">
+                <sc-for list="{{ d.hits }}" as="h" hint-placeholder-count="2"><div onClick="{{ h.pick }}" style="display:flex;align-items:center;gap:10px;padding:9px 11px;background:var(--surface);border:1px solid var(--line);border-radius:7px;cursor:pointer" style-hover="border-color:var(--accent)"><span class="ic" style="font-size:13px;color:var(--t3)"><i data-lucide="map-pin"></i></span><div style="flex:1;min-width:0;font:12.5px 'Archivo';white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ h.label }}</div><div style="font:10.5px 'IBM Plex Mono';color:var(--t3)">{{ h.coords }}</div></div></sc-for>
+              </div>
+            </sc-if>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
+              <label style="display:block"><span style="font:700 9.5px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t3)">Szerokość (lat)</span>
+                <input value="{{ d.lat }}" onInput="{{ set.lat }}" placeholder="42.87" style="width:100%;height:38px;margin-top:5px;padding:0 11px;background:var(--surface);color:#F2EFE7;border:1px solid var(--line);border-radius:7px;font:12.5px 'IBM Plex Mono';outline:none"></label>
+              <label style="display:block"><span style="font:700 9.5px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t3)">Długość (lon)</span>
+                <input value="{{ d.lon }}" onInput="{{ set.lon }}" placeholder="74.59" style="width:100%;height:38px;margin-top:5px;padding:0 11px;background:var(--surface);color:#F2EFE7;border:1px solid var(--line);border-radius:7px;font:12.5px 'IBM Plex Mono';outline:none"></label>
+            </div>
+            <sc-if value="{{ d.hasCoords }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:10px;border:1px solid var(--line);border-radius:7px;overflow:hidden;background:#0F0E0C">
+                <iframe src="{{ d.previewSrc }}" title="Podgląd punktu" style="width:100%;height:150px;border:0;display:block;pointer-events:none"></iframe>
+              </div>
+              <div style="font:10px 'IBM Plex Mono';color:var(--t3);margin-top:6px">Podgląd z OpenStreetMap. Na stronie punkt rysuje się na naszej mapie kontenerów — tam, gdzie wskazują te współrzędne.</div>
+            </sc-if>
+          </div>
+          <div style="background:var(--sunken);border:1px solid var(--line);border-radius:9px;padding:14px">
+            <div style="display:flex;align-items:center;gap:10px"><span class="ic" style="font-size:15px;color:var(--accent-hover)"><i data-lucide="search"></i></span><div style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.06em;color:var(--t3)">SEO — strona kierunku</div><div style="margin-left:auto;font:10px 'IBM Plex Mono';color:var(--t3)">advfactory.com/transport/<span style="color:#F2EFE7">{{ d.slug }}</span></div></div>
+            <div style="display:grid;gap:10px;margin-top:12px">
+              <label style="display:block"><div style="display:flex;justify-content:space-between"><span style="font:700 9.5px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">Tytuł w Google</span><span style="font:10px 'IBM Plex Mono';color:{{ d.seoTitleC }}">{{ d.seoTitleLen }}</span></div>
+                <input value="{{ d.seoTitle }}" onInput="{{ set.seoTitle }}" placeholder="{{ d.seoTitlePh }}" style="width:100%;height:40px;margin-top:5px;padding:0 11px;background:var(--surface);color:#F2EFE7;border:1px solid var(--line);border-radius:7px;font:13px 'Archivo';outline:none"></label>
+              <label style="display:block"><div style="display:flex;justify-content:space-between"><span style="font:700 9.5px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">Opis w Google</span><span style="font:10px 'IBM Plex Mono';color:{{ d.seoDescC }}">{{ d.seoDescLen }}</span></div>
+                <textarea value="{{ d.seoDesc }}" onInput="{{ set.seoDesc }}" placeholder="np. Kontenerem z Polski do Biszkeku, 4 terminy w sezonie, od 1 250 €. Odprawa i ubezpieczenie w cenie." style="width:100%;min-height:64px;margin-top:5px;padding:10px 11px;background:var(--surface);color:#F2EFE7;border:1px solid var(--line);border-radius:7px;font:12.5px 'Archivo';line-height:1.45;resize:vertical;outline:none"></textarea></label>
+              <label style="display:block"><span style="font:700 9.5px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">Lead na stronie kierunku</span>
+                <textarea value="{{ d.lead }}" onInput="{{ set.lead }}" placeholder="Dwa zdania pod nagłówkiem: jak jedzie kontener, ile trwa, skąd powrót." style="width:100%;min-height:64px;margin-top:5px;padding:10px 11px;background:var(--surface);color:#F2EFE7;border:1px solid var(--line);border-radius:7px;font:12.5px 'Archivo';line-height:1.45;resize:vertical;outline:none"></textarea></label>
+            </div>
+            <div style="background:#fff;border-radius:7px;padding:12px 14px;margin-top:12px;font-family:Arial,sans-serif">
+              <div style="font-size:11px;color:#4d5156">advfactory.com › transport › {{ d.slug }}</div>
+              <div style="font-size:17px;color:#1a0dab;margin-top:5px;line-height:1.3">{{ d.seoTitleShown }}</div>
+              <div style="font-size:12.5px;color:#4d5156;margin-top:3px;line-height:1.5">{{ d.seoDescShown }}</div>
+            </div>
+          </div>
+          <div style="background:var(--sunken);border:1px solid var(--line);border-left:3px solid var(--info);border-radius:0 8px 8px 0;padding:12px 14px;font:12.5px 'Archivo';color:var(--t2);line-height:1.5">Współrzędne biorą się z nazwy miasta — wpisz ją i kliknij „Znajdź”. Jeśli geokoder pomyli miasta o tej samej nazwie, wybierz właściwe z listy albo popraw liczby ręcznie. Zmiana ceny nie zmienia cen w już wysłanych ofertach ani w zleceniach.</div>
+        </div>
+        <div style="padding:14px 22px;border-top:1px solid var(--line);display:flex;gap:10px;align-items:center;background:var(--sunken)">
+          <div style="font:11px 'IBM Plex Mono';color:var(--t3);flex:1">Zapis oznacza kierunek jako „niepublikowane zmiany”.</div>
+          <button onClick="{{ closeDrawer }}" style="min-height:44px;padding:0 16px;background:transparent;color:var(--t2);border:1px solid var(--line);border-radius:9px;font:700 12px 'Archivo';text-transform:uppercase;letter-spacing:.03em;cursor:pointer">Anuluj</button>
+          <button onClick="{{ save }}" style="min-height:44px;padding:0 18px;display:flex;align-items:center;gap:8px;background:var(--accent);color:#fff;border:none;border-radius:9px;font:700 12px 'Archivo';text-transform:uppercase;letter-spacing:.03em;cursor:pointer;box-shadow:0 2px 0 #A83D03"><span class="ic" style="font-size:15px"><i data-lucide="save"></i></span>Zapisz</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:900}}">
+class Component extends DCLogic {
+  state = { sel:null, draft:null, toast:"", routes:[
+    { id:"kg", name:"Kirgistan (Biszkek)", note:"możliwy powrót z Osz", one:"1250", both:"1800", slots:[["25.04.2026","25.05.2026","04.07.2026","04.08.2026"],["03.06.2026","03.07.2026","01.08.2026","01.09.2026"],["25.06.2026","25.07.2026","15.09.2026","15.10.2026"],["10.07.2026","10.08.2026","12.10.2026","12.11.2026"]], active:true, map:true, cfg:true, lat:"42.87", lon:"74.59", dirty:false },
+    { id:"is", name:"Islandia (Reykjavík)", note:"tylko w obie strony", one:"", both:"1550", slots:[["01.07.2026","25.07.2026","20.08.2026","10.09.2026"]], active:true, map:true, cfg:true, lat:"64.15", lon:"-21.94", dirty:false },
+    { id:"vl", name:"Władywostok", note:"w jedną stronę, powrót do PL", one:"1800", both:"", slots:[["","","30.09.2026","15.11.2026"]], active:true, map:true, cfg:true, lat:"43.12", lon:"131.89", dirty:false },
+    { id:"pk", name:"Islamabad (Pakistan)", note:"w jedną stronę, powrót do PL", one:"1500", both:"", slots:[["","","20.10.2026","20.12.2026"]], active:true, map:true, cfg:true, lat:"33.69", lon:"73.06", dirty:false },
+    { id:"cl", name:"Chile (Valparaíso)", note:"powrót z Punta Arenas lub Arica", one:"1550", both:"2300", slots:[["15.11.2026","21.12.2026","04.02.2027","15.03.2027"],["15.12.2026","28.01.2027","04.03.2027","15.04.2027"]], active:true, map:true, cfg:true, lat:"-33.05", lon:"-71.62", dirty:false },
+    { id:"za", name:"Kapsztad (RPA)", note:"w jedną stronę", one:"1500", both:"", slots:[["06.01.2027","25.02.2027","",""]], active:true, map:true, cfg:true, lat:"-33.92", lon:"18.42", dirty:false },
+    { id:"ke", name:"Mombasa (Kenia)", note:"powrót do PL", one:"1400", both:"", slots:[["","","10.04.2027","30.05.2027"]], active:true, map:true, cfg:true, lat:"-4.04", lon:"39.67", dirty:true },
+    { id:"us", name:"Anchorage (Alaska)", note:"pod wyprawę Alaska 2027 — do potwierdzenia", one:"2400", both:"", slots:[["20.04.2027","10.06.2027","",""]], active:false, map:false, cfg:false, lat:"61.22", lon:"-149.90", dirty:true }
+  ] };
+  componentDidMount(){ const t=()=>{ if(window.lucide) window.lucide.createIcons(); else setTimeout(t,60); }; t(); }
+  componentDidUpdate(){
+    document.querySelectorAll("[data-ic]").forEach(el => { const n = el.getAttribute("data-ic"); if (n && el.__ic !== n) { el.__ic = n; el.innerHTML = '<i data-lucide="' + n + '"></i>'; } });
+    if(window.lucide) window.lucide.createIcons();
+    document.body.style.overflow = this.state.sel!==null ? "hidden" : "";
+  }
+
+  /* geokoder: nazwa miasta → współrzędne (OpenStreetMap Nominatim, bez klucza) */
+  async geocode(){
+    const q = (this.state.draft && this.state.draft.city || "").trim();
+    if (!q) { this.setState(st => ({ draft: Object.assign({}, st.draft, { geo:"empty" }) })); return; }
+    this.setState(st => ({ draft: Object.assign({}, st.draft, { geo:"loading", hits:[] }) }));
+    try {
+      const r = await fetch("https://nominatim.openstreetmap.org/search?format=jsonv2&limit=4&accept-language=pl&q=" + encodeURIComponent(q), { headers:{ "Accept":"application/json" } });
+      const arr = await r.json();
+      const hits = (arr || []).map(x => ({ label:x.display_name, lat:(+x.lat).toFixed(2), lon:(+x.lon).toFixed(2) }));
+      this.setState(st => ({ draft: Object.assign({}, st.draft, { geo: hits.length ? "hits" : "none", hits }) }));
+      if (hits.length === 1) this.pickHit(hits[0]);
+    } catch (e) {
+      this.setState(st => ({ draft: Object.assign({}, st.draft, { geo:"error", hits:[] }) }));
+    }
+  }
+  pickHit(h){ this.setState(st => ({ draft: Object.assign({}, st.draft, { lat:h.lat, lon:h.lon, geo:"ok", hits:[] }) })); }
+  flash(msg){ this.setState({ toast:msg }); clearTimeout(this._tt); this._tt = setTimeout(()=>this.setState({ toast:"" }), 2600); }
+  renderVals(){
+    const s = this.state;
+    const col = (r, i) => r.slots.map(x => x[i] || "—").join("\n");
+    const price = (r) => [r.one ? "⇒ " + Number(r.one).toLocaleString("pl-PL") + " €" : "", r.both ? "⇔ " + Number(r.both).toLocaleString("pl-PL") + " €" : ""].filter(Boolean).join("\n") || "—";
+    const pending = s.routes.filter(r => r.dirty).length;
+    const active = s.routes.filter(r => r.active);
+    const dates = active.reduce((a, r) => a + r.slots.filter(x => x[0]).length, 0);
+    const d = s.draft;
+    const slugify = (t) => (t || "").toLowerCase().replace(/[ąćęłńóśźż]/g, c => ({"ą":"a","ć":"c","ę":"e","ł":"l","ń":"n","ó":"o","ś":"s","ź":"z","ż":"z"})[c]).replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 70);
+    const setF = (k) => (e) => this.setState(st => ({ draft: Object.assign({}, st.draft, { [k]: e.target.value }) }));
+    const flip = (k) => () => this.setState(st => ({ draft: Object.assign({}, st.draft, { [k]: !st.draft[k] }) }));
+    const slotSet = (i, j) => (e) => this.setState(st => { const slots = st.draft.slots.map(x => x.slice()); slots[i][j] = e.target.value; return { draft: Object.assign({}, st.draft, { slots }) }; });
+    return {
+      summary: active.length + " aktywnych kierunków · " + dates + " terminów pakowania · " + (s.routes.length - active.length) + " ukryty",
+      hasPending: pending > 0 ? true : false, noPending: pending === 0 ? true : false,
+      pendingLabel: pending + (pending===1 ? " niepublikowana zmiana" : " niepublikowane zmiany"),
+      publishAll: ()=>{ this.setState(st => ({ routes: st.routes.map(r => Object.assign({}, r, { dirty:false })) })); this.flash("Terminarz opublikowany — tabela, mapa i konfigurator zaktualizowane"); },
+      addRoute: ()=>this.setState({ sel:"new", draft:{ id:"r"+Date.now(), name:"", note:"", one:"", both:"", slots:[["","","",""]], active:false, map:true, cfg:true, lat:"", lon:"", dirty:true } }),
+      kpis: [
+        { icon:"container", value:String(active.length), label:"kierunków na stronie", bg:"rgba(242,106,27,.14)", color:"var(--accent-hover)" },
+        { icon:"calendar", value:String(dates), label:"pakowań w kalendarzu", bg:"rgba(94,143,181,.15)", color:"var(--info)" },
+        { icon:"calculator", value:String(active.filter(r => r.cfg).length), label:"w konfiguratorze wyceny", bg:"rgba(111,163,82,.15)", color:"var(--ok)" },
+        { icon:"bell", value:"37", label:"zapisanych na powiadomienia", bg:"rgba(217,142,27,.15)", color:"var(--warn)" }
+      ],
+      rows: s.routes.map(r => ({ name:r.name, note:r.note, pack:col(r,0), deliver:col(r,1), back:col(r,2), backPl:col(r,3), price:price(r), dirty:r.dirty,
+        status: r.active ? "Na stronie" : "Ukryty", stC: r.active ? "var(--ok)" : "var(--t3)", stB: r.active ? "rgba(111,163,82,.15)" : "rgba(255,255,255,.06)",
+        rowBg: s.sel===r.id ? "rgba(242,106,27,.06)" : "transparent",
+        edit: ()=>this.setState({ sel:r.id, draft: JSON.parse(JSON.stringify(r)) }),
+        tglIcon: r.active ? "eye-off" : "eye", toggleTitle: r.active ? "Ukryj ze strony" : "Pokaż na stronie",
+        toggle: ()=>this.setState(st => ({ routes: st.routes.map(x => x.id===r.id ? Object.assign({}, x, { active:!x.active, dirty:true }) : x) })) })),
+      toast: s.toast ? true : false, toastText: s.toast,
+      drawerOpen: s.sel!==null ? true : false,
+      closeDrawer: ()=>this.setState({ sel:null, draft:null }),
+      stop: (e)=>e.stopPropagation(),
+      geocode: ()=>this.geocode(),
+      geoKey: (e)=>{ if (e.key === "Enter") { e.preventDefault(); this.geocode(); } },
+      d: d ? { head: d.name || "Nowy kierunek", name:d.name, note:d.note, one:d.one, both:d.both, lat:d.lat, lon:d.lon,
+        slug: slugify(d.name.replace(/\(.*\)/, "") || "kierunek"),
+        lead: d.lead || "",
+        seoTitle: d.seoTitle || "", seoTitlePh: "Transport motocykla — " + (d.name || "kierunek") + " | ADVfactory",
+        seoTitleLen: ((d.seoTitle || ("Transport motocykla — " + d.name)).length) + " / 60", seoTitleC: (d.seoTitle || ("Transport motocykla — " + d.name)).length > 60 ? "var(--warn)" : "var(--ok)",
+        seoDesc: d.seoDesc || "", seoDescLen: ((d.seoDesc || "").length) + " / 155", seoDescC: (d.seoDesc || "").length > 155 ? "var(--warn)" : "var(--ok)",
+        seoTitleShown: (d.seoTitle || ("Transport motocykla — " + (d.name || "kierunek") + " | ADVfactory")).slice(0, 60),
+        seoDescShown: (d.seoDesc || d.lead || ("Kontenerem z Polski, " + (d.one ? "od " + Number(d.one).toLocaleString("pl-PL") + " € w jedną stronę" : "w obie strony " + Number(d.both || 0).toLocaleString("pl-PL") + " €") + ". Odprawa i ubezpieczenie w cenie, cena ostateczna.")).slice(0, 155),
+        city: d.city != null ? d.city : ((d.name.match(/\(([^)]+)\)/) || [,''])[1] || d.name),
+        geoStatus: d.geo==="loading" ? "szukam…" : d.geo==="hits" ? "wybierz trafienie" : d.geo==="none" ? "nie znaleziono — wpisz ręcznie" : d.geo==="error" ? "brak połączenia — wpisz ręcznie" : d.geo==="empty" ? "podaj miasto" : (d.lat && d.lon ? "współrzędne ustawione" : "brak współrzędnych"),
+        geoColor: d.geo==="none" || d.geo==="error" || d.geo==="empty" ? "var(--warn)" : (d.lat && d.lon ? "var(--ok)" : "var(--t3)"),
+        geoIcon: d.geo==="loading" ? "loader" : "search",
+        geoHits: d.hits && d.hits.length ? true : false,
+        hits: (d.hits || []).map(h => ({ label:h.label, coords:h.lat + ", " + h.lon, pick:()=>this.pickHit(h) })),
+        hasCoords: d.lat && d.lon ? true : false,
+        previewSrc: d.lat && d.lon ? "https://www.openstreetmap.org/export/embed.html?bbox=" + (+d.lon - 1.5) + "%2C" + (+d.lat - 1) + "%2C" + (+d.lon + 1.5) + "%2C" + (+d.lat + 1) + "&layer=mapnik&marker=" + d.lat + "%2C" + d.lon : "",
+        mapBorder: d.map ? "var(--accent)" : "var(--line)", mapTrack: d.map ? "var(--accent)" : "var(--line)", mapKnob: d.map ? "21px" : "3px",
+        cfgBorder: d.cfg ? "var(--accent)" : "var(--line)", cfgTrack: d.cfg ? "var(--accent)" : "var(--line)", cfgKnob: d.cfg ? "21px" : "3px",
+        slots: d.slots.map((x,i) => ({ a:x[0], b:x[1], c:x[2], d:x[3], onA:slotSet(i,0), onB:slotSet(i,1), onC:slotSet(i,2), onD:slotSet(i,3),
+          remove: ()=>this.setState(st => ({ draft: Object.assign({}, st.draft, { slots: st.draft.slots.filter((_,j)=>j!==i) }) })) })) } : {},
+      set: { name:setF("name"), note:setF("note"), one:setF("one"), both:setF("both"), lat:setF("lat"), lon:setF("lon"), city:setF("city"), lead:setF("lead"), seoTitle:setF("seoTitle"), seoDesc:setF("seoDesc"), onMap:flip("map"), inCfg:flip("cfg") },
+      addSlot: ()=>this.setState(st => ({ draft: Object.assign({}, st.draft, { slots: st.draft.slots.concat([["","","",""]]) }) })),
+      save: ()=>{ const nd = Object.assign({}, d, { dirty:true }); this.setState(st => ({ routes: st.routes.some(r => r.id===nd.id) ? st.routes.map(r => r.id===nd.id ? nd : r) : st.routes.concat([nd]), sel:null, draft:null })); this.flash("Zapisano: " + (nd.name || "nowy kierunek") + " — opublikuj, żeby trafił na stronę"); }
+    };
+  }
+}
+</script>
+</body>
+</html>

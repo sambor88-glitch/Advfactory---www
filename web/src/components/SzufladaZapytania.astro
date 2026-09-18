@@ -1,0 +1,380 @@
+---
+import { pobierzOferte } from '../data/oferta';
+import { numerWhatsApp } from '../lib/format';
+import { WERSJA_POLITYKI, DLUGOSC_SCIEZKI } from '../lib/stale';
+import Ikona from './Ikona.astro';
+
+const oferta = await pobierzOferte();
+const godziny = oferta.ustawienia.odpowiedz_w_godzinach;
+const wa = numerWhatsApp(oferta.firma.whatsapp);
+
+/**
+ * Endpoint leadów. Pusty = tryb makiety: payload ląduje w konsoli i strona
+ * zachowuje się jak przy sukcesie. Tak wygląda krok 1, dopóki CRM nie stoi.
+ */
+const ENDPOINT = import.meta.env.PUBLIC_LEADS_URL ?? '';
+---
+<div
+  id="szuflada"
+  hidden
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="szuflada-tytul"
+  data-endpoint={ENDPOINT}
+  data-wa={wa}
+  data-wersja-polityki={WERSJA_POLITYKI}
+  data-dlugosc-sciezki={DLUGOSC_SCIEZKI}
+>
+  <div class="zaslona" data-zamknij></div>
+
+  <div class="panel">
+    <div class="czapka">
+      <div>
+        <h2 id="szuflada-tytul">Wyślij zapytanie</h2>
+        <p class="obietnica">odpowiadamy w ciągu {godziny} h · bez automatów</p>
+      </div>
+      <button type="button" class="zamknij" data-zamknij aria-label="Zamknij">
+        <Ikona nazwa="x" rozmiar="20" />
+      </button>
+    </div>
+
+    <form id="formularz-zapytania" novalidate>
+      <div class="kontekst" id="kontekst-zapytania" hidden></div>
+
+      <label class="pole">
+        <span>Imię i nazwisko</span>
+        <input type="text" name="imie_nazwisko" autocomplete="name" required />
+      </label>
+
+      <div class="para">
+        <label class="pole">
+          <span>E-mail</span>
+          <input type="email" name="email" autocomplete="email" required />
+        </label>
+        <label class="pole">
+          <span>Telefon</span>
+          <input type="tel" name="telefon" autocomplete="tel" />
+        </label>
+      </div>
+
+      <label class="pole">
+        <span id="etykieta-tresci">O co pytasz?</span>
+        <textarea name="tresc" rows="4" required></textarea>
+      </label>
+
+      <fieldset class="kanaly">
+        <legend>Jak wolisz, żebyśmy odpisali?</legend>
+        <label><input type="radio" name="preferowany_kanal" value="whatsapp" checked /> <span>WhatsApp</span></label>
+        <label><input type="radio" name="preferowany_kanal" value="email" /> <span>E-mail</span></label>
+        <label><input type="radio" name="preferowany_kanal" value="telefon" /> <span>Telefon</span></label>
+      </fieldset>
+
+      <label class="rodo">
+        <input type="checkbox" name="zgoda_rodo" required />
+        <span>
+          Zgadzam się na kontakt w sprawie tego zapytania. Administratorem danych jest
+          {' '}{oferta.firma.nazwa}, {oferta.firma.adres}. Dane przetwarzamy do obsługi zapytania;
+          przysługuje Ci dostęp, sprostowanie i usunięcie.
+        </span>
+      </label>
+
+      <p class="blad" id="blad-zapytania" hidden role="alert"></p>
+
+      <div class="akcje-formularza">
+        <button type="submit" class="przycisk" id="wyslij">
+          <Ikona nazwa="send" rozmiar="15" />
+          <span data-etykieta-wysylki>Wyślij zapytanie</span>
+        </button>
+        <a class="przycisk przycisk--whatsapp" id="ratunek-whatsapp" hidden href="#" target="_blank" rel="noopener noreferrer">
+          <Ikona nazwa="message-circle" rozmiar="16" />
+          Wyślij na WhatsApp
+        </a>
+      </div>
+
+      <p class="stopka-formularza">
+        Zapytanie trafia do naszego CRM i dostaje opiekuna. Bez auto-odpowiedzi „dziękujemy za kontakt”.
+      </p>
+    </form>
+  </div>
+</div>
+
+<style>
+  #szuflada { position: fixed; inset: 0; z-index: 100; }
+  #szuflada[hidden] { display: none; }
+
+  .zaslona {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 14, 12, .6);
+    backdrop-filter: blur(3px);
+  }
+
+  .panel {
+    position: absolute;
+    inset: 0 0 0 auto;
+    width: min(520px, 100%);
+    background: var(--tlo);
+    box-shadow: -20px 0 60px rgba(0, 0, 0, .3);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .czapka {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 22px 24px 16px;
+    background: var(--ciemny);
+    color: var(--tekst-na-ciemnym);
+  }
+  .czapka h2 { font-size: 28px; }
+  .obietnica { margin: 6px 0 0; font: 600 12px var(--font-liczby); color: var(--akcent-jasny); }
+
+  .zamknij {
+    flex: none;
+    width: 38px; height: 38px;
+    display: grid; place-items: center;
+    border: 1px solid var(--kreska-ciemna);
+    border-radius: var(--r-s);
+    background: transparent;
+    color: var(--tekst-na-ciemnym);
+    cursor: pointer;
+  }
+  .zamknij:hover { background: var(--ciemny-3); }
+
+  form { padding: 22px 24px 32px; display: grid; gap: 16px; }
+
+  .kontekst {
+    padding: 14px 16px;
+    background: var(--tlo-zatopione);
+    border-left: 3px solid var(--akcent);
+    border-radius: 0 var(--r-s) var(--r-s) 0;
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
+  .kontekst[hidden] { display: none; }
+  .kontekst dl { margin: 6px 0 0; display: grid; grid-template-columns: auto 1fr; gap: 3px 12px; }
+  .kontekst dt { color: var(--tekst-3); font-size: 12.5px; }
+  .kontekst dd { margin: 0; font: 600 12.5px var(--font-liczby); }
+
+  .pole { display: grid; gap: 6px; }
+  .pole > span {
+    font: 700 11px var(--font-tekst);
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    color: var(--tekst-3);
+  }
+  .pole input, .pole textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--kreska);
+    border-radius: var(--r-s);
+    background: var(--tlo-karta);
+    font: 15px var(--font-tekst);
+    color: var(--tekst);
+  }
+  .pole textarea { resize: vertical; min-height: 96px; }
+  .pole input:focus, .pole textarea:focus { outline: 2px solid var(--akcent); outline-offset: 1px; border-color: transparent; }
+  .pole input[aria-invalid='true'], .pole textarea[aria-invalid='true'] { border-color: var(--blad); }
+
+  .para { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 480px) { .para { grid-template-columns: 1fr; } }
+
+  .kanaly { border: 0; padding: 0; margin: 0; display: grid; gap: 8px; }
+  .kanaly legend {
+    padding: 0;
+    font: 700 11px var(--font-tekst);
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    color: var(--tekst-3);
+  }
+  .kanaly label { display: flex; gap: 8px; align-items: center; font-size: 14.5px; }
+  .kanaly input { accent-color: var(--akcent); }
+
+  .rodo { display: flex; gap: 10px; align-items: flex-start; font-size: 12.5px; line-height: 1.5; color: var(--tekst-3); }
+  .rodo input { margin-top: 3px; accent-color: var(--akcent); flex: none; }
+
+  .blad {
+    margin: 0;
+    padding: 12px 14px;
+    border-radius: var(--r-s);
+    background: rgba(191, 49, 38, .08);
+    border-left: 3px solid var(--blad);
+    color: var(--blad);
+    font-size: 13.5px;
+  }
+  .blad[hidden] { display: none; }
+
+  .akcje-formularza { display: flex; gap: 10px; flex-wrap: wrap; }
+  #ratunek-whatsapp[hidden] { display: none; }
+  #wyslij[disabled] { opacity: .6; cursor: progress; }
+
+  .stopka-formularza { margin: 0; font-size: 12px; color: var(--tekst-4); }
+</style>
+
+<script>
+  import { zapiszWidok, odczytajSciezke } from '../lib/sciezka';
+
+  zapiszWidok();
+
+  const szuflada = document.getElementById('szuflada');
+  const formularz = document.getElementById('formularz-zapytania') as HTMLFormElement | null;
+
+  if (szuflada && formularz) {
+    const ENDPOINT = szuflada.dataset.endpoint || '';
+    const WA = szuflada.dataset.wa!;
+    const WERSJA = szuflada.dataset.wersjaPolityki!;
+    const blad = document.getElementById('blad-zapytania')!;
+    const ratunek = document.getElementById('ratunek-whatsapp') as HTMLAnchorElement;
+    const wyslij = document.getElementById('wyslij') as HTMLButtonElement;
+    const etykietaWysylki = wyslij.querySelector('[data-etykieta-wysylki]')!;
+    const kontekst = document.getElementById('kontekst-zapytania')!;
+    const etykietaTresci = document.getElementById('etykieta-tresci')!;
+
+    let zrodlo = 'formularz';
+    let wyprawaId: string | null = null;
+    let wyprawaNazwa: string | null = null;
+    let kierunekId: string | null = null;
+    let kierunekNazwa: string | null = null;
+    let konfiguracja: Record<string, unknown> | null = null;
+    let ostatnioAktywny: HTMLElement | null = null;
+
+    const otworz = (przycisk: HTMLElement) => {
+      zrodlo = przycisk.dataset.zrodlo ?? 'formularz';
+      wyprawaId = przycisk.dataset.wyprawaId ?? null;
+      wyprawaNazwa = przycisk.dataset.wyprawaNazwa ?? null;
+      kierunekId = przycisk.dataset.kierunekId ?? null;
+      kierunekNazwa = przycisk.dataset.kierunekNazwa ?? null;
+      konfiguracja = przycisk.dataset.konfiguracja ? JSON.parse(przycisk.dataset.konfiguracja) : null;
+
+      // Kontekst nad formularzem: klient ma widzieć, o co właśnie pyta.
+      const wiersze: string[] = [];
+      if (przycisk.dataset.kontekstTytul) wiersze.push(`<strong>${przycisk.dataset.kontekstTytul}</strong>`);
+      if (przycisk.dataset.kontekstMeta) wiersze.push(przycisk.dataset.kontekstMeta);
+      if (wiersze.length) {
+        kontekst.innerHTML = wiersze.join('<br>');
+        kontekst.hidden = false;
+      } else {
+        kontekst.hidden = true;
+      }
+
+      etykietaTresci.textContent =
+        zrodlo === 'karta_wyprawy' ? 'O co pytasz w sprawie tej wyprawy?'
+        : zrodlo === 'konfigurator' ? 'Coś jeszcze o tym transporcie?'
+        : 'O co pytasz?';
+
+      ostatnioAktywny = document.activeElement as HTMLElement;
+      szuflada.hidden = false;
+      document.body.style.overflow = 'hidden';
+      formularz.querySelector<HTMLInputElement>('input[name="imie_nazwisko"]')?.focus();
+    };
+
+    const zamknij = () => {
+      szuflada.hidden = true;
+      document.body.style.overflow = '';
+      ostatnioAktywny?.focus();
+    };
+
+    document.querySelectorAll<HTMLElement>('[data-otworz-zapytanie]').forEach((p) => {
+      p.addEventListener('click', () => otworz(p));
+    });
+    szuflada.querySelectorAll('[data-zamknij]').forEach((p) => p.addEventListener('click', zamknij));
+    addEventListener('keydown', (e) => { if (e.key === 'Escape' && !szuflada.hidden) zamknij(); });
+
+    /** Treść, którą klient już napisał, nie może zginąć — stąd fallback na WhatsApp. */
+    const trescNaWhatsApp = (dane: FormData) => {
+      const czesci = [
+        `Zapytanie ze strony (${zrodlo})`,
+        `${dane.get('imie_nazwisko')}`,
+        `${dane.get('email')}`,
+        dane.get('telefon') ? `tel. ${dane.get('telefon')}` : '',
+        '',
+        `${dane.get('tresc')}`,
+      ].filter(Boolean);
+      return `https://wa.me/${WA}?text=${encodeURIComponent(czesci.join('\n'))}`;
+    };
+
+    formularz.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      blad.hidden = true;
+      ratunek.hidden = true;
+
+      // Walidacja po stronie przeglądarki jest tylko uprzejmością — serwer i tak swoje sprawdzi.
+      const niepoprawne = Array.from(formularz.elements).filter(
+        (el): el is HTMLInputElement | HTMLTextAreaElement =>
+          (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) && !el.checkValidity()
+      );
+      niepoprawne.forEach((el) => el.setAttribute('aria-invalid', 'true'));
+      if (niepoprawne.length) {
+        blad.textContent = 'Uzupełnij zaznaczone pola — bez nich nie mamy jak odpisać.';
+        blad.hidden = false;
+        niepoprawne[0]?.focus();
+        return;
+      }
+      Array.from(formularz.elements).forEach((el) => (el as HTMLElement).removeAttribute?.('aria-invalid'));
+
+      const dane = new FormData(formularz);
+      const payload = {
+        imie_nazwisko: String(dane.get('imie_nazwisko') ?? ''),
+        email: String(dane.get('email') ?? ''),
+        telefon: (dane.get('telefon') as string) || null,
+        tresc: String(dane.get('tresc') ?? ''),
+        zrodlo,
+        jezyk: 'pl',
+        preferowany_kanal: String(dane.get('preferowany_kanal') ?? 'whatsapp'),
+        wyprawa_id: wyprawaId,
+        wyprawa_nazwa: wyprawaNazwa,
+        kierunek_id: kierunekId,
+        kierunek_nazwa: kierunekNazwa,
+        konfiguracja,
+        // `ip` dopisuje serwer — przeglądarka swojego adresu nie zna i nie powinna zgadywać.
+        zgoda_rodo: { timestamp: new Date().toISOString(), wersja_polityki: WERSJA },
+        sciezka: odczytajSciezke(),
+        antyspam_token: '',
+      };
+
+      // Stan 04 ze „Stany strony": blokada, żeby nie poszły dwa takie same leady.
+      wyslij.disabled = true;
+      etykietaWysylki.textContent = 'Wysyłamy…';
+
+      try {
+        if (!ENDPOINT) {
+          // Tryb makiety — CRM jeszcze nie stoi. Payload zostaje widoczny w konsoli.
+          console.info('[lead] payload gotowy do POST /zgloszenia/strona:', payload);
+          location.href = `/dziekujemy?nr=${encodeURIComponent('ZP-MAKIETA')}`;
+          return;
+        }
+
+        const kontroler = new AbortController();
+        const stoper = setTimeout(() => kontroler.abort(), 15_000);
+        const odp = await fetch(ENDPOINT, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(payload),
+          signal: kontroler.signal,
+        });
+        clearTimeout(stoper);
+
+        if (!odp.ok) throw new Error(`HTTP ${odp.status}`);
+        const wynik = (await odp.json()) as { numer_sprawy?: string };
+        location.href = `/dziekujemy?nr=${encodeURIComponent(wynik.numer_sprawy ?? '')}`;
+      } catch (err) {
+        // Stan 03: treść zostaje w polach, klient dostaje drugą drogę i kod do podania.
+        const kod = `WWW-${Date.now().toString(36).toUpperCase().slice(-6)}`;
+        blad.textContent = `Nie udało się wysłać zapytania. Twoja treść jest nadal w formularzu — spróbuj ponownie albo napisz na WhatsApp. Kod zgłoszenia: ${kod}`;
+        blad.hidden = false;
+        ratunek.href = trescNaWhatsApp(dane);
+        ratunek.hidden = false;
+        console.warn('[lead] wysyłka nieudana', kod, err);
+      } finally {
+        wyslij.disabled = false;
+        etykietaWysylki.textContent = 'Wyślij zapytanie';
+      }
+    });
+  }
+</script>

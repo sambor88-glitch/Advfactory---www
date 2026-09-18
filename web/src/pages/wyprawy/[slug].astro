@@ -1,0 +1,407 @@
+---
+import type { GetStaticPaths } from 'astro';
+import Base from '../../layouts/Base.astro';
+import KartaWyprawy from '../../components/KartaWyprawy.astro';
+import Ikona from '../../components/Ikona.astro';
+import { pobierzOferte, wyprawyOpublikowane } from '../../data/oferta';
+import { zakresDat, dataSlownie, liczbaDni, euro, etykietaTrudnosci, pasmoTrudnosci, akapity, linie, numerWhatsApp } from '../../lib/format';
+
+export const getStaticPaths = (async () => {
+  const oferta = await pobierzOferte();
+  // Archiwum też ma swoją stronę — stare wyprawy zbierają ruch z Google
+  // i pokazują, że robimy to od lat. Po prostu nie ma na nich przycisku „zapytaj".
+  return oferta.wyprawy
+    .filter((w) => w.status !== 'szkic')
+    .map((w) => ({ params: { slug: w.slug }, props: { id: w.id } }));
+}) satisfies GetStaticPaths;
+
+const oferta = await pobierzOferte();
+const wyprawa = oferta.wyprawy.find((w) => w.id === Astro.props.id)!;
+const w = wyprawa;
+
+const dni = liczbaDni(w.termin.od, w.termin.do);
+const opisAkapity = akapity(w.opis);
+const zawiera = linie(w.zawiera);
+const nieZawiera = linie(w.nie_zawiera);
+const plan = w.plan_dni ?? [];
+const archiwalna = w.status === 'archiwum';
+const wa = numerWhatsApp(oferta.firma.whatsapp);
+
+// „Zobacz też" — najpierw ten sam region strony, potem reszta.
+const inne = wyprawyOpublikowane(oferta)
+  .filter((x) => x.id !== w.id)
+  .sort((a, b) => Number(b.region_strony === w.region_strony) - Number(a.region_strony === w.region_strony))
+  .slice(0, 3);
+
+const kontekstMeta = [
+  zakresDat(w.termin.od, w.termin.do),
+  w.cena.kierowca_eur !== null ? euro(w.cena.kierowca_eur) : null,
+  `trudność ${w.trudnosc}/10`,
+].filter(Boolean).join(' · ');
+
+const wiadomoscWA = encodeURIComponent(
+  `Dzień dobry, pytam o wyprawę „${w.tytul}" (${zakresDat(w.termin.od, w.termin.do)}).`
+);
+---
+<Base
+  tytul={w.seo.tytul ?? w.tytul}
+  opis={w.seo.opis ?? w.opis?.slice(0, 155) ?? `${w.tytul} — ${zakresDat(w.termin.od, w.termin.do)}, trudność ${w.trudnosc}/10. Wyprawa motocyklowa ADVfactory.`}
+  ogImage={w.zdjecie}
+>
+  <article>
+    <header class="czapka">
+      <img class="tlo" src={w.zdjecie} alt="" fetchpriority="high" decoding="async" />
+      <div class="tresc wnetrze">
+        <a class="powrot" href="/wyprawy">
+          <Ikona nazwa="arrow-right" rozmiar="14" klasa="wstecz" />
+          Wszystkie wyprawy
+        </a>
+        <p class="nadtytul jasny">{w.region}</p>
+        <h1>{w.tytul}</h1>
+        {archiwalna && (
+          <p class="plomba">
+            <Ikona nazwa="info" rozmiar="15" />
+            Wyprawa zakończona — zostawiamy ją dla relacji i zdjęć. Podobne terminy są w katalogu.
+          </p>
+        )}
+      </div>
+    </header>
+
+    <div class="tresc uklad">
+      <div class="glowna">
+        <dl class="fakty liczby">
+          <div>
+            <dt>Termin</dt>
+            <dd>{zakresDat(w.termin.od, w.termin.do)}{dni !== null && <span class="dopisek">{dni} dni</span>}</dd>
+          </div>
+          <div>
+            <dt>Trudność</dt>
+            <dd>
+              <span class:list={['trudnosc', pasmoTrudnosci(w.trudnosc)]}>{w.trudnosc}/10</span>
+              <span class="dopisek">{etykietaTrudnosci(w.trudnosc)}</span>
+            </dd>
+          </div>
+          <div>
+            <dt>Motocykl</dt>
+            <dd>{w.na_naszym_sprzecie ? 'Nasza Honda CRF300L w cenie' : 'Własny — dowozimy kontenerem'}</dd>
+          </div>
+          <div>
+            <dt>Start</dt>
+            <dd>{w.termin.od ? dataSlownie(w.termin.od) : 'termin wkrótce'}</dd>
+          </div>
+        </dl>
+
+        {opisAkapity.length > 0 ? (
+          <section class="blok">
+            <h2>O wyprawie</h2>
+            {opisAkapity.map((a) => <p>{a}</p>)}
+          </section>
+        ) : (
+          <section class="blok brak-tresci">
+            <h2>O wyprawie</h2>
+            <p>
+              Szczegółowy opis tej wyprawy dopiero powstaje. Napisz do nas — opowiemy o trasie,
+              tempie i o tym, dla kogo ten termin ma sens.
+            </p>
+            {!archiwalna && (
+              <button
+                type="button"
+                class="przycisk przycisk--obrys"
+                data-otworz-zapytanie
+                data-zrodlo="karta_wyprawy"
+                data-wyprawa-id={w.id}
+                data-wyprawa-nazwa={w.tytul}
+                data-kontekst-tytul={w.tytul}
+                data-kontekst-meta={kontekstMeta}
+              >
+                <Ikona nazwa="send" rozmiar="15" />
+                Zapytaj o szczegóły
+              </button>
+            )}
+          </section>
+        )}
+
+        {(zawiera.length > 0 || nieZawiera.length > 0) && (
+          <section class="blok dwie-listy">
+            {zawiera.length > 0 && (
+              <div>
+                <h2>Cena zawiera</h2>
+                <ul class="lista ma">
+                  {zawiera.map((p) => <li><Ikona nazwa="check" rozmiar="15" />{p}</li>)}
+                </ul>
+              </div>
+            )}
+            {nieZawiera.length > 0 && (
+              <div>
+                <h2>Cena nie zawiera</h2>
+                <ul class="lista nie-ma">
+                  {nieZawiera.map((p) => <li><Ikona nazwa="x" rozmiar="15" />{p}</li>)}
+                </ul>
+              </div>
+            )}
+          </section>
+        )}
+
+        {plan.length > 0 && (
+          <section class="blok">
+            <h2>Trasa dzień po dniu</h2>
+            <ol class="plan">
+              {plan.map((d) => (
+                <li>
+                  <span class="numer liczby">Dzień {d.dzien}</span>
+                  <div>
+                    <strong>{d.tytul}</strong>
+                    {d.opis && <p>{d.opis}</p>}
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </section>
+        )}
+      </div>
+
+      <aside class="bok">
+        <div class="pudlo-ceny">
+          <p class="etykieta">Cena</p>
+          <p class="kwota liczby">{euro(w.cena.kierowca_eur)}</p>
+          <p class="za-co">kierowca{w.cena.pasazer_eur !== null && <> · pasażer <span class="liczby">{euro(w.cena.pasazer_eur)}</span></>}</p>
+          {w.cena.opis && <p class="opis-ceny">{w.cena.opis}</p>}
+
+          {!archiwalna && (
+            <>
+              <button
+                type="button"
+                class="przycisk pelna"
+                data-otworz-zapytanie
+                data-zrodlo="karta_wyprawy"
+                data-wyprawa-id={w.id}
+                data-wyprawa-nazwa={w.tytul}
+                data-kontekst-tytul={w.tytul}
+                data-kontekst-meta={kontekstMeta}
+              >
+                <Ikona nazwa="send" rozmiar="15" />
+                Zapytaj o tę wyprawę
+              </button>
+              <a
+                class="przycisk przycisk--whatsapp pelna"
+                href={`https://wa.me/${wa}?text=${wiadomoscWA}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Ikona nazwa="message-circle" rozmiar="16" />
+                Zapytaj na WhatsAppie
+              </a>
+              <p class="obietnica liczby">
+                Odpowiadamy w ciągu {oferta.ustawienia.odpowiedz_w_godzinach} h
+              </p>
+            </>
+          )}
+        </div>
+
+        {!w.na_naszym_sprzecie && (
+          <div class="pudlo-transport">
+            <Ikona nazwa="ship" rozmiar="22" />
+            <h2>Transport motocykla</h2>
+            <p>Jedziesz na swoim? Sprawdź terminarz kontenerów i policz koszt dowozu.</p>
+            <a class="link-strzalka" href="/transport">
+              Terminarz i ceny
+              <Ikona nazwa="arrow-right" rozmiar="14" />
+            </a>
+          </div>
+        )}
+      </aside>
+    </div>
+
+    {inne.length > 0 && (
+      <section class="tresc blok-inne">
+        <h2>Zobacz też</h2>
+        <div class="siatka-kart">
+          {inne.map((x) => <KartaWyprawy wyprawa={x} />)}
+        </div>
+      </section>
+    )}
+  </article>
+</Base>
+
+<style>
+  .czapka { position: relative; background: var(--ciemny); color: var(--tekst-na-ciemnym); isolation: isolate; }
+  .czapka .tlo {
+    position: absolute;
+    inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    opacity: .42;
+    z-index: -1;
+  }
+  .czapka::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(180deg, rgba(28,27,23,.35), rgba(28,27,23,.93));
+  }
+  .wnetrze { padding-block: 56px 48px; max-width: 900px; }
+
+  .powrot {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 26px;
+    font: 700 11.5px var(--font-tekst);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--tekst-na-ciemnym-2);
+  }
+  .powrot:hover { color: var(--akcent-jasny); }
+  .powrot :global(.wstecz) { transform: rotate(180deg); }
+
+  .nadtytul.jasny { color: var(--akcent-jasny); }
+  h1 { margin: 12px 0 0; }
+
+  .plomba {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    margin-top: 20px;
+    padding: 10px 14px;
+    border-radius: var(--r-s);
+    background: rgba(242,239,231,.1);
+    font-size: 13.5px;
+    color: var(--tekst-na-ciemnym-2);
+  }
+
+  .uklad {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 48px;
+    align-items: start;
+    padding-block: 48px;
+  }
+  @media (max-width: 960px) { .uklad { grid-template-columns: 1fr; gap: 32px; } }
+
+  .fakty {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
+    gap: 1px;
+    background: var(--kreska);
+    border: 1px solid var(--kreska);
+    border-radius: var(--r-m);
+    overflow: hidden;
+    margin: 0 0 40px;
+  }
+  .fakty > div { background: var(--tlo-karta); padding: 16px 18px; }
+  .fakty dt {
+    font: 700 10.5px var(--font-tekst);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--tekst-4);
+    margin-bottom: 6px;
+  }
+  .fakty dd { margin: 0; font-size: 14px; font-weight: 600; }
+  .dopisek { display: block; margin-top: 2px; font-size: 12px; font-weight: 400; color: var(--tekst-3); }
+
+  .trudnosc { padding: 2px 8px; border-radius: var(--r-s); }
+  .trudnosc.spokojne { background: rgba(76,122,52,.14); color: var(--ok); }
+  .trudnosc.srednie { background: rgba(217,142,27,.16); color: #8A5A0A; }
+  .trudnosc.mocne { background: rgba(191,49,38,.12); color: var(--blad); }
+
+  .blok { margin-bottom: 44px; }
+  .blok h2 { font-size: clamp(24px, 3vw, 32px); margin-bottom: 16px; }
+  .blok p { font-size: 16px; line-height: 1.65; color: var(--tekst-2); max-width: 68ch; }
+
+  /* Pusty opis nie zostawia gołego nagłówka — mówimy wprost, że opisu nie ma,
+     i dajemy drogę dalej. Dziś dotyczy to wszystkich wypraw w ofercie. */
+  .brak-tresci {
+    padding: 22px 24px;
+    background: var(--tlo-zatopione);
+    border-radius: var(--r-m);
+  }
+  .brak-tresci h2 { font-size: 22px; }
+  .brak-tresci .przycisk { margin-top: 16px; }
+
+  .dwie-listy { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 32px; }
+  .lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
+  .lista li { display: flex; gap: 9px; align-items: flex-start; font-size: 15px; line-height: 1.5; }
+  .lista li > :global(svg) { flex: none; margin-top: 4px; }
+  .ma li > :global(svg) { color: var(--ok); }
+  .nie-ma li { color: var(--tekst-3); }
+  .nie-ma li > :global(svg) { color: var(--blad); }
+
+  .plan { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+  .plan li {
+    display: grid;
+    grid-template-columns: 96px 1fr;
+    gap: 18px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--kreska);
+  }
+  .plan li:first-child { border-top: 1px solid var(--kreska); }
+  .numer {
+    font: 600 11.5px var(--font-liczby);
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--akcent);
+    padding-top: 2px;
+  }
+  .plan strong { display: block; font-size: 16px; }
+  .plan p { margin-top: 4px; font-size: 14.5px; }
+  @media (max-width: 520px) { .plan li { grid-template-columns: 1fr; gap: 4px; } }
+
+  .bok { position: sticky; top: 100px; display: grid; gap: 18px; }
+  @media (max-width: 960px) { .bok { position: static; } }
+
+  .pudlo-ceny {
+    padding: 24px;
+    background: var(--ciemny);
+    color: var(--tekst-na-ciemnym);
+    border-radius: var(--r-m);
+  }
+  .pudlo-ceny .etykieta {
+    margin: 0;
+    font: 700 10.5px var(--font-tekst);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--tekst-4);
+  }
+  .kwota { margin: 4px 0 2px; font-size: 38px; font-weight: 600; line-height: 1; color: var(--akcent-jasny); }
+  .za-co { margin: 0; font-size: 13px; color: var(--tekst-na-ciemnym-2); }
+  .opis-ceny {
+    margin: 12px 0 0;
+    padding-top: 12px;
+    border-top: 1px solid var(--kreska-ciemna);
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--tekst-na-ciemnym-2);
+  }
+  .pelna { width: 100%; justify-content: center; margin-top: 12px; }
+  .pudlo-ceny .przycisk--whatsapp { color: var(--tekst-na-ciemnym); }
+  .pudlo-ceny .przycisk--whatsapp:hover { color: var(--tekst-na-ciemnym); }
+  .obietnica { margin: 12px 0 0; text-align: center; font-size: 11.5px; color: var(--tekst-4); }
+
+  .pudlo-transport {
+    padding: 22px 24px;
+    background: var(--tlo-karta);
+    border: 1px solid var(--kreska);
+    border-radius: var(--r-m);
+  }
+  .pudlo-transport > :global(svg) { color: var(--akcent); }
+  .pudlo-transport h2 { font-size: 20px; margin: 10px 0 8px; }
+  .pudlo-transport p { font-size: 14px; color: var(--tekst-2); }
+  .link-strzalka {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 12px;
+    font: 700 11.5px var(--font-tekst);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+  }
+
+  .blok-inne { padding-block: 0 8px; }
+  .blok-inne h2 { margin-bottom: 22px; }
+  .siatka-kart {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: 20px;
+  }
+</style>

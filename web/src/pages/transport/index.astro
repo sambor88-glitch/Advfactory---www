@@ -1,0 +1,529 @@
+---
+import Base from '../../layouts/Base.astro';
+import Ikona from '../../components/Ikona.astro';
+import MapaKierunkow from '../../components/MapaKierunkow.astro';
+import Faq from '../../components/Faq.astro';
+import { pobierzOferte, kierunkiOpublikowane, kierunkiWKonfiguratorze, faqSekcji, terminyAktualne } from '../../data/oferta';
+import { POJAZDY } from '../../lib/konfigurator';
+import { data, euro } from '../../lib/format';
+
+const oferta = await pobierzOferte();
+const kierunki = kierunkiOpublikowane(oferta);
+const doKonfiguratora = kierunkiWKonfiguratorze(oferta);
+const magazyny = oferta.magazyny.filter((m) => m.widoczny);
+
+// Kierunek zostaje w tabeli nawet bez aktualnego terminu — to też cennik.
+// Zamiast dat pokazuje wtedy jeden wiersz z informacją, że termin dopiero będzie.
+const wiersze = kierunki.map((k) => ({ kierunek: k, terminy: terminyAktualne(k) }));
+const faq = faqSekcji(oferta, 'transport');
+
+// Konfigurator liczy w przeglądarce, więc potrzebuje surowych liczb.
+// Wysyłamy tylko te pola, których naprawdę używa.
+const daneKonfiguratora = doKonfiguratora.map((k) => ({
+  id: k.id,
+  nazwa: k.nazwa,
+  uwagi: k.uwagi,
+  jedna: k.cena_jedna_eur,
+  obie: k.cena_obie_eur,
+}));
+---
+<Base
+  tytul="Transport pojazdów"
+  opis="Terminarz kontenerów i ceny transportu motocykla: Kirgistan, Islandia, Władywostok, Pakistan, Chile, RPA, Kenia. Cena podana jest ostateczna."
+>
+  <section class="tresc czapka">
+    <p class="nadtytul">Transport pojazdów · od 2008</p>
+    <h1>Przekręcisz kluczyk i odjedziesz</h1>
+    <p class="lead">
+      {kierunki.length} kierunków, stałe terminy pakowania i odbiór w magazynie na miejscu.
+      Zajmujemy się kontenerem, odprawą i papierami. <strong>Podana cena jest ostateczna</strong> —
+      nie dopłacasz po fakcie.
+    </p>
+    {magazyny.length > 0 && (
+      <p class="magazyny liczby">
+        <Ikona nazwa="map-pin" rozmiar="14" />
+        Magazyny: {magazyny.map((m) => m.miasto).join(' · ')}
+      </p>
+    )}
+  </section>
+
+  <!-- ── KONFIGURATOR ─────────────────────────────────────────────────── -->
+  <section class="tresc sekcja">
+    <p class="nadtytul">Policz orientacyjnie</p>
+    <h2>Ile kosztuje wysłanie Twojego pojazdu</h2>
+
+    <div class="konfigurator" id="konfigurator" data-kierunki={JSON.stringify(daneKonfiguratora)}>
+      <div class="wybory">
+        <fieldset>
+          <legend>Pojazd</legend>
+          <div class="kafelki">
+            {POJAZDY.map((p, i) => (
+              <label>
+                <input type="radio" name="pojazd" value={p.id} checked={i === 0} />
+                <span class="kafelek">
+                  <Ikona nazwa={p.ikona} rozmiar="20" />
+                  <strong>{p.etykieta}</strong>
+                  <em>{p.podtytul}</em>
+                </span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Kierunek</legend>
+          <select name="kierunek" id="wybor-kierunku">
+            {doKonfiguratora.map((k) => (
+              <option value={k.id}>{k.nazwa}{k.uwagi ? ` — ${k.uwagi}` : ''}</option>
+            ))}
+          </select>
+        </fieldset>
+
+        <fieldset id="pole-stron">
+          <legend>Kierunek podróży</legend>
+          <div class="kafelki dwa">
+            <label>
+              <input type="radio" name="strony" value="jedna" checked />
+              <span class="kafelek maly"><strong>⇒ w jedną stronę</strong><em>wracasz o własnych siłach</em></span>
+            </label>
+            <label>
+              <input type="radio" name="strony" value="obie" />
+              <span class="kafelek maly"><strong>⇔ w obie strony</strong><em>ten sam kontener z powrotem</em></span>
+            </label>
+          </div>
+          <p class="wymuszone" id="wymuszone" hidden></p>
+        </fieldset>
+      </div>
+
+      <div class="wynik">
+        <p class="etykieta">Orientacyjnie</p>
+        <p class="widelek liczby" id="widelek">—</p>
+        <p class="notka-wyceny" id="notka-wyceny"></p>
+        <p class="zastrzezenie">
+          To widełki, nie oferta. Ostateczną cenę potwierdzamy po sprawdzeniu wymiarów pojazdu
+          i wolnego miejsca w kontenerze — i wtedy już się nie zmienia.
+        </p>
+        <button
+          type="button"
+          class="przycisk pelna"
+          id="zapytaj-konfigurator"
+          data-otworz-zapytanie
+          data-zrodlo="konfigurator"
+        >
+          <Ikona nazwa="send" rozmiar="15" />
+          Zapytaj o ten transport
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── MAPA ─────────────────────────────────────────────────────────── -->
+  <section class="tresc sekcja">
+    <p class="nadtytul">Dokąd wozimy</p>
+    <h2>Kierunki z magazynu w Ciechanowie</h2>
+    <div class="ramka-mapy"><MapaKierunkow /></div>
+  </section>
+
+  <!-- ── TERMINARZ ────────────────────────────────────────────────────── -->
+  <section class="tresc sekcja" id="terminarz">
+    <p class="nadtytul">Terminarz kontenerów</p>
+    <h2>Terminy i ceny</h2>
+    <p class="pod-naglowkiem">
+      Daty pakowania są sztywne — pod nie kupuj bilet. Dostawa to orientacyjny termin odbioru na miejscu.
+    </p>
+
+    <div class="przewijak">
+      <table class="terminarz liczby">
+        <thead>
+          <tr>
+            <th scope="col">Kierunek</th>
+            <th scope="col">Pakowanie PL</th>
+            <th scope="col">Dostawa</th>
+            <th scope="col">Powrót z miejsca</th>
+            <th scope="col">Powrót PL</th>
+            <th scope="col">Cena</th>
+          </tr>
+        </thead>
+        <tbody>
+          {wiersze.map(({ kierunek: k, terminy }) => {
+            const ile = Math.max(1, terminy.length);
+            const naglowek = (
+              <th scope="row" rowspan={ile}>
+                <a href={k.strona ? `/transport/${k.slug}` : undefined}>{k.nazwa}</a>
+                {k.uwagi && <span class="uwaga">{k.uwagi}</span>}
+              </th>
+            );
+            const ceny = (
+              <td class="ceny" rowspan={ile}>
+                {k.cena_jedna_eur !== null && <span>⇒ {euro(k.cena_jedna_eur)}</span>}
+                {k.cena_obie_eur !== null && <span>⇔ {euro(k.cena_obie_eur)}</span>}
+              </td>
+            );
+            return terminy.length === 0 ? (
+              <tr>
+                {naglowek}
+                <td colspan="4" class="bez-terminu">Termin na kolejny sezon ustalamy — zapisz się na powiadomienie</td>
+                {ceny}
+              </tr>
+            ) : (
+              terminy.map((t, i) => (
+                <tr>
+                  {i === 0 && naglowek}
+                  <td>{data(t.pakowanie_pl)}</td>
+                  <td>{data(t.dostawa)}</td>
+                  <td>{data(t.powrot_z_miejsca)}</td>
+                  <td>{data(t.powrot_pl)}</td>
+                  {i === 0 && ceny}
+                </tr>
+              ))
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ── POWIADOMIENIE O TERMINIE ─────────────────────────────────────── -->
+  <section class="tresc sekcja">
+    <div class="powiadomienie">
+      <div>
+        <h2>Nie ma Twojego terminu?</h2>
+        <p>
+          Zostaw maila, a napiszemy, gdy otworzymy nowy kontener na wybrany kierunek.
+          To osobna lista — nie trafiasz przez to do sprzedaży i nie dostajesz newslettera.
+        </p>
+      </div>
+      <form class="zapis" id="zapis-na-termin">
+        <label class="tylko-czytnik" for="mail-powiadomienia">Twój e-mail</label>
+        <input type="email" id="mail-powiadomienia" name="email" placeholder="twoj@email.pl" required />
+        <fieldset class="kierunki-wyboru">
+          <legend class="tylko-czytnik">Kierunki</legend>
+          {kierunki.map((k) => (
+            <label><input type="checkbox" name="kierunki" value={k.nazwa} /><span>{k.nazwa}</span></label>
+          ))}
+        </fieldset>
+        <label class="zgoda">
+          <input type="checkbox" name="zgoda" required />
+          <span>Zgadzam się na powiadomienie mailem o nowym terminie. Mogę je wycofać jednym kliknięciem.</span>
+        </label>
+        <button type="submit" class="przycisk">
+          <Ikona nazwa="mail" rozmiar="15" />
+          Daj znać o terminie
+        </button>
+        <p class="komunikat" id="komunikat-zapisu" hidden role="status"></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- ── FAQ ──────────────────────────────────────────────────────────── -->
+  {faq.length > 0 && (
+    <section class="tresc sekcja">
+      <p class="nadtytul">Najczęstsze pytania</p>
+      <h2>Zanim zapytasz</h2>
+      <Faq pytania={faq.map((f) => ({ q: f.pytanie, a: f.odpowiedz }))} pierwszeOtwarte />
+    </section>
+  )}
+</Base>
+
+<style>
+  .czapka { padding-block: 56px 8px; max-width: 900px; }
+  h1 { margin: 14px 0 18px; }
+  .lead { font-size: 17px; color: var(--tekst-2); max-width: 64ch; }
+  .lead strong { color: var(--tekst); }
+  .magazyny { display: inline-flex; align-items: center; gap: 8px; margin-top: 16px; font-size: 13px; color: var(--tekst-3); }
+
+  .sekcja { padding-block: 56px 0; }
+  .sekcja h2 { margin: 6px 0 18px; }
+  .pod-naglowkiem { color: var(--tekst-2); max-width: 66ch; margin-bottom: 22px; }
+
+  /* ── Konfigurator ─────────────────────────────────────────────────── */
+  .konfigurator {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 28px;
+    align-items: start;
+    margin-top: 10px;
+  }
+  @media (max-width: 900px) { .konfigurator { grid-template-columns: 1fr; } }
+
+  .wybory { display: grid; gap: 26px; }
+  .konfigurator fieldset { border: 0; padding: 0; margin: 0; }
+  .konfigurator legend {
+    padding: 0 0 10px;
+    font: 700 10.5px var(--font-tekst);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--tekst-4);
+  }
+
+  .kafelki { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 10px; }
+  .kafelki.dwa { grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); }
+  .kafelki label { cursor: pointer; }
+  .kafelki input { position: absolute; opacity: 0; pointer-events: none; }
+
+  .kafelek {
+    display: grid;
+    gap: 3px;
+    padding: 16px;
+    height: 100%;
+    background: var(--tlo-karta);
+    border: 1px solid var(--kreska);
+    border-radius: var(--r-m);
+    transition: border-color .16s ease, background-color .16s ease;
+  }
+  .kafelek > :global(svg) { color: var(--tekst-4); margin-bottom: 4px; }
+  .kafelek strong { font-size: 15px; }
+  .kafelek em { font-style: normal; font-size: 12.5px; color: var(--tekst-3); }
+  .kafelek.maly { padding: 13px 15px; }
+
+  .kafelki input:checked + .kafelek { border-color: var(--akcent); background: rgba(234, 90, 11, .05); }
+  .kafelki input:checked + .kafelek > :global(svg) { color: var(--akcent); }
+  .kafelki input:focus-visible + .kafelek { outline: 2px solid var(--akcent); outline-offset: 2px; }
+  .kafelki input:disabled + .kafelek { opacity: .4; cursor: not-allowed; }
+
+  select {
+    width: 100%;
+    padding: 13px 14px;
+    border: 1px solid var(--kreska);
+    border-radius: var(--r-s);
+    background: var(--tlo-karta);
+    font: 15px var(--font-tekst);
+    color: var(--tekst);
+  }
+
+  .wymuszone {
+    margin: 10px 0 0;
+    font-size: 12.5px;
+    color: var(--tekst-3);
+    display: flex;
+    gap: 7px;
+  }
+  .wymuszone[hidden] { display: none; }
+
+  .wynik {
+    position: sticky;
+    top: 100px;
+    padding: 24px;
+    background: var(--ciemny);
+    color: var(--tekst-na-ciemnym);
+    border-radius: var(--r-m);
+  }
+  @media (max-width: 900px) { .wynik { position: static; } }
+  .wynik .etykieta {
+    margin: 0;
+    font: 700 10.5px var(--font-tekst);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--tekst-4);
+  }
+  .widelek { margin: 6px 0 4px; font-size: 30px; font-weight: 600; line-height: 1.1; color: var(--akcent-jasny); }
+  .notka-wyceny { margin: 0; font-size: 12.5px; color: var(--tekst-na-ciemnym-2); }
+  .zastrzezenie {
+    margin: 14px 0 0;
+    padding-top: 14px;
+    border-top: 1px solid var(--kreska-ciemna);
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--tekst-na-ciemnym-2);
+  }
+  .pelna { width: 100%; justify-content: center; margin-top: 16px; }
+
+  .ramka-mapy { border: 1px solid var(--kreska); border-radius: var(--r-m); overflow: hidden; }
+
+  /* ── Terminarz ────────────────────────────────────────────────────── */
+  .przewijak { overflow-x: auto; border: 1px solid var(--kreska); border-radius: var(--r-m); }
+  .terminarz { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--tlo-karta); }
+  .terminarz th, .terminarz td { padding: 11px 14px; text-align: left; border-bottom: 1px solid var(--kreska); }
+  .terminarz thead th {
+    position: sticky;
+    top: 0;
+    background: var(--tlo-zatopione);
+    font: 700 10.5px var(--font-tekst);
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    color: var(--tekst-3);
+    white-space: nowrap;
+  }
+  .terminarz tbody th {
+    font-weight: 600;
+    font-size: 13.5px;
+    vertical-align: top;
+    border-right: 1px solid var(--kreska);
+    min-width: 200px;
+  }
+  .terminarz .uwaga { display: block; margin-top: 3px; font-size: 11.5px; font-weight: 400; color: var(--tekst-3); }
+  .terminarz tbody th a { color: var(--tekst); }
+  .terminarz tbody th a[href]:hover { color: var(--akcent); }
+  .bez-terminu { color: var(--tekst-3) !important; font-style: italic; white-space: normal !important; }
+  .terminarz td { white-space: nowrap; color: var(--tekst-2); }
+  .ceny { vertical-align: top; }
+  .ceny span { display: block; font-weight: 600; color: var(--tekst); }
+
+  /* ── Powiadomienie ────────────────────────────────────────────────── */
+  .powiadomienie {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 36px;
+    padding: 32px;
+    background: var(--tlo-zatopione);
+    border-radius: var(--r-m);
+  }
+  @media (max-width: 860px) { .powiadomienie { grid-template-columns: 1fr; gap: 24px; } }
+  .powiadomienie h2 { margin: 0 0 12px; font-size: clamp(24px, 3vw, 32px); }
+  .powiadomienie p { color: var(--tekst-2); max-width: 46ch; }
+
+  .zapis { display: grid; gap: 14px; align-content: start; }
+  .zapis input[type='email'] {
+    padding: 13px 14px;
+    border: 1px solid var(--kreska);
+    border-radius: var(--r-s);
+    background: var(--tlo-karta);
+    font: 15px var(--font-tekst);
+  }
+  .kierunki-wyboru { border: 0; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 7px; }
+  .kierunki-wyboru label { cursor: pointer; }
+  .kierunki-wyboru input { position: absolute; opacity: 0; pointer-events: none; }
+  .kierunki-wyboru span {
+    display: inline-block;
+    padding: 7px 11px;
+    border: 1px solid var(--kreska);
+    border-radius: var(--r-pigulka);
+    background: var(--tlo-karta);
+    font-size: 12.5px;
+  }
+  .kierunki-wyboru input:checked + span { background: var(--ciemny); border-color: var(--ciemny); color: var(--tlo); }
+  .kierunki-wyboru input:focus-visible + span { outline: 2px solid var(--akcent); outline-offset: 2px; }
+
+  .zgoda { display: flex; gap: 9px; align-items: flex-start; font-size: 12.5px; color: var(--tekst-3); line-height: 1.5; }
+  .zgoda input { margin-top: 3px; accent-color: var(--akcent); flex: none; }
+
+  .komunikat {
+    margin: 0;
+    padding: 11px 14px;
+    border-radius: var(--r-s);
+    background: rgba(76, 122, 52, .12);
+    border-left: 3px solid var(--ok);
+    font-size: 13.5px;
+    color: var(--ok);
+  }
+  .komunikat[hidden] { display: none; }
+  .komunikat.blad { background: rgba(191, 49, 38, .08); border-left-color: var(--blad); color: var(--blad); }
+
+</style>
+
+<script>
+  import { POJAZDY, policz, doLeada } from '../../lib/konfigurator';
+  import { widelek as formatWidelka } from '../../lib/format';
+  import type { Kierunek } from '../../types/oferta';
+
+  const root = document.getElementById('konfigurator');
+  if (root) {
+    // Kierunki przychodzą okrojone — uzupełniamy pola, których `policz` wymaga,
+    // ale których konfigurator nie potrzebuje.
+    type Skrot = { id: string; nazwa: string; uwagi: string | null; jedna: number | null; obie: number | null };
+    const skroty = JSON.parse(root.dataset.kierunki!) as Skrot[];
+
+    const doKierunku = (s: Skrot): Kierunek =>
+      ({ ...s, cena_jedna_eur: s.jedna, cena_obie_eur: s.obie } as unknown as Kierunek);
+
+    const widelek = document.getElementById('widelek')!;
+    const notka = document.getElementById('notka-wyceny')!;
+    const wymuszone = document.getElementById('wymuszone')!;
+    const wyborKierunku = document.getElementById('wybor-kierunku') as HTMLSelectElement;
+    const guzik = document.getElementById('zapytaj-konfigurator')!;
+
+    const przelicz = () => {
+      const skrot = skroty.find((k) => k.id === wyborKierunku.value) ?? skroty[0]!;
+      const kierunek = doKierunku(skrot);
+      const pojazd = (root.querySelector<HTMLInputElement>('input[name="pojazd"]:checked')?.value ?? 'motocykl') as 'motocykl';
+      const strony = (root.querySelector<HTMLInputElement>('input[name="strony"]:checked')?.value ?? 'jedna') as 'jedna';
+
+      // Kierunek bez wariantu w jedną albo w obie strony — blokujemy opcję,
+      // zamiast pokazywać cenę, której nie da się kupić.
+      root.querySelectorAll<HTMLInputElement>('input[name="strony"]').forEach((i) => {
+        i.disabled = i.value === 'jedna' ? skrot.jedna === null : skrot.obie === null;
+      });
+
+      const wycena = policz(kierunek, pojazd, strony);
+      if (!wycena) {
+        widelek.textContent = 'wycena indywidualna';
+        notka.textContent = 'Napisz — policzymy ten kierunek ręcznie.';
+        wymuszone.hidden = true;
+        guzik.removeAttribute('data-konfiguracja');
+        return;
+      }
+
+      // Gdy wariant został wymuszony, zaznaczenie musi to odzwierciedlić.
+      const wybrany = root.querySelector<HTMLInputElement>(`input[name="strony"][value="${wycena.strony}"]`);
+      if (wybrany && !wybrany.checked) wybrany.checked = true;
+
+      widelek.textContent = formatWidelka(wycena.od, wycena.do);
+      const nazwaPojazdu = POJAZDY.find((p) => p.id === pojazd)?.etykieta ?? '';
+      notka.textContent = `${nazwaPojazdu} · ${wycena.notka}`;
+
+      wymuszone.hidden = !wycena.wymuszona;
+      if (wycena.wymuszona) {
+        wymuszone.textContent = wycena.strony === 'obie'
+          ? 'Ten kierunek obsługujemy tylko w obie strony.'
+          : 'Ten kierunek obsługujemy tylko w jedną stronę — z powrotem do Polski.';
+      }
+
+      guzik.dataset.konfiguracja = JSON.stringify(doLeada(kierunek, pojazd, wycena));
+      guzik.dataset.kontekstTytul = `Transport: ${skrot.nazwa}`;
+      guzik.dataset.kontekstMeta =
+        `${nazwaPojazdu} · ${wycena.strony === 'obie' ? 'w obie strony' : 'w jedną stronę'} · ${formatWidelka(wycena.od, wycena.do)}`;
+    };
+
+    root.addEventListener('change', przelicz);
+    przelicz();
+  }
+
+  // Zapis na powiadomienie o terminie — osobna lista, nie lejek.
+  const zapis = document.getElementById('zapis-na-termin') as HTMLFormElement | null;
+  if (zapis) {
+    const komunikat = document.getElementById('komunikat-zapisu')!;
+    const ENDPOINT = import.meta.env.PUBLIC_ZAINTERESOWANI_URL ?? '';
+
+    zapis.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!zapis.reportValidity()) return;
+
+      const dane = new FormData(zapis);
+      const payload = {
+        email: String(dane.get('email') ?? ''),
+        kierunki: dane.getAll('kierunki').map(String),
+        jezyk: 'pl',
+        zgoda: { timestamp: new Date().toISOString() },
+      };
+
+      if (payload.kierunki.length === 0) {
+        komunikat.textContent = 'Zaznacz przynajmniej jeden kierunek — inaczej nie wiemy, o czym dać znać.';
+        komunikat.classList.add('blad');
+        komunikat.hidden = false;
+        return;
+      }
+
+      try {
+        if (ENDPOINT) {
+          const odp = await fetch(ENDPOINT, {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          if (!odp.ok) throw new Error(`HTTP ${odp.status}`);
+        } else {
+          console.info('[zainteresowani] payload gotowy do POST /zainteresowani:', payload);
+        }
+        komunikat.textContent = 'Zapisane. Napiszemy, gdy otworzymy nowy kontener na te kierunki.';
+        komunikat.classList.remove('blad');
+        komunikat.hidden = false;
+        zapis.reset();
+      } catch (err) {
+        komunikat.textContent = 'Nie udało się zapisać. Spróbuj jeszcze raz albo napisz do nas wprost.';
+        komunikat.classList.add('blad');
+        komunikat.hidden = false;
+        console.warn('[zainteresowani] zapis nieudany', err);
+      }
+    });
+  }
+</script>

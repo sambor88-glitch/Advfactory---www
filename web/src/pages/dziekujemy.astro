@@ -1,0 +1,147 @@
+---
+import Base from '../layouts/Base.astro';
+import Ikona from '../components/Ikona.astro';
+import { pobierzOferte } from '../data/oferta';
+import { numerWhatsApp } from '../lib/format';
+
+const oferta = await pobierzOferte();
+const godziny = oferta.ustawienia.odpowiedz_w_godzinach;
+const wa = numerWhatsApp(oferta.firma.whatsapp);
+const biuro = oferta.ustawienia.godziny_biura;
+---
+<Base
+  tytul="Mamy Twoje zapytanie"
+  opis="Zapytanie trafiło do naszego CRM i dostało opiekuna."
+  noindex
+>
+  <section class="tresc potwierdzenie">
+    <div class="znaczek"><Ikona nazwa="check" rozmiar="30" /></div>
+
+    <h1>Mamy Twoje zapytanie</h1>
+
+    <p class="numer liczby" id="numer-sprawy" hidden>
+      Numer sprawy <strong id="numer-wartosc"></strong>
+    </p>
+
+    <p class="lead">
+      Odpowiemy w ciągu <strong>{godziny} h</strong>.
+      {biuro.pokazuj && <> W dni robocze ({biuro.tekst}) zwykle szybciej.</>}
+    </p>
+
+    <ol class="kroki">
+      <li>
+        <span class="krok liczby">1</span>
+        <div>
+          <strong>Zapytanie trafiło do naszego CRM</strong>
+          <p>Nie do skrzynki zbiorczej. Ma swój numer i opiekuna, który je prowadzi do końca.</p>
+        </div>
+      </li>
+      <li>
+        <span class="krok liczby">2</span>
+        <div>
+          <strong>Odzywa się człowiek, nie automat</strong>
+          <p>Nie dostaniesz „dziękujemy za kontakt”. Dostaniesz odpowiedź na to, o co pytasz.</p>
+        </div>
+      </li>
+      <li>
+        <span class="krok liczby">3</span>
+        <div>
+          <strong>Jeśli to transport — potwierdzamy cenę ostatecznie</strong>
+          <p>Po sprawdzeniu wymiarów pojazdu i miejsca w kontenerze. Potem już się nie zmienia.</p>
+        </div>
+      </li>
+    </ol>
+
+    <div class="guziki">
+      <a class="przycisk przycisk--obrys" href="/">
+        <Ikona nazwa="arrow-right" rozmiar="15" klasa="wstecz" />
+        Wracam na stronę
+      </a>
+      <a class="przycisk przycisk--whatsapp" href={`https://wa.me/${wa}`} target="_blank" rel="noopener noreferrer">
+        <Ikona nazwa="message-circle" rozmiar="16" />
+        Coś pilnego? Napisz na WhatsApp
+      </a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .potwierdzenie { padding-block: 72px 24px; max-width: 720px; text-align: center; }
+
+  .znaczek {
+    width: 66px; height: 66px;
+    margin: 0 auto 26px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: rgba(76, 122, 52, .14);
+    color: var(--ok);
+  }
+
+  h1 { font-size: clamp(34px, 6vw, 56px); }
+
+  .numer {
+    margin: 18px 0 0;
+    font-size: 13px;
+    color: var(--tekst-3);
+  }
+  .numer[hidden] { display: none; }
+  .numer strong {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 4px 10px;
+    border-radius: var(--r-s);
+    background: var(--tlo-zatopione);
+    color: var(--tekst);
+    letter-spacing: .04em;
+  }
+
+  .lead { margin-top: 18px; font-size: 17px; color: var(--tekst-2); }
+  .lead strong { color: var(--tekst); }
+
+  .kroki {
+    list-style: none;
+    margin: 44px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 2px;
+    text-align: left;
+  }
+  .kroki li {
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    gap: 16px;
+    padding: 18px 20px;
+    background: var(--tlo-karta);
+    border: 1px solid var(--kreska);
+  }
+  .kroki li:first-child { border-radius: var(--r-m) var(--r-m) 0 0; }
+  .kroki li:last-child { border-radius: 0 0 var(--r-m) var(--r-m); }
+  .kroki li + li { border-top: 0; }
+
+  .krok {
+    width: 30px; height: 30px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--akcent);
+    color: #fff;
+    font: 600 14px var(--font-liczby);
+  }
+  .kroki strong { display: block; font-size: 15.5px; }
+  .kroki p { margin: 4px 0 0; font-size: 14px; color: var(--tekst-2); }
+
+  .guziki { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 36px; }
+  .guziki :global(.wstecz) { transform: rotate(180deg); }
+</style>
+
+<script>
+  // Numer sprawy przychodzi w adresie, bo stronę generujemy statycznie,
+  // a numer nadaje CRM dopiero przy zapisie leada.
+  const numer = new URLSearchParams(location.search).get('nr');
+  if (numer) {
+    const wiersz = document.getElementById('numer-sprawy')!;
+    document.getElementById('numer-wartosc')!.textContent = numer;
+    wiersz.hidden = false;
+  }
+</script>

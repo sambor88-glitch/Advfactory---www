@@ -1,0 +1,30 @@
+/* ── Fonty hostowane u nas ───────────────────────────────────────────────────
+   Prototyp ciągnął je z fonts.googleapis.com. Na publicznej stronie oznacza to,
+   że adres IP każdego odwiedzającego trafia do Google zanim ktokolwiek kliknie
+   zgodę na cookies — a to jest przetwarzanie danych bez podstawy. Z fontami
+   we własnym S3 problem znika, a przy okazji odpada jedno łączenie DNS + TLS.
+
+   Bierzemy tylko te kroje i grubości, których strona faktycznie używa,
+   i oba podzbiory znaków: latin oraz latin-ext (polskie ogonki). */
+
+/* Anton — nagłówki */
+@import '@fontsource/anton/latin-400.css';
+@import '@fontsource/anton/latin-ext-400.css';
+
+/* Archivo — tekst */
+@import '@fontsource/archivo/latin-400.css';
+@import '@fontsource/archivo/latin-ext-400.css';
+@import '@fontsource/archivo/latin-500.css';
+@import '@fontsource/archivo/latin-ext-500.css';
+@import '@fontsource/archivo/latin-600.css';
+@import '@fontsource/archivo/latin-ext-600.css';
+@import '@fontsource/archivo/latin-700.css';
+@import '@fontsource/archivo/latin-ext-700.css';
+
+/* IBM Plex Mono — liczby, daty, ceny */
+@import '@fontsource/ibm-plex-mono/latin-400.css';
+@import '@fontsource/ibm-plex-mono/latin-ext-400.css';
+@import '@fontsource/ibm-plex-mono/latin-500.css';
+@import '@fontsource/ibm-plex-mono/latin-ext-500.css';
+@import '@fontsource/ibm-plex-mono/latin-600.css';
+@import '@fontsource/ibm-plex-mono/latin-ext-600.css';

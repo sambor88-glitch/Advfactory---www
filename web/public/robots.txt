@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Panel klienta jest za logowaniem — nie ma czego indeksować.
+Disallow: /panel
+
+Sitemap: https://advfactory.com/sitemap-index.xml

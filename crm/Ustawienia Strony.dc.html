@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap&subset=latin-ext" rel="stylesheet">
+<script src="../assets/lucide.min.js"></script>
+<script src="admin-shell.js"></script>
+<style>@keyframes _rs{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}[data-screen-label]>*{animation:_rs .5s cubic-bezier(.2,.7,.3,1) both}[data-screen-label]>*:nth-child(2){animation-delay:.07s}[data-screen-label]>*:nth-child(3){animation-delay:.13s}button,a,[style*="cursor:pointer"]{transition:background .15s,border-color .15s,color .15s,transform .12s}button:active{transform:scale(.98)}*{box-sizing:border-box}body{margin:0;background:#0F0E0C}a{color:var(--accent)}a:hover{color:var(--accent-hover)}.ic{display:inline-grid;place-items:center}.ic svg{width:1em;height:1em;stroke-width:2px;display:block}::-webkit-scrollbar{width:9px}::-webkit-scrollbar-thumb{background:#332F29;border-radius:6px}textarea:focus,input:focus{border-color:var(--accent) !important;box-shadow:0 0 0 3px rgba(242,106,27,.18)}</style>
+</helmet>
+<div data-theme="dark" data-screen-label="Ustawienia strony" style="width:1440px;max-width:100%;min-height:900px;background:#0F0E0C;color:#F2EFE7;font-family:'Archivo',system-ui,sans-serif;padding:20px 24px;position:relative;--accent:#F26A1B;--accent-hover:#FF7D2E;--surface:#1B1A16;--sunken:#131210;--line:#332F29;--t2:#B9B3A6;--t3:#7E796E;--ok:#6FA352;--warn:#D98E1B;--danger:#D9483C;--info:#5E8FB5">
+
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;font:700 10.5px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t3);flex-wrap:wrap">
+    <img src="../assets/logo-white.png" alt="ADVfactory" style="height:18px;display:block;margin-right:6px">
+    <span style="color:var(--t2)">Oferta na stronie</span><span>·</span>
+    <a href="Katalog%20Wypraw.dc.html" style="color:var(--t3);text-decoration:none">Wyprawy</a>
+    <a href="Terminarz%20Transport%C3%B3w.dc.html" style="color:var(--t3);text-decoration:none">Transport</a>
+    <a href="Tre%C5%9Bci%20Strony.dc.html" style="color:var(--t3);text-decoration:none">Treści strony</a>
+    <a href="Zainteresowani%20Terminem.dc.html" style="color:var(--t3);text-decoration:none">Zainteresowani terminem</a>
+    <span style="color:var(--accent-hover);border-bottom:2px solid var(--accent);padding-bottom:2px">Ustawienia strony</span>
+    <a href="../Strona%20ADVfactory.dc.html" style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;color:var(--t2);text-decoration:none"><span class="ic" style="font-size:13px"><i data-lucide="external-link"></i></span>Podgląd strony</a>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;flex-wrap:wrap">
+    <div><div style="font-family:'Anton';font-size:30px;text-transform:uppercase;line-height:1">Ustawienia strony</div><div style="font:12px 'IBM Plex Mono';color:var(--t3);margin-top:5px">to, co dziś było wpisane w kodzie — kontakt, obietnice, hero, baner, SEO</div></div>
+    <div style="margin-left:auto;display:flex;gap:9px;align-items:center;flex-wrap:wrap">
+      <sc-if value="{{ dirty }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;align-items:center;gap:8px;height:40px;padding:0 13px;background:rgba(217,142,27,.12);border:1px solid #6b551f;border-radius:8px;font:600 12px 'Archivo';color:var(--warn)"><span style="width:8px;height:8px;border-radius:50%;background:var(--warn)"></span>Niepublikowane zmiany</div>
+        <button onClick="{{ publish }}" style="height:40px;padding:0 16px;display:flex;align-items:center;gap:8px;background:var(--accent);color:#fff;border:none;border-radius:8px;font:700 12px 'Archivo';text-transform:uppercase;letter-spacing:.03em;cursor:pointer;box-shadow:0 2px 0 #A83D03"><span class="ic" style="font-size:15px"><i data-lucide="globe"></i></span>Publikuj</button>
+      </sc-if>
+      <sc-if value="{{ clean }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;align-items:center;gap:8px;height:40px;padding:0 13px;background:rgba(111,163,82,.1);border:1px solid #2f5b3f;border-radius:8px;font:600 12px 'Archivo';color:var(--ok)"><span class="ic" style="font-size:14px"><i data-lucide="check-circle-2"></i></span>Strona aktualna · {{ publishedAt }}</div>
+      </sc-if>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+    <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4"><div onClick="{{ t.onClick }}" style="height:38px;padding:0 16px;display:flex;align-items:center;gap:8px;background:{{ t.bg }};border:1px solid {{ t.border }};border-radius:8px;font:700 12px 'Archivo';text-transform:uppercase;letter-spacing:.03em;color:{{ t.color }};cursor:pointer"><span class="ic" style="font-size:14px"><i data-lucide="{{ t.icon }}"></i></span>{{ t.label }}</div></sc-for>
+  </div>
+
+  <!-- KONTAKT I OBIETNICE -->
+  <sc-if value="{{ isContact }}" hint-placeholder-val="{{ true }}">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px">
+        <div style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.06em;color:var(--t3)">Kanały kontaktu</div>
+        <div style="font:12px 'Archivo';color:var(--t2);margin-top:4px;line-height:1.5">Pływający przycisk WhatsApp, stopka, strona Kontakt, formularz „jak odpisać”.</div>
+        <div style="display:grid;gap:12px;margin-top:14px">
+          <sc-for list="{{ contactFields }}" as="c" hint-placeholder-count="4">
+            <label style="display:block"><span style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">{{ c.label }}</span>
+              <input value="{{ c.value }}" onInput="{{ c.onInput }}" placeholder="{{ c.ph }}" style="width:100%;height:42px;margin-top:6px;padding:0 12px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:8px;font:13.5px 'IBM Plex Mono';outline:none"></label>
+          </sc-for>
+        </div>
+      </div>
+      <div style="display:grid;gap:16px;align-content:start">
+        <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px">
+          <div style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.06em;color:var(--t3)">Obietnica odpowiedzi</div>
+          <div style="display:flex;align-items:center;gap:14px;margin-top:12px">
+            <input value="{{ replyHours }}" onInput="{{ set.replyHours }}" type="number" min="1" max="72" style="width:90px;height:48px;padding:0 12px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:8px;font:600 20px 'IBM Plex Mono';outline:none;text-align:center">
+            <div style="font-size:13.5px;color:var(--t2);line-height:1.5">godzin. Ta liczba jest w 9 miejscach na stronie i steruje alertem w Skrzynce — po jej przekroczeniu zapytanie świeci na czerwono.</div>
+          </div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px">
+          <div style="display:flex;align-items:center;gap:10px"><div style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.06em;color:var(--t3)">Godziny biura</div><div onClick="{{ set.hoursOn }}" style="margin-left:auto;display:flex;align-items:center;gap:8px;cursor:pointer"><span style="font:600 11px 'Archivo';color:var(--t2)">{{ hoursLabel }}</span><div style="width:40px;height:22px;border-radius:99px;background:{{ hoursTrack }};position:relative"><div style="position:absolute;top:3px;left:{{ hoursKnob }};width:16px;height:16px;border-radius:50%;background:#F2EFE7;transition:left .15s"></div></div></div></div>
+          <input value="{{ hours }}" onInput="{{ set.hours }}" placeholder="pn–pt 9–17" style="width:100%;height:42px;margin-top:12px;padding:0 12px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:8px;font:13.5px 'Archivo';outline:none">
+          <div style="font:11px 'IBM Plex Mono';color:var(--t3);margin-top:8px">Pokazuje się pod przyciskiem WhatsApp: „biuro odpisuje pn–pt 9–17”.</div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- HERO I BANER -->
+  <sc-if value="{{ isHero }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px">
+        <div style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.06em;color:var(--t3)">Strona główna — hero</div>
+        <div style="display:grid;gap:12px;margin-top:14px">
+          <label style="display:block"><span style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">Nadtytuł</span>
+            <input value="{{ hero.kicker }}" onInput="{{ set.heroKicker }}" style="width:100%;height:42px;margin-top:6px;padding:0 12px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:8px;font:13.5px 'Archivo';outline:none"></label>
+          <label style="display:block"><span style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">Tytuł</span>
+            <textarea value="{{ hero.title }}" onInput="{{ set.heroTitle }}" style="width:100%;min-height:72px;margin-top:6px;padding:11px 12px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:8px;font:600 16px 'Archivo';line-height:1.35;resize:vertical;outline:none"></textarea></label>
+          <label style="display:block"><span style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">Podtytuł</span>
+            <textarea value="{{ hero.lead }}" onInput="{{ set.heroLead }}" style="width:100%;min-height:90px;margin-top:6px;padding:11px 12px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:8px;font:13.5px 'Archivo';line-height:1.5;resize:vertical;outline:none"></textarea></label>
+          <div>
+            <div style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">Zdjęcie w tle</div>
+            <div style="display:flex;gap:12px;margin-top:8px;align-items:center">
+              <div style="width:140px;height:80px;flex:none;border-radius:7px;border:1px solid var(--line);background:#26241F url('{{ hero.img }}') center/cover"></div>
+              <input value="{{ hero.img }}" onInput="{{ set.heroImg }}" style="flex:1;min-width:0;height:42px;padding:0 12px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:8px;font:12px 'IBM Plex Mono';outline:none">
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:16px;background:#1C1B17;border-radius:8px;padding:18px;border:1px solid var(--line)">
+          <div style="font:600 10px 'IBM Plex Mono';letter-spacing:.12em;text-transform:uppercase;color:var(--accent-hover)">{{ hero.kicker }}</div>
+          <div style="font-family:'Anton';font-size:26px;text-transform:uppercase;line-height:1;margin-top:8px;color:#F2EFE7">{{ hero.title }}</div>
+          <div style="font-size:12.5px;color:var(--t2);margin-top:8px;line-height:1.5">{{ hero.lead }}</div>
+          <div style="font:10px 'IBM Plex Mono';color:var(--t3);margin-top:10px">podgląd · proporcje przybliżone</div>
+        </div>
+      </div>
+      <div style="display:grid;gap:16px;align-content:start">
+        <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px">
+          <div style="display:flex;align-items:center;gap:10px"><div style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.06em;color:var(--t3)">Baner informacyjny</div><div onClick="{{ set.bannerOn }}" style="margin-left:auto;display:flex;align-items:center;gap:8px;cursor:pointer"><span style="font:600 11px 'Archivo';color:var(--t2)">{{ bannerLabel }}</span><div style="width:40px;height:22px;border-radius:99px;background:{{ bannerTrack }};position:relative"><div style="position:absolute;top:3px;left:{{ bannerKnob }};width:16px;height:16px;border-radius:50%;background:#F2EFE7;transition:left .15s"></div></div></div></div>
+          <div style="font:12px 'Archivo';color:var(--t2);margin-top:4px;line-height:1.5">Pasek pod nagłówkiem na każdej stronie. Na komunikaty typu „biuro zamknięte 24–26.12” albo „ostatni kontener do Chile — pakowanie 15.12”.</div>
+          <input value="{{ banner.text }}" onInput="{{ set.bannerText }}" placeholder="treść baneru" style="width:100%;height:42px;margin-top:12px;padding:0 12px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:8px;font:13.5px 'Archivo';outline:none">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
+            <label style="display:block"><span style="font:700 9.5px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t3)">Link (opcjonalnie)</span><input value="{{ banner.link }}" onInput="{{ set.bannerLink }}" placeholder="/transport" style="width:100%;height:38px;margin-top:5px;padding:0 11px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:7px;font:12px 'IBM Plex Mono';outline:none"></label>
+            <label style="display:block"><span style="font:700 9.5px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t3)">Wygasa</span><input value="{{ banner.until }}" onInput="{{ set.bannerUntil }}" placeholder="27.12.2026" style="width:100%;height:38px;margin-top:5px;padding:0 11px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:7px;font:12px 'IBM Plex Mono';outline:none"></label>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <sc-for list="{{ bannerTones }}" as="b" hint-placeholder-count="3"><div onClick="{{ b.pick }}" style="flex:1;height:36px;display:flex;align-items:center;justify-content:center;gap:7px;background:{{ b.bg }};border:1px solid {{ b.border }};border-radius:7px;font:700 11px 'Archivo';color:{{ b.color }};cursor:pointer"><span style="width:8px;height:8px;border-radius:50%;background:{{ b.dot }}"></span>{{ b.label }}</div></sc-for>
+          </div>
+          <sc-if value="{{ banner.on }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:14px;background:{{ bannerPrevBg }};color:{{ bannerPrevColor }};padding:9px 14px;border-radius:6px;font:600 12.5px 'Archivo';text-align:center">{{ bannerPrevText }}</div>
+          </sc-if>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px">
+          <div style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.06em;color:var(--t3)">Wideo na stronie głównej</div>
+          <div style="display:grid;gap:10px;margin-top:12px">
+            <sc-for list="{{ videos }}" as="v" hint-placeholder-count="3">
+              <div style="display:flex;gap:10px;align-items:center">
+                <span class="ic" style="font-size:16px;color:#FF4E45"><i data-lucide="youtube"></i></span>
+                <input value="{{ v.url }}" onInput="{{ v.onInput }}" placeholder="https://youtube.com/watch?v=…" style="flex:1;min-width:0;height:40px;padding:0 12px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:7px;font:12px 'IBM Plex Mono';outline:none">
+                <span style="font:10px 'IBM Plex Mono';color:{{ v.stC }};white-space:nowrap">{{ v.st }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="font:11px 'IBM Plex Mono';color:var(--t3);margin-top:10px">Pierwszy link to duży kadr, dwa kolejne małe. Kanał: @Sambor1965.</div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- SEO -->
+  <sc-if value="{{ isSeo }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px">
+        <div style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.06em;color:var(--t3)">Domyślne dla całej strony</div>
+        <div style="font:12px 'Archivo';color:var(--t2);margin-top:4px;line-height:1.5">Wyprawy i kierunki mają własne pola SEO w swoich szufladach. To są wartości dla stron bez własnych: start, FAQ, kontakt, relacje.</div>
+        <div style="display:grid;gap:12px;margin-top:14px">
+          <label style="display:block"><div style="display:flex;justify-content:space-between"><span style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">Szablon tytułu</span><span style="font:10px 'IBM Plex Mono';color:{{ titleLenC }}">{{ titleLen }}</span></div>
+            <input value="{{ seo.titleTpl }}" onInput="{{ set.seoTitle }}" style="width:100%;height:42px;margin-top:6px;padding:0 12px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:8px;font:13.5px 'Archivo';outline:none">
+            <div style="font:10px 'IBM Plex Mono';color:var(--t3);margin-top:5px">{title} podmienia się na tytuł strony. Google ucina po ~60 znakach.</div></label>
+          <label style="display:block"><div style="display:flex;justify-content:space-between"><span style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">Opis (meta description)</span><span style="font:10px 'IBM Plex Mono';color:{{ descLenC }}">{{ descLen }}</span></div>
+            <textarea value="{{ seo.desc }}" onInput="{{ set.seoDesc }}" style="width:100%;min-height:80px;margin-top:6px;padding:11px 12px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:8px;font:13.5px 'Archivo';line-height:1.5;resize:vertical;outline:none"></textarea></label>
+          <div>
+            <div style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">Obrazek do udostępnień (OG)</div>
+            <div style="display:flex;gap:12px;margin-top:8px;align-items:center">
+              <div style="width:140px;height:74px;flex:none;border-radius:7px;border:1px solid var(--line);background:#26241F url('{{ seo.og }}') center/cover"></div>
+              <input value="{{ seo.og }}" onInput="{{ set.seoOg }}" style="flex:1;min-width:0;height:42px;padding:0 12px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:8px;font:12px 'IBM Plex Mono';outline:none">
+            </div>
+            <div style="font:10px 'IBM Plex Mono';color:var(--t3);margin-top:5px">1200 × 630 px. Pokazuje się, gdy ktoś wklei link na WhatsAppie czy Facebooku.</div>
+          </div>
+        </div>
+      </div>
+      <div style="display:grid;gap:16px;align-content:start">
+        <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px">
+          <div style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.06em;color:var(--t3)">Podgląd w Google</div>
+          <div style="background:#fff;border-radius:8px;padding:14px 16px;margin-top:12px;font-family:Arial,sans-serif">
+            <div style="display:flex;align-items:center;gap:8px"><div style="width:26px;height:26px;border-radius:50%;background:#1C1B17;display:grid;place-items:center"><span style="font:700 10px Arial;color:#F26A1B">A</span></div><div><div style="font-size:13px;color:#202124">ADVfactory</div><div style="font-size:11px;color:#4d5156">advfactory.com</div></div></div>
+            <div style="font-size:19px;color:#1a0dab;margin-top:8px;line-height:1.3">{{ googleTitle }}</div>
+            <div style="font-size:13.5px;color:#4d5156;margin-top:4px;line-height:1.5">{{ googleDesc }}</div>
+          </div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px">
+          <div style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.06em;color:var(--t3)">Analityka i piksele</div>
+          <div style="font:12px 'Archivo';color:var(--t2);margin-top:4px;line-height:1.5">Ładują się dopiero po zgodzie na cookies — to obsługuje strona. Tu tylko identyfikatory.</div>
+          <div style="display:grid;gap:10px;margin-top:12px">
+            <sc-for list="{{ trackers }}" as="t" hint-placeholder-count="2">
+              <label style="display:block"><span style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">{{ t.label }}</span>
+                <input value="{{ t.value }}" onInput="{{ t.onInput }}" placeholder="{{ t.ph }}" style="width:100%;height:40px;margin-top:6px;padding:0 12px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:7px;font:12.5px 'IBM Plex Mono';outline:none"></label>
+            </sc-for>
+          </div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px">
+          <div style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.06em;color:var(--t3)">Strony z własnym SEO</div>
+          <div style="display:grid;gap:8px;margin-top:12px">
+            <sc-for list="{{ seoPages }}" as="p" hint-placeholder-count="3">
+              <a href="{{ p.href }}" style="display:flex;align-items:center;gap:10px;padding:11px 13px;background:var(--sunken);border:1px solid var(--line);border-radius:7px;color:#F2EFE7;text-decoration:none" style-hover="border-color:var(--accent)"><span class="ic" style="font-size:14px;color:var(--accent-hover)"><i data-lucide="{{ p.icon }}"></i></span><div style="flex:1"><div style="font:700 12.5px 'Archivo'">{{ p.label }}</div><div style="font:10px 'IBM Plex Mono';color:var(--t3);margin-top:2px">{{ p.sub }}</div></div><span class="ic" style="font-size:14px;color:var(--t3)"><i data-lucide="arrow-right"></i></span></a>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- HISTORIA PUBLIKACJI -->
+  <sc-if value="{{ isHistory }}" hint-placeholder-val="{{ false }}">
+    <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden">
+      <div style="display:grid;grid-template-columns:1.2fr 3fr 1fr 1fr;gap:12px;padding:10px 18px;background:var(--sunken);border-bottom:1px solid var(--line);font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t3)"><div>Kiedy</div><div>Co poszło na stronę</div><div>Kto</div><div style="text-align:right">Akcja</div></div>
+      <sc-for list="{{ history }}" as="h" hint-placeholder-count="5">
+        <div style="display:grid;grid-template-columns:1.2fr 3fr 1fr 1fr;gap:12px;padding:13px 18px;border-bottom:1px solid var(--line);align-items:center">
+          <div style="font:600 12px 'IBM Plex Mono';color:var(--t2)">{{ h.when }}</div>
+          <div style="font:13.5px 'Archivo';line-height:1.4">{{ h.what }}</div>
+          <div style="font:12px 'Archivo';color:var(--t2)">{{ h.who }}</div>
+          <div style="text-align:right"><span onClick="{{ h.restore }}" style="height:32px;padding:0 12px;display:inline-flex;align-items:center;gap:6px;background:var(--sunken);border:1px solid var(--line);border-radius:6px;color:#F2EFE7;font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.03em;cursor:pointer"><span class="ic" style="font-size:13px;color:var(--warn)"><i data-lucide="history"></i></span>Przywróć</span></div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="margin-top:12px;font:11px 'IBM Plex Mono';color:var(--t3)">„Przywróć” cofa całą stronę do stanu z tej publikacji — oferta, treści i ustawienia razem. Zapytania i klienci nie są dotykane.</div>
+  </sc-if>
+
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:80;display:flex;align-items:center;gap:10px;background:#1B1A16;border:1px solid var(--line);border-left:3px solid var(--ok);border-radius:9px;padding:12px 16px;box-shadow:0 10px 30px rgba(0,0,0,.5);animation:_rs .25s ease both"><span class="ic" style="font-size:16px;color:var(--ok)"><i data-lucide="check-circle-2"></i></span><span style="font:600 13px 'Archivo'">{{ toastText }}</span></div>
+  </sc-if>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:900}}">
+class Component extends DCLogic {
+  state = { tab:"contact", dirty:false, toast:"", publishedAt:"17.09.2026 14:20 · Sambor",
+    contact:{ wa:"+48 739 299 980", phone:"+48 739 299 980", mail:"info@advfactory.com", panelMail:"panel@advfactory.com" },
+    replyHours:"24", hours:"pn–pt 9–17", hoursOn:true,
+    hero:{ kicker:"Wyprawy motocyklowe · transport pojazdów · od 2008", title:"Po prostu znamy się na dobrych przygodach", lead:"Kirgistan, Pamir, Tybet, Pakistan, Patagonia, Afryka, Alaska. Nigdy nie zabierzemy Was w miejsce, w którym nie byliśmy sami. A Wasze motocykle zawieziemy tam, gdzie chcecie jechać.", img:"https://advfactory.com/wp-content/uploads/2023/10/20230925_211321-scaled.jpg" },
+    banner:{ on:false, text:"Ostatni kontener do Chile w tym sezonie — pakowanie 15.12. Zostały 2 miejsca w klatkach.", link:"/transport", until:"15.12.2026", tone:"accent" },
+    videos:["https://www.youtube.com/watch?v=6GJFceBLbOA","https://www.youtube.com/watch?v=gYEL-u-NJu4",""],
+    seo:{ titleTpl:"{title} — ADVfactory · wyprawy motocyklowe i transport pojazdów", desc:"Wyprawy motocyklowe do Kirgistanu, Tybetu, Patagonii i Afryki oraz transport motocykli kontenerem — door to door, cena ostateczna. Od 2008 roku.", og:"https://advfactory.com/wp-content/uploads/2023/10/20230925_211321-scaled.jpg" },
+    trackers:{ ga:"G-XXXXXXXXXX", meta:"" } };
+  componentDidMount(){ const t=()=>{ if(window.lucide) window.lucide.createIcons(); else setTimeout(t,60); }; t(); }
+  componentDidUpdate(){ if(window.lucide) window.lucide.createIcons(); }
+  flash(m){ this.setState({ toast:m }); clearTimeout(this._tt); this._tt = setTimeout(()=>this.setState({ toast:"" }), 2600); }
+  up(patch){ this.setState(st => Object.assign({}, patch(st), { dirty:true })); }
+  renderVals(){
+    const s = this.state;
+    const inp = (fn) => (e) => this.up(st => fn(st, e.target.value));
+    const sub = (key, k) => inp((st, v) => ({ [key]: Object.assign({}, st[key], { [k]: v }) }));
+    const TONE = { accent:{ label:"Oferta", dot:"#F26A1B", bg:"#F26A1B", color:"#fff" }, info:{ label:"Informacja", dot:"#5E8FB5", bg:"#3D6A8F", color:"#fff" }, warn:{ label:"Uwaga", dot:"#D98E1B", bg:"#D98E1B", color:"#2E1E0A" } };
+    const tone = TONE[s.banner.tone] || TONE.accent;
+    const gTitle = s.seo.titleTpl.replace("{title}", "Strona główna");
+    const ytId = (u) => { const m = (u||"").match(/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/); return m ? m[1] : null; };
+    return {
+      dirty: s.dirty ? true : false, clean: s.dirty ? false : true, publishedAt: s.publishedAt,
+      publish: ()=>{ this.setState({ dirty:false, publishedAt:"17.09.2026 " + new Date().toTimeString().slice(0,5) + " · Sambor" }); this.flash("Ustawienia opublikowane — strona odświeży się w ciągu minuty"); },
+      tabs: [["contact","Kontakt i obietnice","phone"],["hero","Hero i baner","layout-template"],["seo","SEO i analityka","search"],["history","Historia publikacji","history"]].map(([id,label,icon]) => ({ label, icon, onClick:()=>this.setState({ tab:id }),
+        bg: s.tab===id ? "var(--accent)" : "var(--sunken)", border: s.tab===id ? "var(--accent)" : "var(--line)", color: s.tab===id ? "#fff" : "var(--t2)" })),
+      isContact: s.tab==="contact" ? true : false, isHero: s.tab==="hero" ? true : false, isSeo: s.tab==="seo" ? true : false, isHistory: s.tab==="history" ? true : false,
+      contactFields: [["wa","WhatsApp","+48 …"],["phone","Telefon","+48 …"],["mail","E-mail na zapytania","info@…"],["panelMail","Nadawca maili z panelu","panel@…"]].map(([k,label,ph]) => ({ label, ph, value:s.contact[k], onInput:sub("contact", k) })),
+      replyHours: s.replyHours, hours: s.hours,
+      hoursLabel: s.hoursOn ? "pokazuj" : "ukryj", hoursTrack: s.hoursOn ? "var(--accent)" : "var(--line)", hoursKnob: s.hoursOn ? "21px" : "3px",
+      hero: s.hero,
+      banner: s.banner,
+      bannerLabel: s.banner.on ? "włączony" : "wyłączony", bannerTrack: s.banner.on ? "var(--accent)" : "var(--line)", bannerKnob: s.banner.on ? "21px" : "3px",
+      bannerTones: Object.keys(TONE).map(k => ({ label:TONE[k].label, dot:TONE[k].dot, pick:()=>this.up(st => ({ banner: Object.assign({}, st.banner, { tone:k }) })),
+        bg: s.banner.tone===k ? "rgba(242,106,27,.12)" : "var(--sunken)", border: s.banner.tone===k ? "var(--accent)" : "var(--line)", color: s.banner.tone===k ? "#F2EFE7" : "var(--t2)" })),
+      bannerPrevBg: tone.bg, bannerPrevColor: tone.color, bannerPrevText: s.banner.text || "…",
+      videos: s.videos.map((u,i) => ({ url:u, onInput: inp((st,v) => ({ videos: st.videos.map((x,j) => j===i ? v : x) })),
+        st: !u ? "puste" : ytId(u) ? "ok · " + ytId(u) : "zły link", stC: !u ? "var(--t3)" : ytId(u) ? "var(--ok)" : "var(--danger)" })),
+      seo: s.seo,
+      titleLen: gTitle.length + " / 60", titleLenC: gTitle.length > 60 ? "var(--warn)" : "var(--ok)",
+      descLen: s.seo.desc.length + " / 155", descLenC: s.seo.desc.length > 155 ? "var(--warn)" : "var(--ok)",
+      googleTitle: gTitle.length > 60 ? gTitle.slice(0, 58) + "…" : gTitle,
+      googleDesc: s.seo.desc.length > 155 ? s.seo.desc.slice(0, 153) + "…" : s.seo.desc,
+      trackers: [["ga","Google Analytics 4 — ID pomiaru","G-…"],["meta","Meta Pixel — ID","15 cyfr"]].map(([k,label,ph]) => ({ label, ph, value:s.trackers[k], onInput:sub("trackers", k) })),
+      seoPages: [
+        { label:"Wyprawy — tytuł, opis, slug", sub:"w szufladzie każdej wyprawy, sekcja SEO", icon:"map", href:"Katalog%20Wypraw.dc.html" },
+        { label:"Kierunki transportu", sub:"w szufladzie kierunku, sekcja SEO", icon:"container", href:"Terminarz%20Transport%C3%B3w.dc.html" },
+        { label:"Relacje z tras", sub:"tytuł wpisu jest tytułem strony", icon:"newspaper", href:"Tre%C5%9Bci%20Strony.dc.html" }
+      ],
+      history: [
+        { when:"17.09.2026 14:20", what:"Terminarz: Mombasa — nowa data powrotu 10.04.2027. Ustawienia: baner wyłączony.", who:"Sambor" },
+        { when:"16.09.2026 09:05", what:"Katalog: „Wakhan, śladem Marco Polo” opublikowana. Treści: nowe FAQ „Czy mogę jechać na Waszym motocyklu?”.", who:"Asia" },
+        { when:"12.09.2026 18:40", what:"Ustawienia: obietnica odpowiedzi 48 h → 24 h. Hero: nowe zdjęcie w tle.", who:"Sambor" },
+        { when:"09.09.2026 12:00", what:"Pierwsza publikacja nowej strony — oferta, treści, ustawienia.", who:"Sambor" }
+      ].map(h => Object.assign({}, h, { restore: ()=>this.flash("Przywrócono stan z " + h.when + " — do potwierdzenia przyciskiem Publikuj") })),
+      set: {
+        replyHours: inp((st,v) => ({ replyHours:v })), hours: inp((st,v) => ({ hours:v })), hoursOn: ()=>this.up(st => ({ hoursOn:!st.hoursOn })),
+        heroKicker: sub("hero","kicker"), heroTitle: sub("hero","title"), heroLead: sub("hero","lead"), heroImg: sub("hero","img"),
+        bannerOn: ()=>this.up(st => ({ banner: Object.assign({}, st.banner, { on:!st.banner.on }) })), bannerText: sub("banner","text"), bannerLink: sub("banner","link"), bannerUntil: sub("banner","until"),
+        seoTitle: sub("seo","titleTpl"), seoDesc: sub("seo","desc"), seoOg: sub("seo","og")
+      },
+      toast: s.toast ? true : false, toastText: s.toast
+    };
+  }
+}
+</script>
+</body>
+</html>
