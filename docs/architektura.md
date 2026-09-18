@@ -39,6 +39,14 @@ To przesądza o dwóch rzeczach w tej architekturze:
                      przeglądarka                    API Gateway → Lambda → SQS
 ```
 
+## Podgląd pull requestów
+
+Produkcja i staging stoją na AWS, jak niżej. Niezależnie od tego repozytorium ma
+podpięty **Vercel**, który buduje podgląd każdego pull requesta — do pokazania
+zmiany klientowi, zanim trafi na produkcję. Nie jest częścią ścieżki produkcyjnej
+i nie ma go w Terraformie. Konfiguracja i jedno ustawienie do zmiany w panelu:
+`docs/vercel.md`.
+
 ## Frontend — Astro (SSG)
 
 **Dlaczego Astro, nie Next.js:** strona to w 90% treść SEO (9 wypraw, 7 kierunków, 6 regionów, relacje, FAQ, archiwum). Astro renderuje to do czystego HTML i domyślnie nie wysyła ani bajta JS. Interaktywne są tylko cztery wyspy: konfigurator transportu, formularz zapytania, mapa kierunków (D3) i banner cookies. Mniej JS = lepszy Core Web Vitals = lepszy SEO, a to jest główny cel tej strony.

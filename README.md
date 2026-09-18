@@ -28,6 +28,7 @@ Repozytorium nowej strony advfactory.com, spiętej z CRM (`sambor88-glitch/advfa
 - `integracja-crm.md` — przepływ danych: oferta CRM → strona, leady strona → CRM, publikacja, panel, powiadomienia, stany błędów.
 - `architektura.md` — hosting, publikacja, ścieżka leada, Terraform, szacunkowy koszt AWS.
 - `crm-integracja-laravel.md` — co dołożyć w CRM (Laravel na Forge): trasy leadów, walidacja, routing do lejka, publikacja oferty.
+- `vercel.md` — podgląd pull requestów (produkcja zostaje na AWS); jedno ustawienie do zmiany w panelu Vercela.
 - `praca-rownolegla.md` — jak budować stronę i CRM jednocześnie, nie rozjeżdżając się: kontrakt jako granica, trzy tryby danych, bramki w CI, kolejność prac.
 - `oferta.schema.json` — kontrakt w formie JSON Schema (generowany ze `schema.ts`), do walidacji po stronie CRM.
 - `schema.ts` — kontrakt typów dla obu strumieni i panelu.
@@ -59,7 +60,8 @@ Pliki `.dc.html` otwierają się w przeglądarce bezpośrednio z dysku (potrzebu
 2. **Zakres oferty z CRM:** wyprawy i transport. Bez trzeciej encji.
 3. **Strony kierunków i regionów:** treść przenosi się z kodu do CRM — rozbudowa widoku Terminarz + nowy widok „Strony regionów”.
 4. **Architektura:** CRM publikuje `oferta.json` na S3, strona budowana statycznie (SSG) na AWS eu-central-1. Szczegóły i koszty w `docs/architektura.md`.
-5. **CRM stoi na Laravel Forge** (środowisko testowe i produkcyjne). Leady idą wprost do Laravela — bez bufora Lambda + SQS, który planowałem, zanim to było wiadome. Uzasadnienie i kompromis w `docs/architektura.md`.
+5. **Hosting:** produkcja i staging na AWS (S3 + CloudFront, Terraform). Vercel zostaje tylko jako podgląd PR-ów — trzeba go przepiąć z katalogu `deploy` na korzeń repo, patrz `docs/vercel.md`.
+6. **CRM stoi na Laravel Forge** (środowisko testowe i produkcyjne). Leady idą wprost do Laravela — bez bufora Lambda + SQS, który planowałem, zanim to było wiadome. Uzasadnienie i kompromis w `docs/architektura.md`.
 
 ## Kod strony (`web/`)
 
