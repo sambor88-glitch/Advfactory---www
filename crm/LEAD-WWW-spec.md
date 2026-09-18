@@ -26,7 +26,19 @@ Strona **nie ma własnej skrzynki**. Każde zapytanie z www trafia do `zapytania
 
 ## Lejek sprzedaży
 
-Karta w lejku pokazuje źródło `WWW` i `wycena_od–do` jako wartość szacowaną. Nic więcej.
+Karta w lejku powstaje **automatycznie** dla leadów, które niosą kwotę i konkret:
+
+| `zrodlo_www` | Karta w lejku | Wartość szacowana |
+|---|---|---|
+| `konfigurator` | tak, 1. etap | `wycena_od`–`wycena_do` |
+| `karta_wyprawy` | tak, 1. etap | cena wyprawy (kierowca) |
+| `formularz` | nie — zakłada operator ze Skrzynki | — |
+
+Karta pokazuje źródło `WWW`, podtyp (Konfigurator / Karta wyprawy) i wartość szacowaną. Nic więcej.
+
+Jeśli kontakt ma już otwartą kartę w lejku, lead dopina się do niej — nie powstaje druga.
+
+Lead z `formularz` zostaje tylko w Skrzynce. Operator przenosi go do lejka przyciskiem, gdy okaże się sprzedażowy. Powód: ogólny formularz zbiera też pytania o faktury, reklamacje i spam.
 
 ## Nie-zapytania
 

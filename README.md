@@ -26,8 +26,9 @@ Repozytorium nowej strony advfactory.com, spiętej z CRM (`sambor88-glitch/advfa
 
 **Dokumentacja (`docs/`) — kontrakt wdrożeniowy**
 - `integracja-crm.md` — przepływ danych: oferta CRM → strona, leady strona → CRM, publikacja, panel, powiadomienia, stany błędów.
+- `architektura.md` — hosting, publikacja, ścieżka leada, Terraform, szacunkowy koszt AWS.
 - `schema.ts` — kontrakt typów dla obu strumieni i panelu.
-- `oferta.json` — przykładowa opublikowana oferta (9 wypraw, 7 kierunków, 10 FAQ, ustawienia).
+- `oferta.json` — przykładowa opublikowana oferta (9 wypraw, 7 kierunków, 6 regionów, 10 FAQ, ustawienia).
 
 **Materiały pomocnicze**
 - `github.md` — log synchronizacji z repo CRM i mapa ekranów → pliki źródłowe.
@@ -44,10 +45,17 @@ Pliki `.dc.html` otwierają się w przeglądarce bezpośrednio z dysku (potrzebu
 
 1. CRM jest jedynym źródłem oferty. Strona czyta `oferta.json`; nie ma edycji na stronie.
 2. Publikacja świadoma: szkic → „Publikuj”. Zmiana w CRM bez publikacji nie jest widoczna.
-3. Leady trafiają do istniejącej Skrzynki jako źródło „www”. Zapisy na powiadomienia — na osobną listę.
+3. Leady trafiają do istniejącej Skrzynki jako źródło „www”. Lead z konfiguratora i z karty wyprawy zakłada dodatkowo kartę w lejku; lead z ogólnego formularza — nie. Zapisy na powiadomienia — na osobną listę.
 4. Obietnica odpowiedzi (24 h) jest jedną liczbą w Ustawieniach; steruje stroną i alertem w Skrzynce.
 5. YouTube i Mapy Google ładują się dopiero po zgodzie na cookies marketingowe.
 6. Podana cena jest ostateczna — strona nigdy nie pokazuje dopłat po fakcie; konfigurator pokazuje widelec z adnotacją.
+
+## Ustalenia wdrożeniowe (18.09.2026)
+
+1. **Leady → lejek:** automatycznie tylko z konfiguratora i karty wyprawy. Ogólny formularz zostaje w Skrzynce.
+2. **Zakres oferty z CRM:** wyprawy i transport. Bez trzeciej encji.
+3. **Strony kierunków i regionów:** treść przenosi się z kodu do CRM — rozbudowa widoku Terminarz + nowy widok „Strony regionów”.
+4. **Architektura:** CRM publikuje `oferta.json` na S3, strona budowana statycznie (SSG) na AWS eu-central-1. Szczegóły i koszty w `docs/architektura.md`.
 
 ## Tokeny wizualne
 

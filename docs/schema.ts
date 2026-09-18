@@ -16,6 +16,7 @@ export interface Oferta {
   ustawienia: UstawieniaStrony;
   wyprawy: Wyprawa[];        // tylko status "opublikowana" | "archiwum"
   kierunki: Kierunek[];      // tylko status "opublikowany"
+  regiony: RegionWypraw[];   // strony SEO „Wyprawy w regionie” — tylko status "opublikowany"
   faq: Faq[];                // tylko opublikowane, w kolejności
   relacje: Relacja[];
   opinie: Opinia[];
@@ -43,7 +44,9 @@ export type StatusWyprawy = 'szkic' | 'opublikowana' | 'archiwum';
 
 export interface Wyprawa {
   id: string; slug: string; status: StatusWyprawy;
-  tytul: string; region: string;
+  tytul: string;
+  region: string;                                      // filtr na liście wypraw: "Azja" | "Afryka" | "Ameryka Płd." | "Ameryka Płn."
+  region_strony: string | null;                        // slug z `regiony[]`; null = wyprawa bez strony regionu
   termin: { od: string | null; do: string | null; raw?: string };
   cena: { kierowca_eur: number | null; pasazer_eur: number | null; opis: string };  // opis = tekst jak na stronie
   trudnosc: number;                                    // 1–10
@@ -77,10 +80,33 @@ export interface TerminTransportu {
 
 export interface StronaKierunku {
   h1: string; lead: string;
+  zdjecie: string | null;                              // hero strony kierunku
   chips: [ikona: string, tekst: string][];             // ikona = nazwa lucide
   akapity: string[];
   faq: { q: string; a: string }[];
-  regiony_wypraw: string[];                            // dopasowanie „Wyprawy w tym regionie”
+  regiony_wypraw: string[];                            // slugi z `regiony[]` → sekcja „Wyprawy w tym regionie”; [] = sekcji nie ma
+}
+
+export type StatusRegionu = 'szkic' | 'opublikowany' | 'archiwum';
+
+/**
+ * Strona regionu wypraw (np. /wyprawy/kirgistan) — landing SEO pod frazy „wyprawy motocyklowe do…”.
+ * Edytowana w CRM (widok „Strony regionów”). Wyprawy podpinają się przez `Wyprawa.region_strony`,
+ * bez dopasowywania po słowach w tytule.
+ */
+export interface RegionWypraw {
+  id: string; slug: string; status: StatusRegionu;
+  nazwa: string;                                       // etykieta w nawigacji, np. „Kirgistan i Pamir”
+  h1: string; lead: string; zdjecie: string;
+  kierunek_id: string | null;                          // powiązany kierunek transportu → blok „Wyślij tu motocykl”
+  fakty: [etykieta: string, wartosc: string][];        // tabelka sezon / trudność / motocykl / formalności
+  h2: string | null;
+  akapity: string[];
+  kiedy_jechac: [okres: string, opis: string][];       // sekcja „Kiedy jechać”
+  faq: { q: string; a: string }[];
+  relacje: string[];                                   // id z `relacje[]` → sekcja „Przeczytaj”
+  kolejnosc: number;
+  seo: { tytul: string | null; opis: string | null };
 }
 
 export interface Faq { id: string; pytanie: string; odpowiedz: string; sekcja: 'transport' | 'wyprawy'; kolejnosc: number; opublikowane: boolean }
@@ -92,7 +118,16 @@ export interface Opinia { id: string; imie_nazwisko: string; motocykl: string; w
 export type ZrodloLeada = 'formularz' | 'konfigurator' | 'karta_wyprawy' | 'strona_kierunku';
 export type Kanal = 'whatsapp' | 'email' | 'telefon';
 
-/** POST /leads — trafia do istniejącej Skrzynki Zapytań jako źródło „www”. */
+/**
+ * POST /leads — trafia do istniejącej Skrzynki Zapytań jako źródło „www”.
+ *
+ * Routing do lejka sprzedaży (reguła po stronie CRM, nie strony):
+ *   zrodlo = 'konfigurator' | 'karta_wyprawy'  → wątek w Skrzynce ORAZ karta w lejku na 1. etapie,
+ *                                                z wartością szacowaną = wycena_od–do lub cena wyprawy
+ *   zrodlo = 'formularz' | 'strona_kierunku'   → tylko wątek w Skrzynce; kartę w lejku zakłada operator
+ * Deduplikacja po e-mailu/telefonie: istniejący kontakt z otwartą kartą w lejku nie dostaje drugiej —
+ * lead dopina się do tej otwartej.
+ */
 export interface LeadWWW {
   imie_nazwisko: string; email: string; telefon: string | null;
   tresc: string;

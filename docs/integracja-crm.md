@@ -15,12 +15,16 @@ Dlaczego nie dwukierunkowo: jedno źródło prawdy, publikacja świadoma (szkic 
 ## Publikacja oferty
 
 1. Biuro edytuje w CRM (Katalog wypraw, Terminarz transportów, Treści strony). Zapis oznacza rekord jako „niepublikowane zmiany”.
-2. Przycisk **Publikuj** generuje statyczny plik `GET /public/oferta.json` (lub odświeża cache API) i zapisuje wpis w historii zmian (kto, kiedy, co).
-3. Strona pobiera `oferta.json` przy wejściu, cache 5–15 min. Zmiany w CRM bez publikacji nie są widoczne publicznie.
+2. Przycisk **Publikuj** generuje statyczny plik `oferta.json`, wypycha go na S3 i zapisuje wpis w historii zmian (kto, kiedy, co).
+3. Publikacja odpala przebudowę strony (SSG). Do czasu jej zakończenia stary build jest nadal serwowany — nie ma okna z pustą stroną.
+4. Strona czyta `oferta.json` także w przeglądarce (ceny, terminy, konfigurator), cache 5–15 min. Zmiany w CRM bez publikacji nie są widoczne publicznie.
+
+Szczegóły wdrożenia — hosting, przebudowa, koszty — w `docs/architektura.md`.
 
 Zawartość `oferta.json`:
 - `wyprawy[]` — id, tytuł, slug, region, daty, ceny (kierowca/pasażer), trudność 1–10, `na_naszym_sprzecie`, opis, zawiera/nie zawiera, plan dni[], zdjęcia, status (`opublikowana` / `archiwum`), pola SEO (title, description).
-- `kierunki[]` — id, nazwa, miasto odbioru, `lat`, `lon`, `cena_jedna`, `cena_obie`, `na_mapie`, `w_konfiguratorze`, `terminy[]` (pakowanie PL, dostawa, powrót z miejsca, powrót PL), miasta powrotu, treść strony kierunku (lead, akapity, FAQ).
+- `kierunki[]` — id, nazwa, kraj, miasto odbioru, `geo.lat`/`geo.lon`, `cena_jedna_eur`, `cena_obie_eur`, `na_mapie`, `w_konfiguratorze`, `terminy[]` (pakowanie PL, dostawa, powrót z miejsca, powrót PL), `strona` — treść strony kierunku (h1, lead, zdjęcie, chipy, akapity, FAQ, `regiony_wypraw[]`).
+- `regiony[]` — strony SEO „Wyprawy w regionie” (np. `/wyprawy/kirgistan`): h1, lead, zdjęcie, fakty, akapity, „kiedy jechać”, FAQ, powiązany `kierunek_id`, lista `relacje[]`.
 - `faq[]`, `relacje[]`, `opinie[]` — tylko opublikowane, w kolejności z CRM.
 - `firma` — nazwa, adres, NIP, REGON, e-mail, telefon, WhatsApp; `magazyny[]` — miasto, adres, uwagi, `widoczny`.
 
@@ -33,6 +37,21 @@ Geokodowanie: współrzędne kierunku ustala CRM przy zapisie (Nominatim po nazw
 Pola: imię i nazwisko, e-mail, telefon, treść, `zrodlo` (`formularz` / `konfigurator` / `karta_wyprawy`), `jezyk` (`pl` / `en`), `preferowany_kanal` (`whatsapp` / `email` / `telefon`), `wyprawa_id` (opcjonalnie), `konfiguracja` (kierunek, jedna/obie strony, pojazd, widelec ceny — opcjonalnie), `zgoda_rodo` (timestamp, IP, wersja polityki), `sciezka` (strona wejścia → strona formularza).
 
 W CRM lead trafia do istniejącej **Skrzynki Zapytań** jako kolejne źródło obok WhatsApp, maila i telefonu. Nie ma osobnego widoku „leady WWW”. Skrzynka pokazuje pola z listy wyżej w panelu kontekstu. Deduplikacja po e-mailu/telefonie — dopięcie do istniejącego kontaktu.
+
+### Routing do lejka sprzedaży
+
+Reguła po stronie CRM, strona o lejku nic nie wie.
+
+| `zrodlo` | Skrzynka | Lejek |
+|---|---|---|
+| `konfigurator` | wątek | **karta na 1. etapie**, wartość szacowana = `wycena_od`–`wycena_do` |
+| `karta_wyprawy` | wątek | **karta na 1. etapie**, wartość szacowana = cena wyprawy (kierowca) |
+| `formularz` | wątek | nie — kartę zakłada operator, gdy zapytanie okaże się sprzedażowe |
+| `strona_kierunku` | wątek | nie — jak wyżej |
+
+Dlaczego tak: lead z konfiguratora albo z karty wyprawy niesie ze sobą intencję zakupową i kwotę, więc od razu ma miejsce w lejku. Ogólny formularz kontaktowy zbiera też pytania o fakturę, reklamacje i spam — te zaśmiecałyby prognozę sprzedaży.
+
+Karta w lejku pokazuje źródło `WWW`, podtyp (Konfigurator / Karta wyprawy) i wartość szacowaną. **Deduplikacja:** jeśli kontakt ma już otwartą kartę w lejku, nowy lead dopina się do niej zamiast tworzyć drugą.
 
 `POST /zainteresowani` — e-mail, kierunki[], język, zgoda. Trafia na listę **Zainteresowani terminem**, nie do skrzynki ani lejka. Do lejka przechodzi po powiadomieniu o nowym terminie i zapytaniu klienta, albo ręcznie.
 
@@ -47,6 +66,18 @@ Wysyłane z CRM w chwili zatwierdzenia statusu przez biuro (nie automatem z mail
 ## Ustawienia strony (CRM → strona)
 
 Widok **Ustawienia strony** w CRM trzyma to, co wcześniej było w kodzie: kanały kontaktu (WhatsApp, telefon, e-mail, nadawca maili z panelu), obietnicę czasu odpowiedzi (steruje też alertem w Skrzynce), godziny biura, hero strony głównej (nadtytuł, tytuł, lead, zdjęcie), baner informacyjny (treść, link, data wygaśnięcia, ton), trzy linki YouTube, domyślne SEO (szablon tytułu, opis, obrazek OG), identyfikatory GA4 i Meta Pixel (ładowane dopiero po zgodzie cookies). Publikacja jak reszta oferty. Historia publikacji z przywracaniem całego stanu strony.
+
+## Strony kierunków i regionów (do dołożenia w CRM)
+
+Strona ma dwie rodziny landingów SEO. Obie są dziś zaszyte w kodzie prototypu; docelowo edytuje je CRM.
+
+**Strony kierunków transportu** — 7 sztuk, po jednej na kierunek (`/transport/kirgistan-biszkek`). Pole `Kierunek.strona` w `oferta.json`. Widok **Terminarz transportów** dostaje w szufladzie sekcję „Strona kierunku”: h1, lead, zdjęcie, trzy chipy (ikona lucide + tekst), akapity, FAQ, wybór regionów wypraw do sekcji „Wyprawy w tym regionie”. Dziś widok ma tylko lead i SEO.
+
+**Strony regionów wypraw** — 6 sztuk (`/wyprawy/kirgistan`). Nowa gałąź `regiony[]` w `oferta.json` i **nowy widok CRM „Strony regionów”**: h1, lead, zdjęcie, tabelka faktów (sezon, trudność, motocykl, formalności), h2 + akapity, tabelka „kiedy jechać”, FAQ, powiązany kierunek transportu, wybór relacji do sekcji „Przeczytaj”.
+
+Powiązanie wypraw z regionem jest **jawne** (`Wyprawa.region_strony` = slug regionu), nie po słowach kluczowych w tytule. Prototyp dopasowuje po tytule i przy nowej wyprawie potrafi ją zgubić albo wrzucić do złego regionu.
+
+Kierunki bez własnego regionu (Islandia, Islamabad) mają `regiony_wypraw: []` — sekcja „Wyprawy w tym regionie” po prostu się nie renderuje.
 
 ## SEO per strona
 
