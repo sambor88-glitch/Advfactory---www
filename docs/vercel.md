@@ -17,11 +17,17 @@ Reszta jest już w repozytorium, w `vercel.json`:
 
 ```json
 {
-  "installCommand": "npm ci --prefix web",
-  "buildCommand": "npm run build --prefix web",
+  "installCommand": "cd web && npm ci",
+  "buildCommand": "cd web && npm run build",
   "outputDirectory": "web/dist"
 }
 ```
+
+**Dlaczego `cd web &&`, a nie `--prefix web`.** Pierwsze podejście używało
+`npm ci --prefix web`. Lokalnie działa (npm 10), na Vercelu pada (npm 11):
+`--prefix` ustawia katalog *docelowy* instalacji, ale `npm ci` szuka
+`package-lock.json` w katalogu bieżącym, a nowszy npm nie przymyka już na to oka.
+Forma z `cd` działa niezależnie od wersji npm.
 
 **Dlaczego korzeń, a nie `web`.** Wydawałoby się naturalne wskazać `web`, ale build
 strony importuje `docs/schema.ts` i `docs/oferta.json` — a więc pliki spoza tego
