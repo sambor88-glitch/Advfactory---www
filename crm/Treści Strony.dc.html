@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap&subset=latin-ext" rel="stylesheet">
+<script src="../assets/lucide.min.js"></script>
+<script src="admin-shell.js"></script>
+<style>@keyframes _rs{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}@keyframes _in{from{transform:translateX(30px);opacity:.5}to{transform:none;opacity:1}}[data-screen-label]>*{animation:_rs .5s cubic-bezier(.2,.7,.3,1) both}[data-screen-label]>*:nth-child(2){animation-delay:.07s}[data-screen-label]>*:nth-child(3){animation-delay:.13s}button,a,[style*="cursor:pointer"]{transition:background .15s,border-color .15s,color .15s,transform .12s}button:active{transform:scale(.98)}*{box-sizing:border-box}body{margin:0;background:#0F0E0C}a{color:var(--accent)}a:hover{color:var(--accent-hover)}.ic{display:inline-grid;place-items:center}.ic svg{width:1em;height:1em;stroke-width:2px;display:block}::-webkit-scrollbar{width:9px}::-webkit-scrollbar-thumb{background:#332F29;border-radius:6px}textarea:focus,input:focus{border-color:var(--accent) !important;box-shadow:0 0 0 3px rgba(242,106,27,.18)}</style>
+</helmet>
+<div data-theme="dark" data-screen-label="Treści strony" style="width:1440px;max-width:100%;min-height:900px;background:#0F0E0C;color:#F2EFE7;font-family:'Archivo',system-ui,sans-serif;padding:20px 24px;position:relative;--accent:#F26A1B;--accent-hover:#FF7D2E;--surface:#1B1A16;--sunken:#131210;--line:#332F29;--t2:#B9B3A6;--t3:#7E796E;--ok:#6FA352;--warn:#D98E1B;--danger:#D9483C;--info:#5E8FB5">
+
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;font:700 10.5px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t3);flex-wrap:wrap">
+    <img src="../assets/logo-white.png" alt="ADVfactory" style="height:18px;display:block;margin-right:6px">
+    <span style="color:var(--t2)">Oferta na stronie</span><span>·</span>
+    <a href="Katalog%20Wypraw.dc.html" style="color:var(--t3);text-decoration:none">Wyprawy</a>
+    <a href="Terminarz%20Transport%C3%B3w.dc.html" style="color:var(--t3);text-decoration:none">Transport</a>
+    <span style="color:var(--accent-hover);border-bottom:2px solid var(--accent);padding-bottom:2px">Treści strony</span>
+    <a href="Zainteresowani%20Terminem.dc.html" style="color:var(--t3);text-decoration:none">Zainteresowani terminem</a>
+    <a href="Skrzynka%20Zapyta%C5%84%20WWW.dc.html" style="color:var(--t3);text-decoration:none">Leady WWW</a>
+    <a href="../Strona%20ADVfactory.dc.html" style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;color:var(--t2);text-decoration:none"><span class="ic" style="font-size:13px"><i data-lucide="external-link"></i></span>Podgląd strony</a>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;flex-wrap:wrap">
+    <div><div style="font-family:'Anton';font-size:30px;text-transform:uppercase;line-height:1">Treści strony</div><div style="font:12px 'IBM Plex Mono';color:var(--t3);margin-top:5px">to, co nie jest ofertą: FAQ, relacje, opinie, dane kontaktowe</div></div>
+    <div style="margin-left:auto;display:flex;gap:9px;align-items:center;flex-wrap:wrap">
+      <sc-if value="{{ hasPending }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;align-items:center;gap:8px;height:40px;padding:0 13px;background:rgba(217,142,27,.12);border:1px solid #6b551f;border-radius:8px;font:600 12px 'Archivo';color:var(--warn)"><span style="width:8px;height:8px;border-radius:50%;background:var(--warn)"></span>{{ pendingLabel }}</div>
+        <button onClick="{{ publishAll }}" style="height:40px;padding:0 16px;display:flex;align-items:center;gap:8px;background:var(--accent);color:#fff;border:none;border-radius:8px;font:700 12px 'Archivo';text-transform:uppercase;letter-spacing:.03em;cursor:pointer;box-shadow:0 2px 0 #A83D03"><span class="ic" style="font-size:15px"><i data-lucide="globe"></i></span>Publikuj</button>
+      </sc-if>
+      <button onClick="{{ addItem }}" style="height:40px;padding:0 16px;display:flex;align-items:center;gap:8px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:8px;font:700 12px 'Archivo';text-transform:uppercase;letter-spacing:.03em;cursor:pointer"><span class="ic" style="font-size:15px"><i data-lucide="plus"></i></span>{{ addLabel }}</button>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+    <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4"><div onClick="{{ t.onClick }}" style="height:38px;padding:0 16px;display:flex;align-items:center;gap:8px;background:{{ t.bg }};border:1px solid {{ t.border }};border-radius:8px;font:700 12px 'Archivo';text-transform:uppercase;letter-spacing:.03em;color:{{ t.color }};cursor:pointer"><span class="ic" style="font-size:14px"><i data-lucide="{{ t.icon }}"></i></span>{{ t.label }}<span style="font:700 10px 'IBM Plex Mono';opacity:.8">{{ t.count }}</span></div></sc-for>
+  </div>
+
+  <!-- FAQ / RELACJE / OPINIE — wspólna lista -->
+  <sc-if value="{{ isList }}" hint-placeholder-val="{{ true }}">
+    <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden">
+      <div style="display:grid;grid-template-columns:40px 3fr 1.2fr 1fr 1fr 1.1fr;gap:12px;padding:10px 18px;background:var(--sunken);border-bottom:1px solid var(--line);font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t3)"><div></div><div>{{ colTitle }}</div><div>{{ colMeta }}</div><div>Zmieniono</div><div>Status</div><div style="text-align:right">Akcje</div></div>
+      <sc-for list="{{ rows }}" as="r" hint-placeholder-count="6">
+        <div style="display:grid;grid-template-columns:40px 3fr 1.2fr 1fr 1fr 1.1fr;gap:12px;padding:12px 18px;border-bottom:1px solid var(--line);align-items:center;background:{{ r.rowBg }}">
+          <div style="display:flex;flex-direction:column;gap:2px;color:var(--t3)"><span onClick="{{ r.up }}" class="ic" style="font-size:14px;cursor:pointer" title="Wyżej"><i data-lucide="chevron-up"></i></span><span onClick="{{ r.down }}" class="ic" style="font-size:14px;cursor:pointer" title="Niżej"><i data-lucide="chevron-down"></i></span></div>
+          <div style="min-width:0"><div style="font:700 13.5px 'Archivo';line-height:1.35">{{ r.title }}</div><div style="font:11.5px 'Archivo';color:var(--t3);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.sub }}</div></div>
+          <div style="font:600 11.5px 'IBM Plex Mono';color:var(--t2)">{{ r.meta }}</div>
+          <div style="font:600 11.5px 'IBM Plex Mono';color:var(--t3)">{{ r.when }}</div>
+          <div><span style="display:inline-flex;align-items:center;gap:6px;font:700 9.5px 'Archivo';text-transform:uppercase;letter-spacing:.03em;color:{{ r.stC }};background:{{ r.stB }};padding:4px 9px;border-radius:5px;white-space:nowrap"><span style="width:7px;height:7px;border-radius:50%;background:{{ r.stC }}"></span>{{ r.status }}</span></div>
+          <div style="display:flex;gap:6px;justify-content:flex-end">
+            <span onClick="{{ r.edit }}" style="height:32px;padding:0 12px;display:inline-flex;align-items:center;gap:6px;background:var(--sunken);border:1px solid var(--line);border-radius:6px;color:#F2EFE7;font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.03em;cursor:pointer"><span class="ic" style="font-size:13px"><i data-lucide="pencil"></i></span>Edytuj</span>
+            <span onClick="{{ r.toggle }}" style="height:32px;width:32px;display:inline-grid;place-items:center;background:var(--sunken);border:1px solid var(--line);border-radius:6px;color:var(--t2);cursor:pointer" title="{{ r.tglTitle }}"><span class="ic" style="font-size:14px"><i data-lucide="{{ r.tglIcon }}"></i></span></span>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="margin-top:12px;font:11px 'IBM Plex Mono';color:var(--t3)">{{ listNote }}</div>
+  </sc-if>
+
+  <!-- KONTAKT I MAGAZYNY -->
+  <sc-if value="{{ isContact }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px">
+        <div style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.06em;color:var(--t3)">Dane firmy w stopce i na Kontakcie</div>
+        <div style="display:grid;gap:12px;margin-top:12px">
+          <sc-for list="{{ company }}" as="c" hint-placeholder-count="6">
+            <label style="display:block"><span style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">{{ c.label }}</span>
+              <input value="{{ c.value }}" onInput="{{ c.onInput }}" style="width:100%;height:42px;margin-top:6px;padding:0 12px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:8px;font:13.5px 'IBM Plex Mono';outline:none"></label>
+          </sc-for>
+        </div>
+      </div>
+      <div style="display:grid;gap:16px;align-content:start">
+        <sc-for list="{{ warehouses }}" as="w" hint-placeholder-count="2">
+          <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px">
+            <div style="display:flex;align-items:center;gap:10px"><span class="ic" style="font-size:16px;color:var(--accent-hover)"><i data-lucide="warehouse"></i></span><div style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.06em;color:var(--t3)">Magazyn {{ w.n }}</div><div onClick="{{ w.toggle }}" style="margin-left:auto;display:flex;align-items:center;gap:8px;cursor:pointer"><span style="font:600 11px 'Archivo';color:var(--t2)">{{ w.stateLabel }}</span><div style="width:40px;height:22px;border-radius:99px;background:{{ w.track }};position:relative"><div style="position:absolute;top:3px;left:{{ w.knob }};width:16px;height:16px;border-radius:50%;background:#F2EFE7;transition:left .15s"></div></div></div></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">
+              <label style="display:block"><span style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">Miasto</span><input value="{{ w.city }}" onInput="{{ w.onCity }}" style="width:100%;height:42px;margin-top:6px;padding:0 12px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:8px;font:13.5px 'Archivo';outline:none"></label>
+              <label style="display:block"><span style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">Adres</span><input value="{{ w.addr }}" onInput="{{ w.onAddr }}" placeholder="ulica i numer" style="width:100%;height:42px;margin-top:6px;padding:0 12px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:8px;font:13.5px 'Archivo';outline:none"></label>
+            </div>
+            <label style="display:block;margin-top:12px"><span style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">Uwagi dla klienta</span><input value="{{ w.note }}" onInput="{{ w.onNote }}" placeholder="np. na terenie firmy Bufamco, pn–pt 8–16" style="width:100%;height:42px;margin-top:6px;padding:0 12px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:8px;font:13.5px 'Archivo';outline:none"></label>
+          </div>
+        </sc-for>
+        <div style="background:var(--sunken);border:1px solid var(--line);border-left:3px solid var(--info);border-radius:0 8px 8px 0;padding:12px 14px;font:12.5px 'Archivo';color:var(--t2);line-height:1.5">Te pola zasilają stopkę, stronę Kontakt, politykę prywatności i klauzulę RODO — zmieniasz raz, aktualizuje się wszędzie.</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:80;display:flex;align-items:center;gap:10px;background:#1B1A16;border:1px solid var(--line);border-left:3px solid var(--ok);border-radius:9px;padding:12px 16px;box-shadow:0 10px 30px rgba(0,0,0,.5);animation:_rs .25s ease both"><span class="ic" style="font-size:16px;color:var(--ok)"><i data-lucide="check-circle-2"></i></span><span style="font:600 13px 'Archivo'">{{ toastText }}</span></div>
+  </sc-if>
+
+  <!-- SZUFLADA -->
+  <sc-if value="{{ drawerOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeDrawer }}" style="position:fixed;inset:0;background:rgba(10,9,8,.7);display:flex;justify-content:flex-end;z-index:60">
+      <div onClick="{{ stop }}" style="width:600px;max-width:100%;height:100%;background:var(--surface);border-left:1px solid var(--line);display:flex;flex-direction:column;animation:_in .25s cubic-bezier(.2,.7,.3,1) both;box-shadow:-20px 0 60px rgba(0,0,0,.5)">
+        <div style="padding:16px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;background:#161512">
+          <div style="flex:1;min-width:0"><div style="font-family:'Anton';font-size:20px;text-transform:uppercase;line-height:1">{{ d.head }}</div><div style="font:11px 'IBM Plex Mono';color:var(--t3);margin-top:4px">{{ d.sub }}</div></div>
+          <button onClick="{{ closeDrawer }}" style="width:34px;height:34px;flex:none;background:var(--sunken);border:1px solid var(--line);border-radius:8px;color:var(--t2);cursor:pointer"><span class="ic" style="font-size:16px;width:34px;height:34px"><i data-lucide="x"></i></span></button>
+        </div>
+        <div style="flex:1;overflow:auto;padding:20px 22px;display:grid;gap:16px">
+          <label style="display:block"><span style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">{{ d.f1 }}</span>
+            <input value="{{ d.title }}" onInput="{{ set.title }}" style="width:100%;height:44px;margin-top:6px;padding:0 13px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:8px;font:14px 'Archivo';outline:none"></label>
+          <sc-if value="{{ d.hasMeta }}" hint-placeholder-val="{{ false }}">
+            <label style="display:block"><span style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">{{ d.f2 }}</span>
+              <input value="{{ d.meta }}" onInput="{{ set.meta }}" placeholder="{{ d.f2ph }}" style="width:100%;height:44px;margin-top:6px;padding:0 13px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:8px;font:13.5px 'IBM Plex Mono';outline:none"></label>
+          </sc-if>
+          <label style="display:block"><span style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">{{ d.f3 }}</span>
+            <textarea value="{{ d.body }}" onInput="{{ set.body }}" style="width:100%;min-height:{{ d.bodyH }};margin-top:6px;padding:12px 13px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:8px;font:14px 'Archivo';line-height:1.55;resize:vertical;outline:none"></textarea></label>
+          <sc-if value="{{ d.isReview }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;gap:7px;padding:10px 12px;background:rgba(217,142,27,.1);border:1px solid #6b551f;border-radius:8px"><span class="ic" style="font-size:13px;color:var(--warn);margin-top:1px"><i data-lucide="info"></i></span><div style="font-size:12px;color:var(--t2);line-height:1.45">Opinia idzie na stronę z imieniem i nazwiskiem. Publikuj tylko za zgodą uczestnika — zaznacz ją w karcie klienta (zgoda wizerunkowa / na cytat).</div></div>
+          </sc-if>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div style="background:var(--sunken);border:1px solid var(--line);border-radius:8px;padding:12px 13px"><div style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t3)">Wersja EN</div><div style="font:12.5px 'Archivo';color:var(--t2);margin-top:5px;line-height:1.45">{{ d.enNote }}</div></div>
+            <div style="background:var(--sunken);border:1px solid var(--line);border-radius:8px;padding:12px 13px"><div style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t3)">Gdzie na stronie</div><div style="font:12.5px 'Archivo';color:var(--t2);margin-top:5px;line-height:1.45">{{ d.where }}</div></div>
+          </div>
+        </div>
+        <div style="padding:14px 22px;border-top:1px solid var(--line);display:flex;gap:10px;align-items:center;background:var(--sunken)">
+          <div style="font:11px 'IBM Plex Mono';color:var(--t3);flex:1">Zapis = zmiana czeka na „Publikuj”.</div>
+          <button onClick="{{ closeDrawer }}" style="min-height:44px;padding:0 16px;background:transparent;color:var(--t2);border:1px solid var(--line);border-radius:9px;font:700 12px 'Archivo';text-transform:uppercase;letter-spacing:.03em;cursor:pointer">Anuluj</button>
+          <button onClick="{{ save }}" style="min-height:44px;padding:0 18px;display:flex;align-items:center;gap:8px;background:var(--accent);color:#fff;border:none;border-radius:9px;font:700 12px 'Archivo';text-transform:uppercase;letter-spacing:.03em;cursor:pointer;box-shadow:0 2px 0 #A83D03"><span class="ic" style="font-size:15px"><i data-lucide="save"></i></span>Zapisz</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:900}}">
+class Component extends DCLogic {
+  state = { tab:"faq", sel:null, draft:null, toast:"",
+    faq:[
+      { id:1, title:"Dokąd mam dostarczyć pojazd?", body:"Mamy dwa magazyny: w Łowiczu przy ul. Małszyce 9 oraz w Ciechanowie. Przed przyjazdem potwierdzamy, do którego jedziesz.", meta:"transport", when:"09.09.2026", pub:true, dirty:false },
+      { id:2, title:"Czy możecie odebrać mój motocykl z garażu?", body:"Tak — w Polsce ok. 350 zł za motocykl.", meta:"transport", when:"09.09.2026", pub:true, dirty:false },
+      { id:3, title:"Czy z motocyklem mogę przetransportować bagaż?", body:"Tak, wszystko niezbędne do podróży. Komplet kufrów lub sakw i jedna torba do 40 l, wszystko opisane numerem rejestracyjnym.", meta:"transport", when:"09.09.2026", pub:true, dirty:false },
+      { id:4, title:"Jak przygotować motocykl do podróży?", body:"Umyć, zdemontować kufry, spuścić paliwo, rozłączyć akumulator. Zdemontować szybę, jeśli wysokość przekracza 135 cm.", meta:"transport", when:"09.09.2026", pub:true, dirty:false },
+      { id:5, title:"Czy motocykle są ubezpieczone podczas podróży?", body:"Tak, wszystkie transporty są ubezpieczone do pełnej wartości pojazdu.", meta:"transport", when:"09.09.2026", pub:true, dirty:false },
+      { id:6, title:"Kiedy mogę kupować bilet?", body:"Gdy poprosimy o zaliczkę albo wyślemy umowę — wyjazd jest wtedy potwierdzony.", meta:"wyprawy", when:"09.09.2026", pub:true, dirty:false },
+      { id:7, title:"Czy mogę jechać na Waszym motocyklu?", body:"Na części wypraw tak — Honda CRF300L jest wtedy w cenie. Sprawdź kartę wyprawy.", meta:"wyprawy", when:"17.09.2026", pub:false, dirty:true }
+    ],
+    posts:[
+      { id:1, title:"Ile realnie kosztuje wysłanie motocykla do Kirgistanu", body:"Cena kontenera to jedna liczba. Poniżej wszystkie pozostałe…", meta:"Transport · 6 min", when:"12.08.2026", pub:true, dirty:false },
+      { id:2, title:"Pamir na CRF300 czy na dużym GS-ie? Uczciwa odpowiedź", body:"Obydwa dojadą. Różnica jest w tym, jak się czujesz na 400. kilometrze szutru…", meta:"Sprzęt · 7 min", when:"28.07.2026", pub:true, dirty:false },
+      { id:3, title:"Odprawa w Kirgistanie krok po kroku", body:"Dziewięć na dziesięć problemów na odprawie to dezodorant albo puszka WD-40 w kufrze.", meta:"Formalności · 5 min", when:"14.06.2026", pub:true, dirty:false },
+      { id:4, title:"Patagonia w styczniu — pogoda, wiatr, paliwo", body:"", meta:"Wyprawy · szkic", when:"17.09.2026", pub:false, dirty:true }
+    ],
+    reviews:[
+      { id:1, title:"Tomasz Zięba", meta:"KTM 690 · Pamir 2026", body:"Obiecali trudność 7/10 i to było uczciwe 7/10 — bez ściemy w obie strony.", when:"10.09.2026", pub:true, dirty:false },
+      { id:2, title:"Aneta Sowa", meta:"Honda CRF300 · Kirgistan 2025", body:"Auto wsparcia zabrało mi bagaż, a Sambor zabrał mi wymówki.", when:"10.09.2026", pub:true, dirty:false },
+      { id:3, title:"Robert Mazur", meta:"Africa Twin · transport Kapsztad ⇔ 2026", body:"Motocykl wrócił z Kapsztadu w lepszym stanie, niż go oddałem.", when:"10.09.2026", pub:true, dirty:false }
+    ],
+    company:{ name:"Advfactory.com Krzysztof Samborski", addr:"ul. Mazowiecka 11 m. 49, 00-052 Warszawa", nip:"6941077972", regon:"356526605", mail:"info@advfactory.com", phone:"+48 739 299 980" },
+    wh:[ { city:"Łowicz", addr:"ul. Małszyce 9", note:"na terenie firmy Bufamco", on:true }, { city:"Ciechanów", addr:"", note:"adres do uzupełnienia", on:true } ] };
+  componentDidMount(){ const t=()=>{ if(window.lucide) window.lucide.createIcons(); else setTimeout(t,60); }; t(); }
+  componentDidUpdate(){ if(window.lucide) window.lucide.createIcons(); document.body.style.overflow = this.state.sel!==null ? "hidden" : ""; }
+  flash(m){ this.setState({ toast:m }); clearTimeout(this._tt); this._tt = setTimeout(()=>this.setState({ toast:"" }), 2600); }
+  listKey(){ return this.state.tab==="faq" ? "faq" : this.state.tab==="posts" ? "posts" : "reviews"; }
+  renderVals(){
+    const s = this.state; const key = this.listKey(); const list = s[key] || [];
+    const pending = s.faq.filter(x => x.dirty).length + s.posts.filter(x => x.dirty).length + s.reviews.filter(x => x.dirty).length;
+    const META = { faq:{ addLabel:"Nowe pytanie", colTitle:"Pytanie", colMeta:"Sekcja", f1:"Pytanie", f2:"Sekcja", f2ph:"transport / wyprawy", f3:"Odpowiedź", bodyH:"160px", where:"Strona FAQ i sekcja „Zanim przywieziesz motocykl” na Transporcie.", note:"Kolejność na liście = kolejność na stronie. Strzałki przesuwają." },
+      posts:{ addLabel:"Nowa relacja", colTitle:"Tytuł", colMeta:"Temat · czas", f1:"Tytuł", f2:"Temat i czas czytania", f2ph:"Transport · 6 min", f3:"Treść (akapity oddzielone pustą linią)", bodyH:"260px", where:"Lista „Relacje z tras” i skrót na stronie głównej (3 najnowsze).", note:"Najnowsze trzy pokazują się na stronie głównej. Szkice nie." },
+      reviews:{ addLabel:"Nowa opinia", colTitle:"Uczestnik", colMeta:"Motocykl · wyprawa", f1:"Imię i nazwisko", f2:"Motocykl · wyprawa i rok", f2ph:"KTM 690 · Pamir 2026", f3:"Cytat", bodyH:"120px", where:"Sekcja „Co mówią uczestnicy” na stronie głównej — trzy losowe z opublikowanych.", note:"Na stronie pokazują się trzy losowe opublikowane opinie. Wymagana zgoda uczestnika." } };
+    const M = META[key] || META.faq;
+    const d = s.draft;
+    const setF = (k) => (e) => this.setState(st => ({ draft: Object.assign({}, st.draft, { [k]: e.target.value }) }));
+    const move = (i, dir) => () => this.setState(st => { const arr = st[key].slice(); const j = i + dir; if (j<0 || j>=arr.length) return {}; const t = arr[i]; arr[i]=arr[j]; arr[j]=t; arr[i]=Object.assign({}, arr[i], { dirty:true }); arr[j]=Object.assign({}, arr[j], { dirty:true }); return { [key]: arr }; });
+    const compF = [["name","Nazwa firmy"],["addr","Adres"],["nip","NIP"],["regon","REGON"],["mail","E-mail"],["phone","Telefon"]];
+    return {
+      hasPending: pending>0 ? true : false, pendingLabel: pending + (pending===1 ? " niepublikowana zmiana" : " niepublikowane zmiany"),
+      publishAll: ()=>{ this.setState(st => ({ faq: st.faq.map(x => Object.assign({}, x, { dirty:false })), posts: st.posts.map(x => Object.assign({}, x, { dirty:false })), reviews: st.reviews.map(x => Object.assign({}, x, { dirty:false })) })); this.flash("Treści opublikowane na stronie"); },
+      addLabel: s.tab==="contact" ? "Zapisz dane" : M.addLabel,
+      addItem: ()=>{ if (s.tab==="contact") { this.flash("Dane firmy zapisane — stopka i Kontakt zaktualizowane"); return; } this.setState({ sel:"new", draft:{ id:Date.now(), title:"", meta:"", body:"", when:"17.09.2026", pub:false, dirty:true } }); },
+      tabs: [["faq","FAQ","help-circle",s.faq.length],["posts","Relacje z tras","newspaper",s.posts.length],["reviews","Opinie","quote",s.reviews.length],["contact","Kontakt i magazyny","map-pin",2]].map(([id,label,icon,count]) => ({ label, icon, count:String(count), onClick:()=>this.setState({ tab:id }),
+        bg: s.tab===id ? "var(--accent)" : "var(--sunken)", border: s.tab===id ? "var(--accent)" : "var(--line)", color: s.tab===id ? "#fff" : "var(--t2)" })),
+      isList: s.tab!=="contact" ? true : false, isContact: s.tab==="contact" ? true : false,
+      colTitle:M.colTitle, colMeta:M.colMeta, listNote:M.note,
+      rows: list.map((x,i) => ({ title:x.title || "(bez tytułu)", sub:x.body, meta:x.meta, when:x.when,
+        status: x.dirty ? "Do publikacji" : (x.pub ? "Na stronie" : "Szkic"), stC: x.dirty ? "var(--warn)" : (x.pub ? "var(--ok)" : "var(--t3)"), stB: x.dirty ? "rgba(217,142,27,.15)" : (x.pub ? "rgba(111,163,82,.15)" : "rgba(255,255,255,.06)"),
+        rowBg: s.sel===x.id ? "rgba(242,106,27,.06)" : "transparent",
+        up:move(i,-1), down:move(i,1),
+        edit: ()=>this.setState({ sel:x.id, draft: Object.assign({}, x) }),
+        tglIcon: x.pub ? "eye-off" : "eye", tglTitle: x.pub ? "Ukryj ze strony" : "Pokaż na stronie",
+        toggle: ()=>this.setState(st => ({ [key]: st[key].map(y => y.id===x.id ? Object.assign({}, y, { pub:!y.pub, dirty:true }) : y) })) })),
+      company: compF.map(([k,label]) => ({ label, value:s.company[k], onInput:(e)=>this.setState(st => ({ company: Object.assign({}, st.company, { [k]: e.target.value }) })) })),
+      warehouses: s.wh.map((w,i) => ({ n:String(i+1), city:w.city, addr:w.addr, note:w.note, stateLabel: w.on ? "na stronie" : "ukryty", track: w.on ? "var(--accent)" : "var(--line)", knob: w.on ? "21px" : "3px",
+        toggle:()=>this.setState(st => ({ wh: st.wh.map((x,j) => j===i ? Object.assign({}, x, { on:!x.on }) : x) })),
+        onCity:(e)=>this.setState(st => ({ wh: st.wh.map((x,j) => j===i ? Object.assign({}, x, { city:e.target.value }) : x) })),
+        onAddr:(e)=>this.setState(st => ({ wh: st.wh.map((x,j) => j===i ? Object.assign({}, x, { addr:e.target.value }) : x) })),
+        onNote:(e)=>this.setState(st => ({ wh: st.wh.map((x,j) => j===i ? Object.assign({}, x, { note:e.target.value }) : x) })) })),
+      toast: s.toast ? true : false, toastText: s.toast,
+      drawerOpen: s.sel!==null ? true : false, closeDrawer: ()=>this.setState({ sel:null, draft:null }), stop:(e)=>e.stopPropagation(),
+      d: d ? { head: d.title || M.addLabel, sub: d.pub ? "widoczne na stronie" : "szkic — niewidoczny", title:d.title, meta:d.meta, body:d.body, f1:M.f1, f2:M.f2, f2ph:M.f2ph, f3:M.f3, bodyH:M.bodyH, hasMeta:true, isReview: key==="reviews" ? true : false,
+        enNote: key==="faq" ? "Tłumaczysz w zakładce EN po zapisaniu polskiej wersji. Bez EN strona angielska pokazuje polski tekst z adnotacją." : key==="posts" ? "Relacje publikujemy tylko po polsku — wersja EN pokazuje listę z adnotacją „Polish only”." : "Opinie w oryginale, bez tłumaczenia.", where:M.where } : {},
+      set: { title:setF("title"), meta:setF("meta"), body:setF("body") },
+      save: ()=>{ const nd = Object.assign({}, d, { dirty:true, when:"17.09.2026" }); this.setState(st => ({ [key]: st[key].some(x => x.id===nd.id) ? st[key].map(x => x.id===nd.id ? nd : x) : st[key].concat([nd]), sel:null, draft:null })); this.flash("Zapisano — opublikuj, żeby trafiło na stronę"); }
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,636 @@
+{
+  "_meta": {
+    "wersja": 1,
+    "opublikowano": "2026-09-18T01:54:03Z",
+    "przez": "Sambor",
+    "uwaga": "Przykład wygenerowany z danych osadzonych dziś w kodzie strony. Docelowo generuje CRM przy „Publikuj”."
+  },
+  "firma": {
+    "nazwa": "Advfactory.com Krzysztof Samborski",
+    "adres": "ul. Mazowiecka 11 m. 49, 00-052 Warszawa",
+    "nip": "6941077972",
+    "regon": "356526605",
+    "email": "info@advfactory.com",
+    "telefon": "+48 739 299 980",
+    "whatsapp": "+48 739 299 980",
+    "nadawca_panelu": "panel@advfactory.com"
+  },
+  "magazyny": [
+    {
+      "miasto": "Łowicz",
+      "adres": "ul. Małszyce 9",
+      "uwagi": "na terenie firmy Bufamco",
+      "widoczny": true
+    },
+    {
+      "miasto": "Ciechanów",
+      "adres": null,
+      "uwagi": "adres do uzupełnienia",
+      "widoczny": true
+    }
+  ],
+  "ustawienia": {
+    "odpowiedz_w_godzinach": 24,
+    "godziny_biura": {
+      "tekst": "pn–pt 9–17",
+      "pokazuj": true
+    },
+    "hero": {
+      "nadtytul": "Wyprawy motocyklowe · transport pojazdów · od 2008",
+      "tytul": "Po prostu znamy się na dobrych przygodach",
+      "lead": "Kirgistan, Pamir, Tybet, Pakistan, Patagonia, Afryka, Alaska. Nigdy nie zabierzemy Was w miejsce, w którym nie byliśmy sami. A Wasze motocykle zawieziemy tam, gdzie chcecie jechać.",
+      "zdjecie": "https://advfactory.com/wp-content/uploads/2023/10/20230925_211321-scaled.jpg"
+    },
+    "baner": {
+      "wlaczony": false,
+      "tekst": null,
+      "link": null,
+      "wygasa": null,
+      "ton": "accent"
+    },
+    "wideo_youtube": [
+      "https://www.youtube.com/watch?v=6GJFceBLbOA",
+      "https://www.youtube.com/watch?v=gYEL-u-NJu4"
+    ],
+    "seo": {
+      "szablon_tytulu": "{title} — ADVfactory · wyprawy motocyklowe i transport pojazdów",
+      "opis": "Wyprawy motocyklowe do Kirgistanu, Tybetu, Patagonii i Afryki oraz transport motocykli kontenerem — door to door, cena ostateczna. Od 2008 roku.",
+      "og_image": "https://advfactory.com/wp-content/uploads/2023/10/20230925_211321-scaled.jpg"
+    },
+    "analityka": {
+      "ga4": null,
+      "meta_pixel": null
+    }
+  },
+  "wyprawy": [
+    {
+      "id": "wyp-001",
+      "slug": "2026-przez-tybet-do-bangkoku",
+      "status": "opublikowana",
+      "tytul": "2026. Przez Tybet do Bangkoku",
+      "termin": {
+        "od": "2026-10-07",
+        "do": "2026-10-27"
+      },
+      "cena": {
+        "kierowca_eur": 9750,
+        "pasazer_eur": 3200,
+        "opis": "9750 EUR, pasażer 3200 EUR"
+      },
+      "trudnosc": 5,
+      "na_naszym_sprzecie": false,
+      "zdjecie": "https://advfactory.com/wp-content/uploads/2023/10/20230925_211321-scaled.jpg",
+      "opis": null,
+      "zawiera": [],
+      "nie_zawiera": [],
+      "plan_dni": [],
+      "seo": {
+        "tytul": null,
+        "opis": null
+      },
+      "en": {
+        "tytul": null,
+        "lead": null
+      }
+    },
+    {
+      "id": "wyp-002",
+      "slug": "2027-od-zera-do-bohatera-wchodzimy-na-ojos-6893-m",
+      "status": "opublikowana",
+      "tytul": "2027 Od zera do bohatera. Wchodzimy na Ojos, 6893 m",
+      "termin": {
+        "od": "2026-12-28",
+        "do": "2027-01-12"
+      },
+      "cena": {
+        "kierowca_eur": 4950,
+        "pasazer_eur": 3100,
+        "opis": "4950 EUR, pasażer samochodu 3100 EUR"
+      },
+      "trudnosc": 8,
+      "na_naszym_sprzecie": false,
+      "zdjecie": "https://advfactory.com/wp-content/uploads/2026/03/WhatsApp-Image-2026-03-04-at-08.48.28.jpeg",
+      "opis": null,
+      "zawiera": [],
+      "nie_zawiera": [],
+      "plan_dni": [],
+      "seo": {
+        "tytul": null,
+        "opis": null
+      },
+      "en": {
+        "tytul": null,
+        "lead": null
+      }
+    },
+    {
+      "id": "wyp-003",
+      "slug": "rtw-2027-patagonia-wyprawa-na-koniec-swiata",
+      "status": "opublikowana",
+      "tytul": "RTW 2027 Patagonia — wyprawa na koniec świata",
+      "termin": {
+        "od": "2027-01-04",
+        "do": "2027-01-26"
+      },
+      "cena": {
+        "kierowca_eur": 5950,
+        "pasazer_eur": null,
+        "opis": "5950 € kierowca, 2940 € pasażer (cena zawiera transport motocykla)"
+      },
+      "trudnosc": 5,
+      "na_naszym_sprzecie": false,
+      "zdjecie": "https://advfactory.com/wp-content/uploads/2025/06/DSC_3057-Enhanced-NR.jpg",
+      "opis": null,
+      "zawiera": [],
+      "nie_zawiera": [],
+      "plan_dni": [],
+      "seo": {
+        "tytul": null,
+        "opis": null
+      },
+      "en": {
+        "tytul": null,
+        "lead": null
+      }
+    },
+    {
+      "id": "wyp-004",
+      "slug": "2027-od-zera-do-bohatera-ojos-6893-m-vol-2",
+      "status": "opublikowana",
+      "tytul": "2027 Od zera do bohatera. Ojos, 6893 m — vol. 2",
+      "termin": {
+        "od": "2027-01-18",
+        "do": "2027-02-03"
+      },
+      "cena": {
+        "kierowca_eur": 4950,
+        "pasazer_eur": 3100,
+        "opis": "4950 EUR, pasażer samochodu 3100 EUR"
+      },
+      "trudnosc": 8,
+      "na_naszym_sprzecie": false,
+      "zdjecie": "https://advfactory.com/wp-content/uploads/2026/03/WhatsApp-Image-2026-03-04-at-08.48.28.jpeg",
+      "opis": null,
+      "zawiera": [],
+      "nie_zawiera": [],
+      "plan_dni": [],
+      "seo": {
+        "tytul": null,
+        "opis": null
+      },
+      "en": {
+        "tytul": null,
+        "lead": null
+      }
+    },
+    {
+      "id": "wyp-005",
+      "slug": "rtw-2027-z-rpa-do-kenii-czyli-afryka-da-sie-lubic",
+      "status": "opublikowana",
+      "tytul": "RTW 2027. Z RPA do Kenii czyli Afryka da się lubić",
+      "termin": {
+        "od": "2027-02-25",
+        "do": "2027-03-24"
+      },
+      "cena": {
+        "kierowca_eur": 8550,
+        "pasazer_eur": null,
+        "opis": "8550 EUR"
+      },
+      "trudnosc": 4,
+      "na_naszym_sprzecie": false,
+      "zdjecie": "https://advfactory.com/wp-content/uploads/2023/10/DSC_1675.jpg",
+      "opis": null,
+      "zawiera": [],
+      "nie_zawiera": [],
+      "plan_dni": [],
+      "seo": {
+        "tytul": null,
+        "opis": null
+      },
+      "en": {
+        "tytul": null,
+        "lead": null
+      }
+    },
+    {
+      "id": "wyp-006",
+      "slug": "2027-rtw-przystanek-alaska",
+      "status": "opublikowana",
+      "tytul": "2027 RTW. Przystanek Alaska…",
+      "termin": {
+        "od": "2027-06-15",
+        "do": "2027-07-15"
+      },
+      "cena": {
+        "kierowca_eur": 10800,
+        "pasazer_eur": null,
+        "opis": "10800 EUR"
+      },
+      "trudnosc": 6,
+      "na_naszym_sprzecie": false,
+      "zdjecie": "https://advfactory.com/wp-content/uploads/2026/08/ChatGPT-Image-15-sie-2026-16_23_53.png",
+      "opis": null,
+      "zawiera": [],
+      "nie_zawiera": [],
+      "plan_dni": [],
+      "seo": {
+        "tytul": null,
+        "opis": null
+      },
+      "en": {
+        "tytul": null,
+        "lead": null
+      }
+    },
+    {
+      "id": "wyp-007",
+      "slug": "2027-afganistan-wakhan-sladem-marco-polo",
+      "status": "opublikowana",
+      "tytul": "2027 Afganistan — Wakhan, śladem Marco Polo",
+      "termin": {
+        "od": "2027-07-25",
+        "do": "2027-08-12"
+      },
+      "cena": {
+        "kierowca_eur": 4200,
+        "pasazer_eur": null,
+        "opis": "4200 € Honda CRF300, 3000 € pasażer auta"
+      },
+      "trudnosc": 6,
+      "na_naszym_sprzecie": true,
+      "zdjecie": "https://advfactory.com/wp-content/uploads/2026/08/WhatsApp-Image-2026-08-16-at-09.43.01-2.jpeg",
+      "opis": null,
+      "zawiera": [],
+      "nie_zawiera": [],
+      "plan_dni": [],
+      "seo": {
+        "tytul": null,
+        "opis": null
+      },
+      "en": {
+        "tytul": null,
+        "lead": null
+      }
+    },
+    {
+      "id": "wyp-008",
+      "slug": "2027-rtw-wladywostok-nie-taki-straszny",
+      "status": "opublikowana",
+      "tytul": "2027 RTW. Władywostok nie taki straszny…",
+      "termin": {
+        "od": "2027-08-23",
+        "do": "2027-09-19"
+      },
+      "cena": {
+        "kierowca_eur": 6900,
+        "pasazer_eur": null,
+        "opis": "6900 EUR"
+      },
+      "trudnosc": 5,
+      "na_naszym_sprzecie": false,
+      "zdjecie": "https://advfactory.com/wp-content/uploads/2025/04/ChatGPT-Image-Apr-24-2025-12_11_42-PM.png",
+      "opis": null,
+      "zawiera": [],
+      "nie_zawiera": [],
+      "plan_dni": [],
+      "seo": {
+        "tytul": null,
+        "opis": null
+      },
+      "en": {
+        "tytul": null,
+        "lead": null
+      }
+    },
+    {
+      "id": "wyp-009",
+      "slug": "2027-rtw-od-pacyfiku-do-atlantyku",
+      "status": "opublikowana",
+      "tytul": "2027 RTW. Od Pacyfiku do Atlantyku",
+      "termin": {
+        "od": "2027-09-14",
+        "do": "2027-10-08"
+      },
+      "cena": {
+        "kierowca_eur": 7350,
+        "pasazer_eur": null,
+        "opis": "7350 EUR"
+      },
+      "trudnosc": 6,
+      "na_naszym_sprzecie": false,
+      "zdjecie": "https://advfactory.com/wp-content/uploads/2026/08/ChatGPT-Image-16-sie-2026-10_54_01.png",
+      "opis": null,
+      "zawiera": [],
+      "nie_zawiera": [],
+      "plan_dni": [],
+      "seo": {
+        "tytul": null,
+        "opis": null
+      },
+      "en": {
+        "tytul": null,
+        "lead": null
+      }
+    }
+  ],
+  "kierunki": [
+    {
+      "id": "kier-kg",
+      "slug": "kirgistan-biszkek",
+      "status": "opublikowany",
+      "nazwa": "Kirgistan (Biszkek)",
+      "kraj": null,
+      "miasto_odbioru": null,
+      "uwagi": "powrót możliwy z Osz",
+      "geo": null,
+      "cena_jedna_eur": 1250,
+      "cena_obie_eur": 1800,
+      "na_mapie": true,
+      "w_konfiguratorze": true,
+      "terminy": [
+        {
+          "pakowanie_pl": "2026-04-25",
+          "dostawa": "2026-05-25",
+          "powrot_z_miejsca": "2026-07-04",
+          "powrot_pl": "2026-08-04"
+        },
+        {
+          "pakowanie_pl": "2026-06-03",
+          "dostawa": "2026-07-03",
+          "powrot_z_miejsca": "2026-08-01",
+          "powrot_pl": "2026-09-01"
+        },
+        {
+          "pakowanie_pl": "2026-06-25",
+          "dostawa": "2026-07-25",
+          "powrot_z_miejsca": "2026-09-15",
+          "powrot_pl": "2026-10-15"
+        },
+        {
+          "pakowanie_pl": "2026-07-10",
+          "dostawa": "2026-08-10",
+          "powrot_z_miejsca": "2026-10-12",
+          "powrot_pl": "2026-11-12"
+        }
+      ],
+      "strona": null,
+      "seo": {
+        "tytul": null,
+        "opis": null
+      }
+    },
+    {
+      "id": "kier-is",
+      "slug": "islandia-reykjav-k",
+      "status": "opublikowany",
+      "nazwa": "Islandia (Reykjavík)",
+      "kraj": null,
+      "miasto_odbioru": null,
+      "uwagi": "tylko w obie strony",
+      "geo": null,
+      "cena_jedna_eur": null,
+      "cena_obie_eur": 1550,
+      "na_mapie": true,
+      "w_konfiguratorze": true,
+      "terminy": [
+        {
+          "pakowanie_pl": "2026-07-01",
+          "dostawa": "2026-07-25",
+          "powrot_z_miejsca": "2026-08-20",
+          "powrot_pl": "2026-09-10"
+        }
+      ],
+      "strona": null,
+      "seo": {
+        "tytul": null,
+        "opis": null
+      }
+    },
+    {
+      "id": "kier-vl",
+      "slug": "wladywostok",
+      "status": "opublikowany",
+      "nazwa": "Władywostok",
+      "kraj": null,
+      "miasto_odbioru": null,
+      "uwagi": "w jedną stronę",
+      "geo": null,
+      "cena_jedna_eur": 1800,
+      "cena_obie_eur": null,
+      "na_mapie": true,
+      "w_konfiguratorze": true,
+      "terminy": [
+        {
+          "pakowanie_pl": null,
+          "dostawa": null,
+          "powrot_z_miejsca": "2026-09-30",
+          "powrot_pl": "2026-11-15"
+        }
+      ],
+      "strona": null,
+      "seo": {
+        "tytul": null,
+        "opis": null
+      }
+    },
+    {
+      "id": "kier-pk",
+      "slug": "islamabad-pakistan",
+      "status": "opublikowany",
+      "nazwa": "Islamabad (Pakistan)",
+      "kraj": null,
+      "miasto_odbioru": null,
+      "uwagi": "w jedną stronę",
+      "geo": null,
+      "cena_jedna_eur": 1500,
+      "cena_obie_eur": null,
+      "na_mapie": true,
+      "w_konfiguratorze": true,
+      "terminy": [
+        {
+          "pakowanie_pl": null,
+          "dostawa": null,
+          "powrot_z_miejsca": "2026-10-20",
+          "powrot_pl": "2026-12-20"
+        }
+      ],
+      "strona": null,
+      "seo": {
+        "tytul": null,
+        "opis": null
+      }
+    },
+    {
+      "id": "kier-cl",
+      "slug": "chile-valpara-so",
+      "status": "opublikowany",
+      "nazwa": "Chile (Valparaíso)",
+      "kraj": null,
+      "miasto_odbioru": null,
+      "uwagi": "powrót z Punta Arenas lub Arica",
+      "geo": null,
+      "cena_jedna_eur": 1550,
+      "cena_obie_eur": 2300,
+      "na_mapie": true,
+      "w_konfiguratorze": true,
+      "terminy": [
+        {
+          "pakowanie_pl": "2026-11-15",
+          "dostawa": "2026-12-21",
+          "powrot_z_miejsca": "2027-02-04",
+          "powrot_pl": "2027-03-15"
+        },
+        {
+          "pakowanie_pl": "2026-12-15",
+          "dostawa": "2027-01-28",
+          "powrot_z_miejsca": "2027-03-04",
+          "powrot_pl": "2027-04-15"
+        }
+      ],
+      "strona": null,
+      "seo": {
+        "tytul": null,
+        "opis": null
+      }
+    },
+    {
+      "id": "kier-za",
+      "slug": "kapsztad-rpa",
+      "status": "opublikowany",
+      "nazwa": "Kapsztad (RPA)",
+      "kraj": null,
+      "miasto_odbioru": null,
+      "uwagi": "w jedną stronę",
+      "geo": null,
+      "cena_jedna_eur": 1500,
+      "cena_obie_eur": null,
+      "na_mapie": true,
+      "w_konfiguratorze": true,
+      "terminy": [
+        {
+          "pakowanie_pl": "2027-01-06",
+          "dostawa": "2027-02-25",
+          "powrot_z_miejsca": null,
+          "powrot_pl": null
+        }
+      ],
+      "strona": null,
+      "seo": {
+        "tytul": null,
+        "opis": null
+      }
+    },
+    {
+      "id": "kier-ke",
+      "slug": "mombasa-kenia",
+      "status": "opublikowany",
+      "nazwa": "Mombasa (Kenia)",
+      "kraj": null,
+      "miasto_odbioru": null,
+      "uwagi": "w jedną stronę",
+      "geo": null,
+      "cena_jedna_eur": 1400,
+      "cena_obie_eur": null,
+      "na_mapie": true,
+      "w_konfiguratorze": true,
+      "terminy": [
+        {
+          "pakowanie_pl": null,
+          "dostawa": null,
+          "powrot_z_miejsca": "2027-04-10",
+          "powrot_pl": "2027-05-30"
+        }
+      ],
+      "strona": null,
+      "seo": {
+        "tytul": null,
+        "opis": null
+      }
+    }
+  ],
+  "faq": [
+    {
+      "id": "faq-1",
+      "pytanie": "Dokąd mam dostarczyć pojazd?",
+      "odpowiedz": "Mamy dwa magazyny: w Łowiczu przy ul. Małszyce 9 (na terenie firmy Bufamco) oraz w Ciechanowie. Przed przyjazdem potwierdzamy, do którego jedziesz.",
+      "sekcja": "transport",
+      "kolejnosc": 1,
+      "opublikowane": true
+    },
+    {
+      "id": "faq-2",
+      "pytanie": "Czy możecie odebrać mój motocykl albo quada z garażu?",
+      "odpowiedz": "Tak, ale wiąże się to z dodatkowymi kosztami — w Polsce ok. 350 zł za motocykl.",
+      "sekcja": "transport",
+      "kolejnosc": 2,
+      "opublikowane": true
+    },
+    {
+      "id": "faq-3",
+      "pytanie": "Czy wraz z motocyklem mogę przetransportować bagaż i kufry?",
+      "odpowiedz": "Tak, wszystko, co jest niezbędne do podróży. Dostaniesz od nas szczegółową listę. Możesz zabrać komplet kufrów lub sakw i jedną wodoodporną torbę do 40 litrów. Wszystkie torby i kufry muszą być wyraźnie opisane numerem rejestracyjnym motocykla.",
+      "sekcja": "transport",
+      "kolejnosc": 3,
+      "opublikowane": true
+    },
+    {
+      "id": "faq-4",
+      "pytanie": "Jak przygotować motocykl do podróży?",
+      "odpowiedz": "Umyć motocykl, zdemontować kufry, spuścić paliwo, rozłączyć akumulator. Zdemontować szybę, jeśli wysokość motocykla przekracza 135 cm.\n\nNa KAŻDEJ torbie, kufrze i szybie musi być przyklejona (szarą taśmą) informacja o numerze rejestracyjnym pojazdu, któremu ten bagaż towarzyszy.",
+      "sekcja": "transport",
+      "kolejnosc": 4,
+      "opublikowane": true
+    },
+    {
+      "id": "faq-5",
+      "pytanie": "Kto się zajmie pakowaniem?",
+      "odpowiedz": "Pakowanie to nasza sprawa. Ty oddajesz nam motocykl, my odpowiadamy za jego prawidłowe zamocowanie w klatce lub na platformie.",
+      "sekcja": "transport",
+      "kolejnosc": 5,
+      "opublikowane": true
+    },
+    {
+      "id": "faq-6",
+      "pytanie": "Czy mam zostawić kluczyki i dokumenty?",
+      "odpowiedz": "Kluczyki tylko wtedy, gdy kufry w Twoim zestawie są szersze niż 100 cm (lub centralny kufer sięga wyżej niż 135 cm) i nie można ich zdjąć bez kluczyka. Oryginałów dokumentów nie potrzebujemy.",
+      "sekcja": "transport",
+      "kolejnosc": 6,
+      "opublikowane": true
+    },
+    {
+      "id": "faq-7",
+      "pytanie": "Czy motocykle są ubezpieczone podczas podróży?",
+      "odpowiedz": "Tak, wszystkie transporty są ubezpieczone do pełnej wartości pojazdu.",
+      "sekcja": "transport",
+      "kolejnosc": 7,
+      "opublikowane": true
+    },
+    {
+      "id": "faq-8",
+      "pytanie": "Kiedy mogę kupować bilet?",
+      "odpowiedz": "Jeśli poprosiliśmy Cię o zaliczkę albo przesłaliśmy mailem treść umowy, to znaczy, że wyjazd jest potwierdzony i możesz kupować bilety.",
+      "sekcja": "transport",
+      "kolejnosc": 8,
+      "opublikowane": true
+    },
+    {
+      "id": "faq-9",
+      "pytanie": "Kiedy mogę odebrać motocykl w miejscu docelowym?",
+      "odpowiedz": "Kiedykolwiek po terminie wskazanym w umowie jako czas dostawy. Kupując bilet, weź pod uwagę, że w niektórych krajach magazyny mogą być zamknięte w niedzielę, a nawet w sobotę.",
+      "sekcja": "transport",
+      "kolejnosc": 9,
+      "opublikowane": true
+    },
+    {
+      "id": "faq-10",
+      "pytanie": "Co się stanie, jeśli w transporcie powstaną uszkodzenia?",
+      "odpowiedz": "Dbamy o Twój motocykl, ale to dalekie podróże i wszystko może się zdarzyć. W przypadku uszkodzeń postępujemy zgodnie z umową: musisz poinformować nas mailowo o szkodzie w ciągu 7 dni od dostarczenia motocykla i przedstawić dokumentację fotograficzną.",
+      "sekcja": "transport",
+      "kolejnosc": 10,
+      "opublikowane": true
+    }
+  ],
+  "relacje": [],
+  "opinie": []
+}

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap&subset=latin-ext" rel="stylesheet">
+<script src="../assets/lucide.min.js"></script>
+<script src="admin-shell.js"></script>
+<style>@keyframes _rs{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}[data-screen-label]>*{animation:_rs .5s cubic-bezier(.2,.7,.3,1) both}[data-screen-label]>*:nth-child(2){animation-delay:.07s}[data-screen-label]>*:nth-child(3){animation-delay:.13s}button,a,[style*="cursor:pointer"]{transition:background .15s,border-color .15s,color .15s,transform .12s}button:active{transform:scale(.98)}*{box-sizing:border-box}body{margin:0;background:#0F0E0C}a{color:var(--accent)}a:hover{color:var(--accent-hover)}.ic{display:inline-grid;place-items:center}.ic svg{width:1em;height:1em;stroke-width:2px;display:block}::-webkit-scrollbar{width:9px}::-webkit-scrollbar-thumb{background:#332F29;border-radius:6px}textarea:focus,input:focus{border-color:var(--accent) !important;box-shadow:0 0 0 3px rgba(242,106,27,.18)}</style>
+</helmet>
+<div data-theme="dark" data-screen-label="Zainteresowani terminem" style="width:1440px;max-width:100%;min-height:900px;background:#0F0E0C;color:#F2EFE7;font-family:'Archivo',system-ui,sans-serif;padding:20px 24px;position:relative;--accent:#F26A1B;--accent-hover:#FF7D2E;--surface:#1B1A16;--sunken:#131210;--line:#332F29;--t2:#B9B3A6;--t3:#7E796E;--ok:#6FA352;--warn:#D98E1B;--danger:#D9483C;--info:#5E8FB5">
+
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;font:700 10.5px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t3);flex-wrap:wrap">
+    <img src="../assets/logo-white.png" alt="ADVfactory" style="height:18px;display:block;margin-right:6px">
+    <span style="color:var(--t2)">Oferta na stronie</span><span>·</span>
+    <a href="Katalog%20Wypraw.dc.html" style="color:var(--t3);text-decoration:none">Wyprawy</a>
+    <a href="Terminarz%20Transport%C3%B3w.dc.html" style="color:var(--t3);text-decoration:none">Transport</a>
+    <a href="Tre%C5%9Bci%20Strony.dc.html" style="color:var(--t3);text-decoration:none">Treści strony</a>
+    <span style="color:var(--accent-hover);border-bottom:2px solid var(--accent);padding-bottom:2px">Zainteresowani terminem</span>
+    <a href="Ustawienia%20Strony.dc.html" style="color:var(--t3);text-decoration:none">Ustawienia</a>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;flex-wrap:wrap">
+    <div><div style="font-family:'Anton';font-size:30px;text-transform:uppercase;line-height:1">Zainteresowani terminem</div><div style="font:12px 'IBM Plex Mono';color:var(--t3);margin-top:5px">{{ summary }}</div></div>
+    <div style="margin-left:auto;display:flex;gap:9px;align-items:center;flex-wrap:wrap">
+      <sc-if value="{{ hasSel }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ openNotify }}" style="height:40px;padding:0 16px;display:flex;align-items:center;gap:8px;background:var(--accent);color:#fff;border:none;border-radius:8px;font:700 12px 'Archivo';text-transform:uppercase;letter-spacing:.03em;cursor:pointer;box-shadow:0 2px 0 #A83D03"><span class="ic" style="font-size:15px"><i data-lucide="send"></i></span>Powiadom zaznaczonych ({{ selCount }})</button>
+      </sc-if>
+      <button style="height:40px;padding:0 16px;display:flex;align-items:center;gap:8px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:8px;font:700 12px 'Archivo';text-transform:uppercase;letter-spacing:.03em;cursor:pointer"><span class="ic" style="font-size:15px"><i data-lucide="download"></i></span>CSV</button>
+    </div>
+  </div>
+
+  <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:16px">
+    <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap"><div style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t3)">Popyt na kierunki</div><div style="font:11px 'IBM Plex Mono';color:var(--t3)">kliknij, żeby przefiltrować — to lista pod planowanie sezonu</div></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+      <sc-for list="{{ dirs }}" as="d" hint-placeholder-count="8">
+        <div onClick="{{ d.onClick }}" style="display:flex;align-items:center;gap:10px;height:44px;padding:0 14px;background:{{ d.bg }};border:1px solid {{ d.border }};border-radius:8px;cursor:pointer">
+          <span style="font:700 12.5px 'Archivo';color:{{ d.color }}">{{ d.label }}</span>
+          <div style="width:64px;height:5px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden"><div style="height:100%;width:{{ d.pct }};background:{{ d.bar }}"></div></div>
+          <span style="font-family:'Anton';font-size:17px;color:{{ d.color }}">{{ d.count }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+    <sc-for list="{{ statusF }}" as="f" hint-placeholder-count="4"><div onClick="{{ f.onClick }}" style="height:34px;padding:0 14px;display:flex;align-items:center;gap:7px;background:{{ f.bg }};border:1px solid {{ f.border }};border-radius:99px;font:700 11.5px 'Archivo';color:{{ f.color }};cursor:pointer">{{ f.label }}<span style="font:700 10px 'IBM Plex Mono';opacity:.8">{{ f.count }}</span></div></sc-for>
+  </div>
+
+  <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden">
+    <div style="display:grid;grid-template-columns:36px 2fr 2fr 1fr .6fr 1.2fr 1.2fr;gap:12px;padding:10px 18px;background:var(--sunken);border-bottom:1px solid var(--line);font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t3);align-items:center">
+      <div onClick="{{ toggleAll }}" style="width:18px;height:18px;border:2px solid {{ allBorder }};background:{{ allBg }};border-radius:4px;cursor:pointer;display:grid;place-items:center"><span class="ic" style="font-size:12px;color:#fff"><i data-lucide="check"></i></span></div>
+      <div>Kontakt</div><div>Kierunki</div><div>Zapis</div><div>Język</div><div>Status</div><div style="text-align:right">Akcje</div>
+    </div>
+    <sc-for list="{{ rows }}" as="r" hint-placeholder-count="8">
+      <div style="display:grid;grid-template-columns:36px 2fr 2fr 1fr .6fr 1.2fr 1.2fr;gap:12px;padding:12px 18px;border-bottom:1px solid var(--line);align-items:center;background:{{ r.rowBg }}">
+        <div onClick="{{ r.toggle }}" style="width:18px;height:18px;border:2px solid {{ r.cbBorder }};background:{{ r.cbBg }};border-radius:4px;cursor:pointer;display:grid;place-items:center"><span class="ic" style="font-size:12px;color:#fff"><i data-lucide="check"></i></span></div>
+        <div style="min-width:0"><div style="font:700 13.5px 'Archivo';white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.name }}</div><div style="font:10.5px 'IBM Plex Mono';color:var(--t3)">{{ r.mail }}</div></div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap"><sc-for list="{{ r.dirs }}" as="t"><span style="font:700 9px 'Archivo';text-transform:uppercase;letter-spacing:.04em;color:{{ t.c }};background:{{ t.b }};padding:3px 8px;border-radius:4px;white-space:nowrap">{{ t.l }}</span></sc-for></div>
+        <div style="font:600 12px 'IBM Plex Mono';color:var(--t2)">{{ r.date }}</div>
+        <div><span style="font:700 9px 'Archivo';text-transform:uppercase;letter-spacing:.04em;color:var(--t2);background:rgba(255,255,255,.07);padding:2px 7px;border-radius:4px">{{ r.lang }}</span></div>
+        <div><span style="display:inline-flex;align-items:center;gap:6px;font:700 9.5px 'Archivo';text-transform:uppercase;letter-spacing:.03em;color:{{ r.stC }};background:{{ r.stB }};padding:4px 9px;border-radius:5px;white-space:nowrap"><span style="width:7px;height:7px;border-radius:50%;background:{{ r.stC }}"></span>{{ r.status }}</span></div>
+        <div style="display:flex;gap:6px;justify-content:flex-end">
+          <span onClick="{{ r.toLead }}" title="Przenieś do lejka jako lead" style="height:32px;padding:0 12px;display:inline-flex;align-items:center;gap:6px;background:var(--sunken);border:1px solid var(--line);border-radius:6px;color:#F2EFE7;font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.03em;cursor:pointer;white-space:nowrap"><span class="ic" style="font-size:13px;color:var(--info)"><i data-lucide="kanban"></i></span>Do lejka</span>
+          <span onClick="{{ r.remove }}" title="Usuń zapis (na prośbę klienta)" style="height:32px;width:32px;display:inline-grid;place-items:center;background:var(--sunken);border:1px solid var(--line);border-radius:6px;color:var(--t3);cursor:pointer"><span class="ic" style="font-size:14px"><i data-lucide="user-x"></i></span></span>
+        </div>
+      </div>
+    </sc-for>
+    <sc-if value="{{ empty }}" hint-placeholder-val="">
+      <div style="padding:52px 20px;text-align:center">
+        <div style="width:56px;height:56px;margin:0 auto;border-radius:50%;background:var(--sunken);border:1px solid var(--line);color:var(--t3);display:grid;place-items:center"><span class="ic" style="font-size:26px;width:56px;height:56px"><i data-lucide="bell-off"></i></span></div>
+        <div style="font:700 15px 'Archivo';margin-top:14px">Nikt w tym filtrze</div>
+        <div style="font:12px 'IBM Plex Mono';color:var(--t3);margin-top:5px">Zapisy przychodzą z przycisku „Daj znać o nowym terminie” na liście wypraw.</div>
+      </div>
+    </sc-if>
+  </div>
+  <div style="margin-top:12px;font:11px 'IBM Plex Mono';color:var(--t3)">Zapis to nie zapytanie — nie liczy się do alertu 24 h i nie ląduje w lejku, dopóki go nie przeniesiesz. Klient może się wypisać jednym kliknięciem w wiadomości.</div>
+
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:80;display:flex;align-items:center;gap:10px;background:#1B1A16;border:1px solid var(--line);border-left:3px solid var(--ok);border-radius:9px;padding:12px 16px;box-shadow:0 10px 30px rgba(0,0,0,.5);animation:_rs .25s ease both"><span class="ic" style="font-size:16px;color:var(--ok)"><i data-lucide="check-circle-2"></i></span><span style="font:600 13px 'Archivo'">{{ toastText }}</span></div>
+  </sc-if>
+
+  <!-- MODAL: POWIADOMIENIE -->
+  <sc-if value="{{ modal }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeModal }}" style="position:fixed;inset:0;background:rgba(10,9,8,.72);display:flex;align-items:flex-start;justify-content:center;padding:60px 16px;z-index:60;overflow:auto">
+      <div onClick="{{ stop }}" style="width:560px;max-width:100%;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.5)">
+        <div style="padding:16px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:11px">
+          <div style="width:38px;height:38px;flex:none;border-radius:9px;background:rgba(242,106,27,.14);border:1px solid #5a3a1e;color:var(--accent-hover);display:grid;place-items:center"><span class="ic" style="font-size:19px"><i data-lucide="bell-ring"></i></span></div>
+          <div style="flex:1"><div style="font-family:'Anton';font-size:19px;text-transform:uppercase;line-height:1">Powiadomienie o nowym terminie</div><div style="font:11px 'IBM Plex Mono';color:var(--t3);margin-top:2px">{{ modalSub }}</div></div>
+          <button onClick="{{ closeModal }}" style="width:34px;height:34px;flex:none;background:var(--sunken);border:1px solid var(--line);border-radius:8px;color:var(--t2);cursor:pointer"><span class="ic" style="font-size:16px;width:34px;height:34px"><i data-lucide="x"></i></span></button>
+        </div>
+        <div style="padding:18px 20px;display:grid;gap:14px">
+          <div>
+            <div style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2);margin-bottom:7px">Która wyprawa</div>
+            <div style="display:grid;gap:7px">
+              <sc-for list="{{ modalTrips }}" as="t" hint-placeholder-count="2"><div onClick="{{ t.pick }}" style="display:flex;align-items:center;gap:11px;padding:11px 13px;background:var(--sunken);border:1px solid {{ t.border }};border-radius:8px;cursor:pointer"><div style="width:44px;height:32px;flex:none;border-radius:5px;background:#26241F url('{{ t.img }}') center/cover;border:1px solid var(--line)"></div><div style="flex:1;min-width:0"><div style="font:700 12.5px 'Archivo'">{{ t.title }}</div><div style="font:10px 'IBM Plex Mono';color:var(--t3)">{{ t.meta }}</div></div><span style="font:700 9px 'Archivo';text-transform:uppercase;color:{{ t.stC }};background:{{ t.stB }};padding:2px 7px;border-radius:4px">{{ t.st }}</span></div></sc-for>
+            </div>
+          </div>
+          <label style="display:block"><span style="font:700 10px 'Archivo';text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">Treść (PL) — EN wychodzi z szablonu automatycznie</span>
+            <textarea value="{{ modalText }}" onInput="{{ onModalText }}" style="width:100%;min-height:120px;margin-top:6px;padding:12px 13px;background:var(--sunken);color:#F2EFE7;border:1px solid var(--line);border-radius:9px;font:14px 'Archivo';resize:vertical;outline:none;line-height:1.5"></textarea></label>
+          <div style="display:flex;gap:7px;padding:9px 11px;background:rgba(94,143,181,.1);border:1px solid #2f4a5e;border-radius:8px"><span class="ic" style="font-size:13px;color:var(--info);margin-top:1px"><i data-lucide="info"></i></span><div style="font-size:11.5px;color:var(--t2);line-height:1.45">Wysyłka tylko e-mailem (zakres MVP). Wiadomość ma link do karty wyprawy i link „wypisz mnie”. Każdy odbiorca dostaje wpis w historii aktywności.</div></div>
+        </div>
+        <div style="padding:14px 20px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end;background:var(--sunken)">
+          <button onClick="{{ closeModal }}" style="min-height:44px;padding:0 18px;background:transparent;color:var(--t2);border:1px solid var(--line);border-radius:9px;font:700 12px 'Archivo';text-transform:uppercase;letter-spacing:.03em;cursor:pointer">Anuluj</button>
+          <button onClick="{{ sendNotify }}" style="min-height:44px;padding:0 20px;display:flex;align-items:center;gap:8px;background:var(--accent);color:#fff;border:none;border-radius:9px;font:700 12px 'Archivo';text-transform:uppercase;letter-spacing:.03em;cursor:pointer;box-shadow:0 2px 0 #A83D03"><span class="ic" style="font-size:15px"><i data-lucide="send"></i></span>Wyślij do {{ selCount }}</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:900}}">
+class Component extends DCLogic {
+  state = { dir:"all", status:"all", sel:{}, modal:false, modalTrip:0, modalText:"Cześć! Jest nowy termin, na który czekałeś. Miejsca sprzedają się w kolejności zgłoszeń — kliknij i zapytaj, a odezwiemy się w ciągu 24 h.", toast:"",
+    people:[
+      { id:1, name:"Aleksandra Grabowska", mail:"ola.grabowska@email.pl", dirs:["Patagonia","Alaska"], date:"17.09.2026", lang:"PL", st:"wait" },
+      { id:2, name:"Michał Sroka", mail:"m.sroka@email.pl", dirs:["Kirgistan","Pamir"], date:"15.09.2026", lang:"PL", st:"wait" },
+      { id:3, name:"Hannah Meyer", mail:"hannah.m@gmx.de", dirs:["Kirgistan"], date:"14.09.2026", lang:"EN", st:"wait" },
+      { id:4, name:"Tomasz Górski", mail:"t.gorski@firma.pl", dirs:["Tybet"], date:"12.09.2026", lang:"PL", st:"wait" },
+      { id:5, name:"Beata Kalinowska", mail:"beata.k@email.pl", dirs:["Patagonia","Afryka"], date:"09.09.2026", lang:"PL", st:"notified" },
+      { id:6, name:"Rafał Duda", mail:"r.duda@email.pl", dirs:["Pamir","Afganistan"], date:"05.09.2026", lang:"PL", st:"converted" },
+      { id:7, name:"Lucas Ferreira", mail:"lucas.f@mail.pt", dirs:["Patagonia"], date:"02.09.2026", lang:"EN", st:"wait" },
+      { id:8, name:"Agnieszka Wróbel", mail:"a.wrobel@email.pl", dirs:["Alaska","Władywostok"], date:"28.08.2026", lang:"PL", st:"wait" },
+      { id:9, name:"Piotr Zieliński", mail:"p.zielinski@email.pl", dirs:["Kirgistan"], date:"21.08.2026", lang:"PL", st:"notified" },
+      { id:10, name:"Karolina Mazur", mail:"k.mazur@email.pl", dirs:["Tybet","Pakistan"], date:"14.08.2026", lang:"PL", st:"wait" }
+    ] };
+  componentDidMount(){ const t=()=>{ if(window.lucide) window.lucide.createIcons(); else setTimeout(t,60); }; t(); }
+  componentDidUpdate(){ if(window.lucide) window.lucide.createIcons(); document.body.style.overflow = this.state.modal ? "hidden" : ""; }
+  flash(m){ this.setState({ toast:m }); clearTimeout(this._tt); this._tt = setTimeout(()=>this.setState({ toast:"" }), 2800); }
+  renderVals(){
+    const s = this.state;
+    const ST = { wait:["Czeka","var(--warn)","rgba(217,142,27,.15)"], notified:["Powiadomiony","var(--info)","rgba(94,143,181,.15)"], converted:["W lejku","var(--ok)","rgba(111,163,82,.15)"] };
+    const DIRC = { Kirgistan:"var(--accent-hover)", Pamir:"var(--accent-hover)", Patagonia:"var(--info)", Alaska:"var(--info)", Tybet:"var(--warn)", Afryka:"var(--ok)", Afganistan:"var(--accent-hover)", Władywostok:"var(--warn)", Pakistan:"var(--warn)" };
+    const dc = {}; s.people.forEach(p => p.dirs.forEach(d => { dc[d] = (dc[d]||0) + 1; }));
+    const dirList = Object.keys(dc).sort((a,b) => dc[b]-dc[a]);
+    const max = Math.max(1, ...Object.values(dc));
+    const cnt = { all:s.people.length, wait:0, notified:0, converted:0 }; s.people.forEach(p => cnt[p.st]++);
+    const shown = s.people.filter(p => (s.dir==="all" || p.dirs.indexOf(s.dir)>=0) && (s.status==="all" || p.st===s.status));
+    const selIds = Object.keys(s.sel).filter(k => s.sel[k]).map(Number);
+    const allOn = shown.length>0 && shown.every(p => s.sel[p.id]);
+    const TRIPS = [
+      { title:"RTW 2027 Patagonia – wyprawa na koniec świata", meta:"04.01 – 26.01.2027 · 5 950 €", img:"https://advfactory.com/wp-content/uploads/2025/06/DSC_3057-Enhanced-NR.jpg", st:"pub" },
+      { title:"2027 Lekka kawaleria Pamir", meta:"05.07 – 16.07.2027 · 3 340 € · szkic", img:"https://advfactory.com/wp-content/uploads/2019/06/Pamir-trip-Advfactory-1.jpg", st:"draft" }
+    ];
+    return {
+      summary: cnt.wait + " czeka na termin · " + cnt.notified + " powiadomionych · " + cnt.converted + " w lejku · " + dirList.length + " kierunków",
+      hasSel: selIds.length>0 ? true : false, selCount: selIds.length,
+      dirs: [{ label:"Wszystkie", key:"all", count:s.people.length }].concat(dirList.map(d => ({ label:d, key:d, count:dc[d] }))).map(d => ({ label:d.label, count:String(d.count), pct: d.key==="all" ? "100%" : Math.round(d.count/max*100)+"%",
+        bar: d.key==="all" ? "var(--t3)" : (DIRC[d.key] || "var(--t2)"), onClick:()=>this.setState({ dir:d.key }),
+        bg: s.dir===d.key ? "rgba(242,106,27,.12)" : "var(--sunken)", border: s.dir===d.key ? "var(--accent)" : "var(--line)", color: s.dir===d.key ? "#F2EFE7" : "var(--t2)" })),
+      statusF: [["all","Wszyscy"],["wait","Czekają"],["notified","Powiadomieni"],["converted","W lejku"]].map(([id,label]) => ({ label, count:cnt[id], onClick:()=>this.setState({ status:id }),
+        bg: s.status===id ? "var(--accent)" : "var(--sunken)", border: s.status===id ? "var(--accent)" : "var(--line)", color: s.status===id ? "#fff" : "var(--t2)" })),
+      toggleAll: ()=>this.setState(st => { const sel = Object.assign({}, st.sel); shown.forEach(p => { sel[p.id] = !allOn; }); return { sel }; }),
+      allBorder: allOn ? "var(--accent)" : "var(--t3)", allBg: allOn ? "var(--accent)" : "transparent",
+      rows: shown.map(p => ({ name:p.name, mail:p.mail, date:p.date, lang:p.lang, status:ST[p.st][0], stC:ST[p.st][1], stB:ST[p.st][2],
+        dirs: p.dirs.map(d => ({ l:d, c:DIRC[d] || "var(--t2)", b:"rgba(255,255,255,.07)" })),
+        rowBg: s.sel[p.id] ? "rgba(242,106,27,.06)" : "transparent",
+        cbBorder: s.sel[p.id] ? "var(--accent)" : "var(--t3)", cbBg: s.sel[p.id] ? "var(--accent)" : "transparent",
+        toggle: ()=>this.setState(st => ({ sel: Object.assign({}, st.sel, { [p.id]: !st.sel[p.id] }) })),
+        toLead: ()=>{ this.setState(st => ({ people: st.people.map(x => x.id===p.id ? Object.assign({}, x, { st:"converted" }) : x) })); this.flash(p.name + " — lead w lejku, etap „nowe”, produkt: " + p.dirs[0]); },
+        remove: ()=>{ this.setState(st => ({ people: st.people.filter(x => x.id!==p.id) })); this.flash("Usunięto zapis: " + p.name); } })),
+      empty: shown.length===0 ? true : "",
+      modal: s.modal ? true : false,
+      openNotify: ()=>this.setState({ modal:true }), closeModal: ()=>this.setState({ modal:false }), stop:(e)=>e.stopPropagation(),
+      modalSub: selIds.length + " odbiorców · " + s.people.filter(p => selIds.indexOf(p.id)>=0 && p.lang==="EN").length + " po angielsku",
+      modalTrips: TRIPS.map((t,i) => ({ title:t.title, meta:t.meta, img:t.img, st: t.st==="pub" ? "Opublikowana" : "Szkic", stC: t.st==="pub" ? "var(--ok)" : "var(--warn)", stB: t.st==="pub" ? "rgba(111,163,82,.15)" : "rgba(217,142,27,.15)",
+        border: s.modalTrip===i ? "var(--accent)" : "var(--line)", pick:()=>this.setState({ modalTrip:i }) })),
+      modalText: s.modalText, onModalText:(e)=>this.setState({ modalText:e.target.value }),
+      sendNotify: ()=>{ const isDraft = TRIPS[s.modalTrip].st!=="pub"; if (isDraft) { this.flash("Ta wyprawa jest szkicem — opublikuj ją w katalogu, zanim wyślesz"); return; } this.setState(st => ({ people: st.people.map(p => selIds.indexOf(p.id)>=0 && p.st==="wait" ? Object.assign({}, p, { st:"notified" }) : p), sel:{}, modal:false })); this.flash("Wysłano do " + selIds.length + " osób — wpisy w historii aktywności"); },
+      toast: s.toast ? true : false, toastText: s.toast
+    };
+  }
+}
+</script>
+</body>
+</html>
