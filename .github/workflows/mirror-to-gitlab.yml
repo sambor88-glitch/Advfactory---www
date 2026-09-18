@@ -2,8 +2,8 @@
 # przy każdym pushu na GitHub. Projekt na GitLabie tworzy się sam przy pierwszym pushu
 # (jako prywatny).
 #
-# Wymaga sekretu GITLAB_TOKEN (Settings → Secrets and variables → Actions): token GitLab
-# z zakresem write_repository. Bez tego sekretu workflow niczego nie robi.
+# Wymaga tokena GitLab z zakresem write_repository w sekrecie GITLAB_TOKEN albo GITHUB
+# (Settings → Secrets and variables → Actions). Bez tokena workflow niczego nie robi.
 #
 # GitHub jest źródłem prawdy: jego gałęzie i tagi nadpisują te na GitLabie.
 # Gałęzie, które istnieją tylko na GitLabie (np. konrad/*), nie są ruszane.
@@ -39,7 +39,7 @@ jobs:
 
       - name: Wypchnij na GitLab
         env:
-          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN || secrets.GITHUB }}
           EVENT: ${{ github.event_name }}
           DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
           DELETED_REF: ${{ github.event.ref }}
@@ -47,7 +47,7 @@ jobs:
         run: |
           set -euo pipefail
           if [ -z "$GITLAB_TOKEN" ]; then
-            echo "::warning::Brak sekretu GITLAB_TOKEN, kopia na GitLab jest wyłączona"
+            echo "::warning::Brak tokena GitLab (sekret GITLAB_TOKEN albo GITHUB), kopia na GitLab jest wyłączona"
             exit 0
           fi
           # GitLab nie przyjmie ścieżki z kilkoma znakami specjalnymi z rzędu ani na jej brzegach.
