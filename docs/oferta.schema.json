@@ -1,0 +1,1061 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$ref": "#/definitions/Oferta",
+  "definitions": {
+    "Oferta": {
+      "type": "object",
+      "properties": {
+        "_meta": {
+          "type": "object",
+          "properties": {
+            "wersja": {
+              "type": "number"
+            },
+            "opublikowano": {
+              "type": "string"
+            },
+            "przez": {
+              "type": "string"
+            },
+            "uwaga": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "wersja",
+            "opublikowano",
+            "przez"
+          ],
+          "additionalProperties": false
+        },
+        "firma": {
+          "$ref": "#/definitions/Firma"
+        },
+        "magazyny": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Magazyn"
+          }
+        },
+        "ustawienia": {
+          "$ref": "#/definitions/UstawieniaStrony"
+        },
+        "wyprawy": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Wyprawa"
+          }
+        },
+        "kierunki": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Kierunek"
+          }
+        },
+        "regiony": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RegionWypraw"
+          }
+        },
+        "faq": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Faq"
+          }
+        },
+        "relacje": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Relacja"
+          }
+        },
+        "opinie": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Opinia"
+          }
+        }
+      },
+      "required": [
+        "_meta",
+        "firma",
+        "magazyny",
+        "ustawienia",
+        "wyprawy",
+        "kierunki",
+        "regiony",
+        "faq",
+        "relacje",
+        "opinie"
+      ],
+      "additionalProperties": false,
+      "description": "Kontrakt danych: strona advfactory.com ⇄ CRM. Jeden plik, dwa strumienie:   CRM → strona:  Oferta (GET /public/oferta.json, generowane przy „Publikuj”)   strona → CRM:  LeadWWW (POST /leads), Zainteresowany (POST /zainteresowani) Panel klienta czyta z CRM i zapisuje tylko to, co w sekcji Panel. Nazwy pól po polsku, snake_case — jak w bazie CRM. Daty ISO 8601 (YYYY-MM-DD lub pełny timestamp)."
+    },
+    "Firma": {
+      "type": "object",
+      "properties": {
+        "nazwa": {
+          "type": "string"
+        },
+        "adres": {
+          "type": "string"
+        },
+        "nip": {
+          "type": "string"
+        },
+        "regon": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "telefon": {
+          "type": "string"
+        },
+        "whatsapp": {
+          "type": "string"
+        },
+        "nadawca_panelu": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "nazwa",
+        "adres",
+        "nip",
+        "regon",
+        "email",
+        "telefon",
+        "whatsapp",
+        "nadawca_panelu"
+      ],
+      "additionalProperties": false
+    },
+    "Magazyn": {
+      "type": "object",
+      "properties": {
+        "miasto": {
+          "type": "string"
+        },
+        "adres": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "uwagi": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "widoczny": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "miasto",
+        "adres",
+        "uwagi",
+        "widoczny"
+      ],
+      "additionalProperties": false
+    },
+    "UstawieniaStrony": {
+      "type": "object",
+      "properties": {
+        "odpowiedz_w_godzinach": {
+          "type": "number"
+        },
+        "godziny_biura": {
+          "type": "object",
+          "properties": {
+            "tekst": {
+              "type": "string"
+            },
+            "pokazuj": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "tekst",
+            "pokazuj"
+          ],
+          "additionalProperties": false
+        },
+        "hero": {
+          "type": "object",
+          "properties": {
+            "nadtytul": {
+              "type": "string"
+            },
+            "tytul": {
+              "type": "string"
+            },
+            "lead": {
+              "type": "string"
+            },
+            "zdjecie": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "nadtytul",
+            "tytul",
+            "lead",
+            "zdjecie"
+          ],
+          "additionalProperties": false
+        },
+        "baner": {
+          "type": "object",
+          "properties": {
+            "wlaczony": {
+              "type": "boolean"
+            },
+            "tekst": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "link": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "wygasa": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "ton": {
+              "type": "string",
+              "enum": [
+                "accent",
+                "info",
+                "warn"
+              ]
+            }
+          },
+          "required": [
+            "wlaczony",
+            "tekst",
+            "link",
+            "wygasa",
+            "ton"
+          ],
+          "additionalProperties": false
+        },
+        "wideo_youtube": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "seo": {
+          "type": "object",
+          "properties": {
+            "szablon_tytulu": {
+              "type": "string"
+            },
+            "opis": {
+              "type": "string"
+            },
+            "og_image": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "szablon_tytulu",
+            "opis",
+            "og_image"
+          ],
+          "additionalProperties": false
+        },
+        "analityka": {
+          "type": "object",
+          "properties": {
+            "ga4": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "meta_pixel": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "ga4",
+            "meta_pixel"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "odpowiedz_w_godzinach",
+        "godziny_biura",
+        "hero",
+        "baner",
+        "wideo_youtube",
+        "seo",
+        "analityka"
+      ],
+      "additionalProperties": false
+    },
+    "Wyprawa": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/StatusWyprawy"
+        },
+        "tytul": {
+          "type": "string"
+        },
+        "region": {
+          "type": "string"
+        },
+        "region_strony": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "termin": {
+          "type": "object",
+          "properties": {
+            "od": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "do": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "raw": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "od",
+            "do"
+          ],
+          "additionalProperties": false
+        },
+        "cena": {
+          "type": "object",
+          "properties": {
+            "kierowca_eur": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "pasazer_eur": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "opis": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "kierowca_eur",
+            "pasazer_eur",
+            "opis"
+          ],
+          "additionalProperties": false
+        },
+        "trudnosc": {
+          "type": "number"
+        },
+        "na_naszym_sprzecie": {
+          "type": "boolean"
+        },
+        "zdjecie": {
+          "type": "string"
+        },
+        "opis": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "zawiera": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "nie_zawiera": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "plan_dni": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "dzien": {
+                "type": "number"
+              },
+              "tytul": {
+                "type": "string"
+              },
+              "opis": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "dzien",
+              "tytul",
+              "opis"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "seo": {
+          "type": "object",
+          "properties": {
+            "tytul": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "opis": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "tytul",
+            "opis"
+          ],
+          "additionalProperties": false
+        },
+        "en": {
+          "type": "object",
+          "properties": {
+            "tytul": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "lead": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "tytul",
+            "lead"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "id",
+        "slug",
+        "status",
+        "tytul",
+        "region",
+        "region_strony",
+        "termin",
+        "cena",
+        "trudnosc",
+        "na_naszym_sprzecie",
+        "zdjecie",
+        "opis",
+        "zawiera",
+        "nie_zawiera",
+        "plan_dni",
+        "seo",
+        "en"
+      ],
+      "additionalProperties": false
+    },
+    "StatusWyprawy": {
+      "type": "string",
+      "enum": [
+        "szkic",
+        "opublikowana",
+        "archiwum"
+      ]
+    },
+    "Kierunek": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/StatusKierunku"
+        },
+        "nazwa": {
+          "type": "string"
+        },
+        "kraj": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "miasto_odbioru": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "uwagi": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "geo": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "lat": {
+                  "type": "number"
+                },
+                "lon": {
+                  "type": "number"
+                },
+                "zrodlo": {
+                  "type": "string",
+                  "enum": [
+                    "geokoder",
+                    "reczne"
+                  ]
+                }
+              },
+              "required": [
+                "lat",
+                "lon",
+                "zrodlo"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cena_jedna_eur": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "cena_obie_eur": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "na_mapie": {
+          "type": "boolean"
+        },
+        "w_konfiguratorze": {
+          "type": "boolean"
+        },
+        "terminy": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TerminTransportu"
+          }
+        },
+        "strona": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/StronaKierunku"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "seo": {
+          "type": "object",
+          "properties": {
+            "tytul": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "opis": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "tytul",
+            "opis"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "id",
+        "slug",
+        "status",
+        "nazwa",
+        "kraj",
+        "miasto_odbioru",
+        "uwagi",
+        "geo",
+        "cena_jedna_eur",
+        "cena_obie_eur",
+        "na_mapie",
+        "w_konfiguratorze",
+        "terminy",
+        "strona",
+        "seo"
+      ],
+      "additionalProperties": false
+    },
+    "StatusKierunku": {
+      "type": "string",
+      "enum": [
+        "szkic",
+        "opublikowany",
+        "archiwum"
+      ]
+    },
+    "TerminTransportu": {
+      "type": "object",
+      "properties": {
+        "pakowanie_pl": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "dostawa": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "powrot_z_miejsca": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "powrot_pl": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "pakowanie_pl",
+        "dostawa",
+        "powrot_z_miejsca",
+        "powrot_pl"
+      ],
+      "additionalProperties": false
+    },
+    "StronaKierunku": {
+      "type": "object",
+      "properties": {
+        "h1": {
+          "type": "string"
+        },
+        "lead": {
+          "type": "string"
+        },
+        "zdjecie": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "chips": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "minItems": 2,
+            "items": [
+              {
+                "type": "string",
+                "title": "ikona"
+              },
+              {
+                "type": "string",
+                "title": "tekst"
+              }
+            ],
+            "maxItems": 2
+          }
+        },
+        "akapity": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "faq": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "q": {
+                "type": "string"
+              },
+              "a": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "q",
+              "a"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "regiony_wypraw": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "h1",
+        "lead",
+        "zdjecie",
+        "chips",
+        "akapity",
+        "faq",
+        "regiony_wypraw"
+      ],
+      "additionalProperties": false
+    },
+    "RegionWypraw": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/StatusRegionu"
+        },
+        "nazwa": {
+          "type": "string"
+        },
+        "h1": {
+          "type": "string"
+        },
+        "lead": {
+          "type": "string"
+        },
+        "zdjecie": {
+          "type": "string"
+        },
+        "kierunek_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "fakty": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "minItems": 2,
+            "items": [
+              {
+                "type": "string",
+                "title": "etykieta"
+              },
+              {
+                "type": "string",
+                "title": "wartosc"
+              }
+            ],
+            "maxItems": 2
+          }
+        },
+        "h2": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "akapity": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "kiedy_jechac": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "minItems": 2,
+            "items": [
+              {
+                "type": "string",
+                "title": "okres"
+              },
+              {
+                "type": "string",
+                "title": "opis"
+              }
+            ],
+            "maxItems": 2
+          }
+        },
+        "faq": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "q": {
+                "type": "string"
+              },
+              "a": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "q",
+              "a"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "relacje": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "kolejnosc": {
+          "type": "number"
+        },
+        "seo": {
+          "type": "object",
+          "properties": {
+            "tytul": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "opis": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "tytul",
+            "opis"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "id",
+        "slug",
+        "status",
+        "nazwa",
+        "h1",
+        "lead",
+        "zdjecie",
+        "kierunek_id",
+        "fakty",
+        "h2",
+        "akapity",
+        "kiedy_jechac",
+        "faq",
+        "relacje",
+        "kolejnosc",
+        "seo"
+      ],
+      "additionalProperties": false,
+      "description": "Strona regionu wypraw (np. /wyprawy/kirgistan) — landing SEO pod frazy „wyprawy motocyklowe do…”. Edytowana w CRM (widok „Strony regionów”). Wyprawy podpinają się przez `Wyprawa.region_strony`, bez dopasowywania po słowach w tytule."
+    },
+    "StatusRegionu": {
+      "type": "string",
+      "enum": [
+        "szkic",
+        "opublikowany",
+        "archiwum"
+      ]
+    },
+    "Faq": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "pytanie": {
+          "type": "string"
+        },
+        "odpowiedz": {
+          "type": "string"
+        },
+        "sekcja": {
+          "type": "string",
+          "enum": [
+            "transport",
+            "wyprawy"
+          ]
+        },
+        "kolejnosc": {
+          "type": "number"
+        },
+        "opublikowane": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "pytanie",
+        "odpowiedz",
+        "sekcja",
+        "kolejnosc",
+        "opublikowane"
+      ],
+      "additionalProperties": false
+    },
+    "Relacja": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        },
+        "tytul": {
+          "type": "string"
+        },
+        "temat": {
+          "type": "string"
+        },
+        "czas_czytania_min": {
+          "type": "number"
+        },
+        "data": {
+          "type": "string"
+        },
+        "lead": {
+          "type": "string"
+        },
+        "zdjecie": {
+          "type": "string"
+        },
+        "tresc": {
+          "type": "string"
+        },
+        "opublikowana": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "slug",
+        "tytul",
+        "temat",
+        "czas_czytania_min",
+        "data",
+        "lead",
+        "zdjecie",
+        "tresc",
+        "opublikowana"
+      ],
+      "additionalProperties": false
+    },
+    "Opinia": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "imie_nazwisko": {
+          "type": "string"
+        },
+        "motocykl": {
+          "type": "string"
+        },
+        "wyprawa": {
+          "type": "string"
+        },
+        "cytat": {
+          "type": "string"
+        },
+        "zdjecie": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "zgoda_uczestnika": {
+          "type": "boolean"
+        },
+        "opublikowana": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "imie_nazwisko",
+        "motocykl",
+        "wyprawa",
+        "cytat",
+        "zdjecie",
+        "zgoda_uczestnika",
+        "opublikowana"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

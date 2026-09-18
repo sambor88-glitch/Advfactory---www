@@ -10,7 +10,9 @@
     "check": "astro check",
     "build:szybki": "astro build",
     "test:e2e": "node testy/e2e.mjs",
-    "test:linki": "node testy/linki.mjs"
+    "test:linki": "node testy/linki.mjs",
+    "schemat": "node skrypty/generuj-schemat.mjs",
+    "test:kontrakt": "node testy/kontrakt.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
@@ -28,7 +30,11 @@
     "@astrojs/check": "^0.9.4",
     "@types/node": "^26.6.1",
     "@types/topojson-specification": "^1.0.5",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
     "playwright": "^1.50.0",
-    "typescript": "^5.8.3"
+    "ts-json-schema-generator": "^2.9.0",
+    "typescript": "^5.8.3",
+    "wait-on": "^9.1.0"
   }
 }

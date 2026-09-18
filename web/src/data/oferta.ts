@@ -1,5 +1,6 @@
 import type { Oferta, Wyprawa, Kierunek, RegionWypraw, Faq, TerminTransportu } from '../types/oferta';
 import fixture from '../../../docs/oferta.json';
+import schemat from '../../../docs/oferta.schema.json';
 
 /**
  * Skąd bierzemy ofertę:
@@ -22,12 +23,48 @@ export async function pobierzOferte(): Promise<Oferta> {
     if (!odp.ok) {
       throw new Error(`Nie udało się pobrać oferty z ${URL_OFERTY}: HTTP ${odp.status}`);
     }
-    cache = (await odp.json()) as Oferta;
+    const surowa = await odp.json();
+    await sprawdzKontrakt(surowa, URL_OFERTY);
+    cache = surowa as Oferta;
   } else {
+    // Fixture z repo sprawdza `npm run test:kontrakt` w CI — nie ma sensu
+    // walidować go przy każdym buildzie deweloperskim.
     cache = fixture as unknown as Oferta;
   }
 
   return cache;
+}
+
+/**
+ * Oferta z CRM jest walidowana ZANIM powstaną z niej strony.
+ *
+ * CRM i strona są budowane równolegle, przez różne osoby i w różnych językach.
+ * Jedyne, co je łączy, to kształt `oferta.json`. Bez tej bramki wystarczyłoby,
+ * że CRM przestanie wysyłać jedno pole, a strona wygenerowałaby 28 podstron
+ * z dziurą — i nikt by tego nie zauważył, bo build byłby zielony.
+ *
+ * ajv wchodzi tu tylko przy publikacji z CRM. Do przeglądarki nie trafia nic.
+ */
+async function sprawdzKontrakt(dane: unknown, skad: string): Promise<void> {
+  const { default: Ajv } = await import('ajv');
+  const { default: dodajFormaty } = await import('ajv-formats');
+
+  const ajv = new Ajv({ allErrors: true, strict: false });
+  dodajFormaty(ajv);
+
+  if (ajv.validate(schemat, dane)) return;
+
+  const istotne = (ajv.errors ?? [])
+    .filter((e) => !['anyOf', 'oneOf', 'not', 'if'].includes(e.keyword))
+    .slice(0, 15)
+    .map((e) => `  ${e.instancePath || '(korzeń)'} — ${e.message}`)
+    .join('\n');
+
+  throw new Error(
+    `Oferta z ${skad} nie trzyma się kontraktu z docs/schema.ts.\n\n${istotne}\n\n` +
+    'Przebudowa przerwana celowo: lepiej, żeby CloudFront serwował poprzednią wersję strony, ' +
+    'niż żeby poszła nowa z brakującymi danymi. Sprawdź, co generuje CRM przy „Publikuj".'
+  );
 }
 
 /** Wyprawy widoczne w katalogu, od najbliższego terminu. Archiwum ma własny widok. */

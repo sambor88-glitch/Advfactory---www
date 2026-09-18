@@ -28,6 +28,8 @@ Repozytorium nowej strony advfactory.com, spiętej z CRM (`sambor88-glitch/advfa
 - `integracja-crm.md` — przepływ danych: oferta CRM → strona, leady strona → CRM, publikacja, panel, powiadomienia, stany błędów.
 - `architektura.md` — hosting, publikacja, ścieżka leada, Terraform, szacunkowy koszt AWS.
 - `crm-integracja-laravel.md` — co dołożyć w CRM (Laravel na Forge): trasy leadów, walidacja, routing do lejka, publikacja oferty.
+- `praca-rownolegla.md` — jak budować stronę i CRM jednocześnie, nie rozjeżdżając się: kontrakt jako granica, trzy tryby danych, bramki w CI, kolejność prac.
+- `oferta.schema.json` — kontrakt w formie JSON Schema (generowany ze `schema.ts`), do walidacji po stronie CRM.
 - `schema.ts` — kontrakt typów dla obu strumieni i panelu.
 - `oferta.json` — przykładowa opublikowana oferta (9 wypraw, 7 kierunków, 6 regionów, 10 FAQ, ustawienia).
 

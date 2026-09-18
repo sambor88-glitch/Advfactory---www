@@ -10,7 +10,12 @@
 // ───────────────────────── OFERTA (CRM → strona) ─────────────────────────
 
 export interface Oferta {
-  _meta: { wersja: number; opublikowano: string; przez: string };
+  _meta: {
+    wersja: number;            // rośnie z każdą publikacją; służy do rollbacku
+    opublikowano: string;
+    przez: string;
+    uwaga?: string | null;     // notatka publikującego, nigdzie nie pokazywana
+  };
   firma: Firma;
   magazyny: Magazyn[];
   ustawienia: UstawieniaStrony;

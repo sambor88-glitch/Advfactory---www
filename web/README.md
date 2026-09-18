@@ -26,6 +26,8 @@ Nie potrzebuje sieci ani działającego CRM.
 | `npm run preview` | serwuje `dist/` na porcie 4321 |
 | `npm run test:e2e` | test przeglądarkowy ścieżki sprzedażowej (wymaga `npm run preview` w tle) |
 | `npm run test:linki` | sprawdza, czy żaden wewnętrzny odnośnik nie prowadzi w 404 (czyta `dist/`) |
+| `npm run test:kontrakt` | sprawdza ofertę przeciw `docs/schema.ts`; przyjmuje ścieżkę albo URL |
+| `npm run schemat` | przegenerowuje `docs/oferta.schema.json` ze `schema.ts` (commitowany, używa go CRM) |
 
 `npm run build` celowo uruchamia `astro check` przed budowaniem: samo `astro build`
 **nie sprawdza TypeScriptu**, więc bez tego błąd typu trafiłby na produkcję.
@@ -41,9 +43,12 @@ Nie potrzebuje sieci ani działającego CRM.
 
 Zmienne `PUBLIC_*` trafiają do przeglądarki — nie wkładaj tam niczego tajnego.
 
-Build jest świadomie twardy: gdy `OFERTA_URL` jest ustawione i nie odpowiada,
-przebudowa pada. Wolimy, żeby CloudFront serwował poprzedni build, niż żeby
+Build jest świadomie twardy: gdy `OFERTA_URL` jest ustawione, a oferta nie odpowiada
+**albo nie trzyma się kontraktu z `docs/schema.ts`**, przebudowa pada kodem 1 i nie
+produkuje żadnego HTML-a. Wolimy, żeby CloudFront serwował poprzedni build, niż żeby
 poszła strona bez cen i terminów.
+
+Jak to się ma do równoległego rozwoju CRM — `docs/praca-rownolegla.md`.
 
 ## Wdrożenie krok po kroku
 

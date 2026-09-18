@@ -1,0 +1,59 @@
+name: Strona
+
+# Strona i CRM powstają równolegle i spotykają się wyłącznie na kształcie
+# `oferta.json`. To jest bramka, która pilnuje tego spotkania.
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  # CRM woła to po „Publikuj", żeby przebudować stronę z nowej oferty.
+  repository_dispatch:
+    types: [publikacja-oferty]
+
+jobs:
+  sprawdz:
+    name: Kontrakt, typy, build, testy
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - run: npm ci
+
+      - name: Schemat JSON zgodny ze schema.ts
+        # docs/oferta.schema.json jest commitowany, bo używa go też CRM po stronie
+        # PHP. Gdyby ktoś zmienił schema.ts i zapomniał go przegenerować, CRM
+        # walidowałby przeciw nieaktualnemu kontraktowi.
+        run: |
+          npm run schemat
+          if ! git diff --exit-code ../docs/oferta.schema.json; then
+            echo "::error::docs/oferta.schema.json jest nieaktualny wobec docs/schema.ts — uruchom 'npm run schemat' i zacommituj wynik."
+            exit 1
+          fi
+
+      - name: Oferta trzyma się kontraktu
+        run: npm run test:kontrakt
+
+      - name: Typy i build
+        run: npm run build
+
+      - name: Wewnętrzne odnośniki
+        run: npm run test:linki
+
+      - name: Przeglądarka
+        run: npx playwright install --with-deps chromium
+
+      - name: Ścieżka sprzedażowa
+        run: |
+          npm run preview &
+          npx wait-on http://localhost:4321 --timeout 60000
+          npm run test:e2e

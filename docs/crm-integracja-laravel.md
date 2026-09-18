@@ -216,9 +216,36 @@ public function handle(User $kto): void
 }
 ```
 
-**`zbuduj()` musi zwrócić dokładnie kształt z `schema.ts`.** Front importuje te typy
-wprost z `docs/schema.ts`, więc rozjazd wywróci przebudowę strony, a nie ujawni się
-dopiero u klienta. To jest zamierzone.
+**`zbuduj()` musi zwrócić dokładnie kształt z `schema.ts`.** Nie sprawdzaj tego okiem —
+w repozytorium strony leży `docs/oferta.schema.json`, czyli ten sam kontrakt w formie,
+którą PHP umie zwalidować:
+
+```php
+// przed zapisem do S3 — publikacja niezgodna z kontraktem nie ma prawa wyjść
+$walidator = new \Opis\JsonSchema\Validator();
+$wynik = $walidator->validate(
+    json_decode(json_encode($oferta)),
+    file_get_contents(base_path('kontrakt/oferta.schema.json'))
+);
+
+if (! $wynik->isValid()) {
+    throw new OfertaNiezgodnaZKontraktem($wynik->error());
+}
+```
+
+Plik bierze się z repozytorium strony (`docs/oferta.schema.json`) — kopiowany przy
+deployu albo pobierany z opublikowanej strony. Jest generowany z `schema.ts`, a CI
+strony pilnuje, żeby nie był nieaktualny.
+
+Po stronie strony ta sama oferta jest sprawdzana jeszcze raz przy przebudowie
+i **niezgodna przerywa build**, więc CloudFront zostaje przy poprzedniej wersji.
+Dwie bramki na tej samej regule — patrz `docs/praca-rownolegla.md`.
+
+Zanim wypchniesz publikację, możesz ją sprawdzić tym, czym sprawdza ją CI strony:
+
+```bash
+npm run test:kontrakt -- https://crm-test.advfactory.com/public/oferta.json
+```
 
 Trzy pułapki, na które już się nadzialiśmy przy generowaniu przykładowej oferty:
 
