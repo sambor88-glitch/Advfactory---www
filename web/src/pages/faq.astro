@@ -1,0 +1,116 @@
+---
+import Base from '../layouts/Base.astro';
+import Ikona from '../components/Ikona.astro';
+import Faq from '../components/Faq.astro';
+import { pobierzOferte, faqSekcji } from '../data/oferta';
+import { numerWhatsApp } from '../lib/format';
+
+const oferta = await pobierzOferte();
+const transport = faqSekcji(oferta, 'transport');
+const wyprawy = faqSekcji(oferta, 'wyprawy');
+const wszystkie = [...transport, ...wyprawy];
+const wa = numerWhatsApp(oferta.firma.whatsapp);
+const godziny = oferta.ustawienia.odpowiedz_w_godzinach;
+---
+<Base
+  tytul="Najczęstsze pytania"
+  opis="Odpowiedzi na pytania o transport motocykla kontenerem i o wyprawy motocyklowe ADVfactory."
+>
+  <section class="tresc czapka">
+    <p class="nadtytul">FAQ</p>
+    <h1>Zanim zapytasz</h1>
+    <p class="lead">
+      {wszystkie.length} odpowiedzi na to, o co pytacie najczęściej. Czegoś brakuje?
+      Napisz — odpowiadamy w ciągu {godziny} h.
+    </p>
+  </section>
+
+  <div class="tresc uklad">
+    <div class="glowna">
+      {transport.length > 0 && (
+        <section class="blok" id="transport">
+          <h2>Transport pojazdów</h2>
+          <Faq pytania={transport.map((f) => ({ q: f.pytanie, a: f.odpowiedz }))} />
+        </section>
+      )}
+
+      {wyprawy.length > 0 && (
+        <section class="blok" id="wyprawy">
+          <h2>Wyprawy motocyklowe</h2>
+          <Faq pytania={wyprawy.map((f) => ({ q: f.pytanie, a: f.odpowiedz }))} />
+        </section>
+      )}
+
+      {wszystkie.length === 0 && (
+        <p class="pusto">Lista pytań jest w tej chwili pusta — napisz do nas wprost.</p>
+      )}
+    </div>
+
+    <aside class="bok">
+      <div class="pudlo">
+        <Ikona nazwa="message-circle" rozmiar="22" />
+        <h2>Nie ma Twojego pytania?</h2>
+        <p>Odpowiada człowiek, nie automat. Zwykle tego samego dnia roboczego.</p>
+        <button type="button" class="przycisk pelna" data-otworz-zapytanie data-zrodlo="formularz">
+          <Ikona nazwa="send" rozmiar="15" />
+          Wyślij zapytanie
+        </button>
+        <a
+          class="przycisk przycisk--obrys pelna jasny-obrys"
+          href={`https://wa.me/${wa}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Ikona nazwa="message-circle" rozmiar="16" />
+          WhatsApp
+        </a>
+      </div>
+    </aside>
+  </div>
+</Base>
+
+{wszystkie.length > 0 && (
+  <script
+    type="application/ld+json"
+    is:inline
+    set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: wszystkie.map((f) => ({
+        '@type': 'Question',
+        name: f.pytanie,
+        acceptedAnswer: { '@type': 'Answer', text: f.odpowiedz },
+      })),
+    })}
+  />
+)}
+
+<style>
+  .czapka { padding-block: 56px 8px; max-width: 760px; }
+  h1 { margin: 14px 0 16px; }
+  .lead { font-size: 17px; color: var(--tekst-2); max-width: 58ch; }
+
+  .uklad {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 48px;
+    align-items: start;
+    padding-block: 40px;
+  }
+  @media (max-width: 960px) { .uklad { grid-template-columns: 1fr; gap: 32px; } }
+
+  .blok { margin-bottom: 44px; }
+  .blok h2 { font-size: clamp(24px, 3vw, 32px); margin-bottom: 14px; }
+  .pusto { color: var(--tekst-2); }
+
+  .bok { position: sticky; top: 100px; }
+  @media (max-width: 960px) { .bok { position: static; } }
+
+  .pudlo { padding: 24px; background: var(--ciemny); color: var(--tekst-na-ciemnym); border-radius: var(--r-m); }
+  .pudlo > :global(svg) { color: var(--akcent-jasny); }
+  .pudlo h2 { font-size: 21px; margin: 10px 0 8px; }
+  .pudlo p { font-size: 14px; color: var(--tekst-na-ciemnym-2); }
+  .pelna { width: 100%; justify-content: center; margin-top: 12px; }
+  .jasny-obrys { color: var(--tekst-na-ciemnym); border-color: var(--kreska-ciemna); }
+  .jasny-obrys:hover { background: var(--ciemny-3); color: var(--tekst-na-ciemnym); }
+</style>

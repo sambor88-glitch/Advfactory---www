@@ -59,9 +59,9 @@ Pliki `.dc.html` otwierają się w przeglądarce bezpośrednio z dysku (potrzebu
 
 ## Kod strony (`web/`)
 
-Front w Astro (SSG), budowany z `docs/oferta.json`. Zbudowany zakres to rdzeń
-sprzedażowy: strona główna, lista wypraw, karta wyprawy, transport z konfiguratorem,
-szuflada zapytania, „dziękujemy" i 404.
+Front w Astro (SSG), budowany z `docs/oferta.json`. Zbudowany zakres: strona główna,
+lista i karty wypraw, transport z konfiguratorem i terminarzem, 7 stron kierunków,
+6 stron regionów, FAQ, szuflada zapytania, „dziękujemy", 404, sitemap i robots.
 
 ```bash
 cd web && npm install && npm run dev

@@ -13,7 +13,7 @@ export const NAWIGACJA_GLOWNA: Pozycja[] = [
   { etykieta: 'Wyprawy', url: '/wyprawy', gotowe: true },
   { etykieta: 'Transport pojazdów', url: '/transport', gotowe: true },
   { etykieta: 'Relacje z tras', url: '/relacje', gotowe: false },
-  { etykieta: 'FAQ', url: '/faq', gotowe: false },
+  { etykieta: 'FAQ', url: '/faq', gotowe: true },
   { etykieta: 'Kontakt', url: '/kontakt', gotowe: false },
 ];
 
@@ -26,7 +26,7 @@ export const STOPKA_OFERTA: Pozycja[] = [
 export const STOPKA_INFORMACJE: Pozycja[] = [
   { etykieta: 'O nas', url: '/o-nas', gotowe: false },
   { etykieta: 'Relacje z tras', url: '/relacje', gotowe: false },
-  { etykieta: 'FAQ', url: '/faq', gotowe: false },
+  { etykieta: 'FAQ', url: '/faq', gotowe: true },
   { etykieta: 'Kontakt', url: '/kontakt', gotowe: false },
   { etykieta: 'Regulamin transportu', url: '/regulamin-transportu', gotowe: false },
   { etykieta: 'Warunki uczestnictwa', url: '/warunki-uczestnictwa', gotowe: false },

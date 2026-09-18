@@ -1,4 +1,4 @@
-import type { Oferta, Wyprawa, Kierunek, RegionWypraw, Faq } from '../types/oferta';
+import type { Oferta, Wyprawa, Kierunek, RegionWypraw, Faq, TerminTransportu } from '../types/oferta';
 import fixture from '../../../docs/oferta.json';
 
 /**
@@ -44,6 +44,21 @@ export function kierunkiOpublikowane(oferta: Oferta): Kierunek[] {
 
 export function kierunkiWKonfiguratorze(oferta: Oferta): Kierunek[] {
   return kierunkiOpublikowane(oferta).filter((k) => k.w_konfiguratorze);
+}
+
+/**
+ * Terminy, na które da się jeszcze zapisać.
+ *
+ * Kontener, który już wypłynął, nie jest ofertą — a pokazany na stronie sprawia,
+ * że cały terminarz wygląda na nieodświeżany. Wiersze bez daty pakowania zostają:
+ * to kierunki obsługiwane tylko w powrocie do Polski, tam pakowania po prostu nie ma.
+ *
+ * Jedna reguła dla terminarza zbiorczego i dla stron kierunków — wcześniej
+ * każdy widok liczył to po swojemu i pokazywały różne rzeczy.
+ */
+export function terminyAktualne(kierunek: Kierunek, dzisiaj = new Date()): TerminTransportu[] {
+  const dzis = dzisiaj.toISOString().slice(0, 10);
+  return kierunek.terminy.filter((t) => !t.pakowanie_pl || t.pakowanie_pl >= dzis);
 }
 
 export function regionyOpublikowane(oferta: Oferta): RegionWypraw[] {

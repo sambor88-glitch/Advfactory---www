@@ -11,9 +11,9 @@ const regiony = regionyOpublikowane(oferta);
 const widoczneMagazyny = magazyny.filter((m) => m.widoczny).map((m) => m.miasto);
 const rok = new Date().getFullYear();
 
-// Linki do stron kierunków i regionów powstają w kroku 1b — do tego czasu
-// kolumny pokazują same nazwy, żeby stopka nie prowadziła w 404.
-const STRONY_SEO_GOTOWE = false;
+// Strony kierunków i regionów powstały w kroku 1b — stopka linkuje do nich wprost.
+// Kierunek bez treści strony nie ma landinga, więc zostaje samą nazwą.
+const STRONY_SEO_GOTOWE = true;
 ---
 <footer>
   <div class="tresc siatka">
@@ -26,7 +26,7 @@ const STRONY_SEO_GOTOWE = false;
       <h2 class="tytul-kolumny">Transport motocykla do</h2>
       <ul class="lista przygaszona">
         {kierunki.map((k) => (
-          <li>{STRONY_SEO_GOTOWE ? <a href={`/transport/${k.slug}`}>{k.nazwa}</a> : k.nazwa}</li>
+          <li>{STRONY_SEO_GOTOWE && k.strona ? <a href={`/transport/${k.slug}`}>{k.nazwa}</a> : k.nazwa}</li>
         ))}
       </ul>
     </div>

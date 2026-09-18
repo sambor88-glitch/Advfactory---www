@@ -15,9 +15,11 @@ interface Props {
   ogImage?: string;
   /** Wyłącza szablon tytułu, gdy strona chce pełną kontrolę (np. strona główna). */
   tytulPelny?: boolean;
+  /** Strony bez wartości w wyszukiwarce: potwierdzenie wysyłki, 404. */
+  noindex?: boolean;
 }
 
-const { tytul, opis, ogImage, tytulPelny = false } = Astro.props;
+const { tytul, opis, ogImage, tytulPelny = false, noindex = false } = Astro.props;
 const oferta = await pobierzOferte();
 const { seo } = oferta.ustawienia;
 
@@ -33,7 +35,9 @@ const kanoniczny = new URL(Astro.url.pathname, Astro.site ?? 'https://advfactory
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{tytulStrony}</title>
     <meta name="description" content={opisStrony} />
-    <link rel="canonical" href={kanoniczny} />
+    {noindex
+      ? <meta name="robots" content="noindex, follow" />
+      : <link rel="canonical" href={kanoniczny} />}
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/favicon.svg" />

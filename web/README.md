@@ -1,8 +1,9 @@
 # Strona advfactory.com — front
 
 Statyczna strona (Astro SSG) budowana z `oferta.json`, którą publikuje CRM.
-Zakres kroku 1: rdzeń sprzedażowy — start, wyprawy, karta wyprawy, transport
-z konfiguratorem, szuflada zapytania, dziękujemy, 404.
+Zbudowany zakres (kroki 1 i 1b): start, lista i karty wypraw, transport
+z konfiguratorem i terminarzem, 7 stron kierunków, 6 stron regionów, FAQ,
+szuflada zapytania, „dziękujemy", 404, sitemap i robots.
 
 ## Uruchomienie lokalne
 
@@ -24,6 +25,7 @@ Nie potrzebuje sieci ani działającego CRM.
 | `npm run build:szybki` | sam build, bez sprawdzania typów |
 | `npm run preview` | serwuje `dist/` na porcie 4321 |
 | `npm run test:e2e` | test przeglądarkowy ścieżki sprzedażowej (wymaga `npm run preview` w tle) |
+| `npm run test:linki` | sprawdza, czy żaden wewnętrzny odnośnik nie prowadzi w 404 (czyta `dist/`) |
 
 `npm run build` celowo uruchamia `astro check` przed budowaniem: samo `astro build`
 **nie sprawdza TypeScriptu**, więc bez tego błąd typu trafiłby na produkcję.
@@ -96,9 +98,13 @@ src/
   components/           Naglowek, Stopka, KartaWyprawy, MapaKierunkow,
                         SzufladaZapytania, BannerCookies, PrzyciskiPlywajace, Ikona
   layouts/Base.astro    <head>, SEO, szkielet strony
-  pages/                index, wyprawy/, transport/, dziekujemy, 404,
+  pages/                index, faq, dziekujemy, 404
+                        wyprawy/          lista, [slug], region/[slug]
+                        transport/        terminarz + konfigurator, [slug]
                         mapa-kierunkow.svg.ts
-testy/e2e.mjs           test przeglądarkowy ścieżki sprzedażowej
+testy/
+  e2e.mjs               test przeglądarkowy ścieżki sprzedażowej
+  linki.mjs             wykrywacz martwych odnośników wewnętrznych
 ```
 
 ### Trzy decyzje, które warto znać
@@ -124,10 +130,18 @@ ani list „zawiera / nie zawiera". Zamiast nagłówka nad pustką karta mówi w
 
 ## Czego jeszcze nie ma
 
-Krok 1 to ścieżka sprzedażowa. Poza nią zostają: strony kierunków i regionów,
-relacje, FAQ jako osobna strona, o nas, archiwum, polityki, panel klienta
-i wersja EN. Pozycje menu są w `src/lib/nawigacja.ts` z flagą `gotowe: false` —
-po zbudowaniu widoku wystarczy przestawić flagę.
+Poza zbudowanym zakresem zostają: relacje z tras, o nas, archiwum wypraw,
+polityki, panel klienta i wersja EN. Pozycje menu czekają w `src/lib/nawigacja.ts`
+z flagą `gotowe: false` — po zbudowaniu widoku wystarczy ją przestawić.
+
+Relacje, opinie i archiwum czekają nie na kod, tylko na dane: `oferta.json` ma
+dziś `relacje: []`, `opinie: []` i zero wypraw ze statusem `archiwum`. Strony
+zbudowane na pustych tablicach byłyby zaślepkami.
+
+**Terminarz jest nieświeży.** Na 7 kierunków tylko Chile (2 terminy) i Kapsztad
+(1 termin) mają datę pakowania w przyszłości; Kirgistan i Islandia mają wyłącznie
+minione. Strona pokazuje wtedy „Termin na kolejny sezon ustalamy" zamiast dat,
+które już wypłynęły — ale to jest do uzupełnienia w CRM, nie w kodzie.
 
 Leady lecą dziś do makiety: bez `PUBLIC_LEADS_URL` payload ląduje w konsoli,
 a strona zachowuje się jak przy sukcesie. Podpięcie do CRM czeka na decyzję,

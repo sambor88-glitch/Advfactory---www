@@ -6,7 +6,7 @@ import { pobierzOferte, wyprawyOpublikowane } from '../data/oferta';
 const oferta = await pobierzOferte();
 const najblizsze = wyprawyOpublikowane(oferta).slice(0, 3);
 ---
-<Base tytul="Nie ma takiej strony" opis="Strona, której szukasz, nie istnieje lub zmieniła adres.">
+<Base tytul="Nie ma takiej strony" opis="Strona, której szukasz, nie istnieje lub zmieniła adres." noindex>
   <section class="tresc pusto">
     <p class="kod liczby">404</p>
     <h1>Tu nic nie ma</h1>

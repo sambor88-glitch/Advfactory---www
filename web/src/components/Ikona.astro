@@ -2,7 +2,7 @@
 import { IKONY } from '../lib/ikony';
 
 interface Props {
-  nazwa: keyof typeof IKONY;
+  nazwa: string;
   rozmiar?: number | string;
   grubosc?: number;
   klasa?: string;
@@ -10,21 +10,31 @@ interface Props {
 
 const { nazwa, rozmiar = '1em', grubosc = 2, klasa } = Astro.props;
 const sciezki = IKONY[nazwa];
-if (!sciezki) throw new Error(`Nie ma ikony "${nazwa}" w src/lib/ikony.ts — dołóż ją do listy w generatorze.`);
+
+/*
+ * Nazwy ikon przychodzą też z CRM (pole `chips` na stronie kierunku), więc
+ * literówka operatora nie może wywracać całego buildu. Ostrzegamy w logu
+ * i zostawiamy puste miejsce — strona wychodzi, ktoś poprawi wpis w CRM.
+ */
+if (!sciezki) {
+  console.warn(`[ikona] nie znam ikony "${nazwa}" — sprawdź wpis w CRM albo dołóż ją do src/lib/ikony.ts`);
+}
 ---
-<svg
-  class={klasa}
-  xmlns="http://www.w3.org/2000/svg"
-  width={rozmiar}
-  height={rozmiar}
-  viewBox="0 0 24 24"
-  fill="none"
-  stroke="currentColor"
-  stroke-width={grubosc}
-  stroke-linecap="round"
-  stroke-linejoin="round"
-  aria-hidden="true"
-  focusable="false"
-  style="display:block;flex:none"
-  set:html={sciezki}
-/>
+{sciezki && (
+  <svg
+    class={klasa}
+    xmlns="http://www.w3.org/2000/svg"
+    width={rozmiar}
+    height={rozmiar}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width={grubosc}
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+    focusable="false"
+    style="display:block;flex:none"
+    set:html={sciezki}
+  />
+)}

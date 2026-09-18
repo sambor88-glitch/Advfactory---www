@@ -1,0 +1,340 @@
+---
+import type { GetStaticPaths } from 'astro';
+import Base from '../../layouts/Base.astro';
+import Ikona from '../../components/Ikona.astro';
+import Faq from '../../components/Faq.astro';
+import KartaWyprawy from '../../components/KartaWyprawy.astro';
+import { pobierzOferte, kierunkiOpublikowane, regionyOpublikowane, wyprawyRegionu, terminyAktualne } from '../../data/oferta';
+import { data, euro, widelek } from '../../lib/format';
+import { policz, POJAZDY } from '../../lib/konfigurator';
+
+export const getStaticPaths = (async () => {
+  const oferta = await pobierzOferte();
+  // Kierunek bez treści strony to tylko wiersz w terminarzu — nie robimy mu landinga.
+  return kierunkiOpublikowane(oferta)
+    .filter((k) => k.strona !== null)
+    .map((k) => ({ params: { slug: k.slug }, props: { id: k.id } }));
+}) satisfies GetStaticPaths;
+
+const oferta = await pobierzOferte();
+const kierunek = oferta.kierunki.find((k) => k.id === Astro.props.id)!;
+const strona = kierunek.strona!;
+
+const terminy = terminyAktualne(kierunek);
+const minione = kierunek.terminy.length - terminy.length;
+
+// „Wyprawy w tym regionie" — jawne powiązanie przez regiony_wypraw, nie zgadywanie z tytułu.
+const regiony = regionyOpublikowane(oferta).filter((r) => strona.regiony_wypraw.includes(r.slug));
+const wyprawy = regiony.flatMap((r) => wyprawyRegionu(oferta, r.slug)).slice(0, 3);
+
+const motocykl = POJAZDY[0]!;
+const wycenaMotocykla = policz(kierunek, motocykl.id, kierunek.cena_jedna_eur !== null ? 'jedna' : 'obie');
+
+const inne = kierunkiOpublikowane(oferta).filter((k) => k.id !== kierunek.id && k.strona !== null);
+
+const kontekstMeta = [
+  kierunek.cena_jedna_eur !== null ? `⇒ ${euro(kierunek.cena_jedna_eur)}` : null,
+  kierunek.cena_obie_eur !== null ? `⇔ ${euro(kierunek.cena_obie_eur)}` : null,
+].filter(Boolean).join(' · ');
+---
+<Base
+  tytul={kierunek.seo.tytul ?? strona.h1}
+  opis={kierunek.seo.opis ?? strona.lead.slice(0, 155)}
+  ogImage={strona.zdjecie ?? undefined}
+>
+  <article>
+    <header class="czapka">
+      {strona.zdjecie && <img class="tlo" src={strona.zdjecie} alt="" fetchpriority="high" decoding="async" />}
+      <div class="tresc wnetrze">
+        <a class="powrot" href="/transport">
+          <Ikona nazwa="arrow-right" rozmiar="14" klasa="wstecz" />
+          Transport pojazdów
+        </a>
+        <h1>{strona.h1}</h1>
+        <p class="lead">{strona.lead}</p>
+        {strona.chips.length > 0 && (
+          <ul class="chipy">
+            {strona.chips.map(([ikona, tekst]) => (
+              <li><Ikona nazwa={ikona} rozmiar="15" />{tekst}</li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </header>
+
+    <div class="tresc uklad">
+      <div class="glowna">
+        {strona.akapity.length > 0 && (
+          <section class="blok">
+            {strona.akapity.map((a) => <p>{a}</p>)}
+          </section>
+        )}
+
+        <section class="blok" id="terminy">
+          <h2>Cena i terminy</h2>
+          {terminy.length > 0 ? (
+            <div class="przewijak">
+              <table class="terminarz liczby">
+                <thead>
+                  <tr>
+                    <th scope="col">Pakowanie PL</th>
+                    <th scope="col">Dostawa</th>
+                    <th scope="col">Powrót z miejsca</th>
+                    <th scope="col">Powrót PL</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {terminy.map((t) => (
+                    <tr>
+                      <td>{data(t.pakowanie_pl)}</td>
+                      <td>{data(t.dostawa)}</td>
+                      <td>{data(t.powrot_z_miejsca)}</td>
+                      <td>{data(t.powrot_pl)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p class="brak">
+              W tym sezonie nie mamy już otwartego kontenera na ten kierunek.
+              Zapisz się na powiadomienie — napiszemy, gdy otworzymy następny.
+            </p>
+          )}
+
+          {minione > 0 && terminy.length > 0 && (
+            <p class="dopisek liczby">Pokazujemy {terminy.length} nadchodzących terminów; {minione} już minęło.</p>
+          )}
+
+          <p class="daty-sztywne">
+            <Ikona nazwa="triangle-alert" rozmiar="15" />
+            Daty pakowania są sztywne — pod nie kupuj bilet. Dostawa to orientacyjny termin odbioru na miejscu.
+          </p>
+        </section>
+
+        {strona.faq.length > 0 && (
+          <section class="blok">
+            <h2>Pytania o ten kierunek</h2>
+            <Faq pytania={strona.faq} pierwszeOtwarte daneStrukturalne />
+          </section>
+        )}
+
+        {wyprawy.length > 0 && (
+          <section class="blok">
+            <h2>Wyprawy w tym kierunku</h2>
+            <p class="pod-naglowkiem">
+              Nie chcesz jechać sam? Te wyprawy prowadzimy w tym regionie — motocykl leci tym samym kontenerem.
+            </p>
+            <div class="siatka-kart">
+              {wyprawy.map((w) => <KartaWyprawy wyprawa={w} />)}
+            </div>
+          </section>
+        )}
+      </div>
+
+      <aside class="bok">
+        <div class="pudlo-ceny">
+          <p class="etykieta">Wycena tego kierunku</p>
+          <p class="kwota liczby">
+            {wycenaMotocykla ? widelek(wycenaMotocykla.od, wycenaMotocykla.do) : 'indywidualna'}
+          </p>
+          <p class="za-co">motocykl, {wycenaMotocykla?.strony === 'obie' ? 'w obie strony' : 'w jedną stronę'}</p>
+
+          <ul class="ceny-lista liczby">
+            {kierunek.cena_jedna_eur !== null && (
+              <li><span>⇒ w jedną stronę</span><strong>{euro(kierunek.cena_jedna_eur)}</strong></li>
+            )}
+            {kierunek.cena_obie_eur !== null && (
+              <li><span>⇔ w obie strony</span><strong>{euro(kierunek.cena_obie_eur)}</strong></li>
+            )}
+          </ul>
+
+          <a class="przycisk pelna" href="/transport#konfigurator">
+            <Ikona nazwa="calculator" rozmiar="15" />
+            Policz dla mojego pojazdu
+          </a>
+          <button
+            type="button"
+            class="przycisk przycisk--obrys pelna jasny-obrys"
+            data-otworz-zapytanie
+            data-zrodlo="strona_kierunku"
+            data-kierunek-id={kierunek.id}
+            data-kontekst-tytul={`Transport: ${kierunek.nazwa}`}
+            data-kontekst-meta={kontekstMeta}
+          >
+            <Ikona nazwa="send" rozmiar="15" />
+            Zapytaj o termin
+          </button>
+          <p class="obietnica liczby">Odpowiadamy w ciągu {oferta.ustawienia.odpowiedz_w_godzinach} h</p>
+        </div>
+
+        {kierunek.uwagi && (
+          <div class="pudlo-uwagi">
+            <Ikona nazwa="info" rozmiar="18" />
+            <p>{kierunek.uwagi}</p>
+          </div>
+        )}
+      </aside>
+    </div>
+
+    {inne.length > 0 && (
+      <section class="tresc blok-inne">
+        <h2>Inne kierunki</h2>
+        <ul class="lista-kierunkow liczby">
+          {inne.map((k) => (
+            <li>
+              <a href={`/transport/${k.slug}`}>
+                <span class="nazwa">{k.nazwa}</span>
+                <span class="cena">
+                  {k.cena_jedna_eur !== null ? `⇒ ${euro(k.cena_jedna_eur)}` : `⇔ ${euro(k.cena_obie_eur)}`}
+                </span>
+                <Ikona nazwa="arrow-right" rozmiar="14" />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+  </article>
+</Base>
+
+<style>
+  .czapka { position: relative; background: var(--ciemny); color: var(--tekst-na-ciemnym); isolation: isolate; }
+  .czapka .tlo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .38; z-index: -1; }
+  .czapka::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(180deg, rgba(28,27,23,.3), rgba(28,27,23,.93));
+  }
+  .wnetrze { padding-block: 52px 46px; max-width: 900px; }
+
+  .powrot {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 24px;
+    font: 700 11.5px var(--font-tekst);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--tekst-na-ciemnym-2);
+  }
+  .powrot:hover { color: var(--akcent-jasny); }
+  .powrot :global(.wstecz) { transform: rotate(180deg); }
+
+  h1 { font-size: clamp(32px, 5.5vw, 60px); }
+  .lead { margin-top: 16px; font-size: 17px; line-height: 1.55; color: var(--tekst-na-ciemnym-2); max-width: 60ch; }
+
+  .chipy { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0 0; padding: 0; }
+  .chipy li {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 13px;
+    border: 1px solid rgba(242,239,231,.22);
+    border-radius: var(--r-pigulka);
+    font: 600 12.5px var(--font-tekst);
+  }
+  .chipy li > :global(svg) { color: var(--akcent-jasny); }
+
+  .uklad {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 48px;
+    align-items: start;
+    padding-block: 48px;
+  }
+  @media (max-width: 960px) { .uklad { grid-template-columns: 1fr; gap: 32px; } }
+
+  .blok { margin-bottom: 44px; }
+  .blok h2 { font-size: clamp(24px, 3vw, 32px); margin-bottom: 16px; }
+  .blok p { font-size: 16px; line-height: 1.65; color: var(--tekst-2); max-width: 68ch; }
+  .pod-naglowkiem { margin-bottom: 20px; }
+
+  .przewijak { overflow-x: auto; border: 1px solid var(--kreska); border-radius: var(--r-m); }
+  .terminarz { width: 100%; border-collapse: collapse; font-size: 13.5px; background: var(--tlo-karta); }
+  .terminarz th, .terminarz td { padding: 11px 14px; text-align: left; border-bottom: 1px solid var(--kreska); }
+  .terminarz tbody tr:last-child td { border-bottom: 0; }
+  .terminarz thead th {
+    background: var(--tlo-zatopione);
+    font: 700 10.5px var(--font-tekst);
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    color: var(--tekst-3);
+    white-space: nowrap;
+  }
+  .terminarz td { white-space: nowrap; color: var(--tekst-2); }
+
+  .brak {
+    padding: 20px 22px;
+    background: var(--tlo-zatopione);
+    border-radius: var(--r-m);
+  }
+  .dopisek { margin-top: 10px; font-size: 12.5px; color: var(--tekst-3); }
+  .daty-sztywne {
+    display: flex;
+    gap: 9px;
+    align-items: flex-start;
+    margin-top: 14px;
+    font-size: 13px !important;
+    color: var(--tekst-3) !important;
+  }
+  .daty-sztywne > :global(svg) { color: var(--uwaga); flex: none; margin-top: 3px; }
+
+  .siatka-kart {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+    gap: 18px;
+  }
+
+  .bok { position: sticky; top: 100px; display: grid; gap: 18px; }
+  @media (max-width: 960px) { .bok { position: static; } }
+
+  .pudlo-ceny { padding: 24px; background: var(--ciemny); color: var(--tekst-na-ciemnym); border-radius: var(--r-m); }
+  .pudlo-ceny .etykieta {
+    margin: 0;
+    font: 700 10.5px var(--font-tekst);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--tekst-4);
+  }
+  .kwota { margin: 6px 0 2px; font-size: 26px; font-weight: 600; line-height: 1.1; color: var(--akcent-jasny); }
+  .za-co { margin: 0; font-size: 12.5px; color: var(--tekst-na-ciemnym-2); }
+
+  .ceny-lista { list-style: none; margin: 16px 0 0; padding: 14px 0 0; border-top: 1px solid var(--kreska-ciemna); display: grid; gap: 8px; }
+  .ceny-lista li { display: flex; justify-content: space-between; gap: 14px; font-size: 13px; color: var(--tekst-na-ciemnym-2); }
+  .ceny-lista strong { color: var(--tekst-na-ciemnym); font-weight: 600; }
+
+  .pelna { width: 100%; justify-content: center; margin-top: 12px; }
+  .jasny-obrys { color: var(--tekst-na-ciemnym); border-color: var(--kreska-ciemna); }
+  .jasny-obrys:hover { background: var(--ciemny-3); color: var(--tekst-na-ciemnym); }
+  .obietnica { margin: 12px 0 0; text-align: center; font-size: 11.5px; color: var(--tekst-4); }
+
+  .pudlo-uwagi {
+    display: flex;
+    gap: 12px;
+    padding: 18px 20px;
+    background: var(--tlo-karta);
+    border: 1px solid var(--kreska);
+    border-left: 3px solid var(--akcent);
+    border-radius: 0 var(--r-m) var(--r-m) 0;
+  }
+  .pudlo-uwagi > :global(svg) { color: var(--akcent); flex: none; margin-top: 2px; }
+  .pudlo-uwagi p { margin: 0; font-size: 14px; color: var(--tekst-2); }
+
+  .blok-inne { padding-block: 0 8px; }
+  .blok-inne h2 { margin-bottom: 18px; }
+  .lista-kierunkow { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--kreska); }
+  .lista-kierunkow a {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--kreska);
+    color: var(--tekst);
+  }
+  .lista-kierunkow a:hover { color: var(--akcent); }
+  .lista-kierunkow .nazwa { flex: 1; font-weight: 600; font-size: 15px; }
+  .lista-kierunkow .cena { font-size: 13.5px; color: var(--tekst-3); white-space: nowrap; }
+</style>

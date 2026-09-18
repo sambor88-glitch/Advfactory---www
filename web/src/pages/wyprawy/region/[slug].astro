@@ -1,0 +1,312 @@
+---
+import type { GetStaticPaths } from 'astro';
+import Base from '../../../layouts/Base.astro';
+import Ikona from '../../../components/Ikona.astro';
+import Faq from '../../../components/Faq.astro';
+import KartaWyprawy from '../../../components/KartaWyprawy.astro';
+import { pobierzOferte, regionyOpublikowane, wyprawyRegionu } from '../../../data/oferta';
+import { data, euro } from '../../../lib/format';
+
+export const getStaticPaths = (async () => {
+  const oferta = await pobierzOferte();
+  return regionyOpublikowane(oferta).map((r) => ({ params: { slug: r.slug }, props: { id: r.id } }));
+}) satisfies GetStaticPaths;
+
+const oferta = await pobierzOferte();
+const region = oferta.regiony.find((r) => r.id === Astro.props.id)!;
+
+const wyprawy = wyprawyRegionu(oferta, region.slug);
+const kierunek = region.kierunek_id ? oferta.kierunki.find((k) => k.id === region.kierunek_id) : undefined;
+const relacje = oferta.relacje.filter((r) => region.relacje.includes(r.id) && r.opublikowana);
+const inne = regionyOpublikowane(oferta).filter((r) => r.id !== region.id);
+
+const dzisiaj = new Date().toISOString().slice(0, 10);
+const najblizszePakowanie = kierunek?.terminy
+  .map((t) => t.pakowanie_pl)
+  .filter((d): d is string => Boolean(d) && d! >= dzisiaj)
+  .sort()[0];
+---
+<Base
+  tytul={region.seo.tytul ?? region.h1}
+  opis={region.seo.opis ?? region.lead.slice(0, 155)}
+  ogImage={region.zdjecie}
+>
+  <article>
+    <header class="czapka">
+      <img class="tlo" src={region.zdjecie} alt="" fetchpriority="high" decoding="async" />
+      <div class="tresc wnetrze">
+        <a class="powrot" href="/wyprawy">
+          <Ikona nazwa="arrow-left" rozmiar="14" />
+          Wszystkie wyprawy
+        </a>
+        <h1>{region.h1}</h1>
+        <p class="lead">{region.lead}</p>
+      </div>
+    </header>
+
+    {region.fakty.length > 0 && (
+      <section class="liczby-pas">
+        <div class="tresc siatka-faktow">
+          {region.fakty.map(([etykieta, wartosc]) => (
+            <div class="kafel">
+              <dt>{etykieta}</dt>
+              <dd>{wartosc}</dd>
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <div class="tresc uklad">
+      <div class="glowna">
+        {region.akapity.length > 0 && (
+          <section class="blok">
+            {region.h2 && <h2>{region.h2}</h2>}
+            {region.akapity.map((a) => <p>{a}</p>)}
+          </section>
+        )}
+
+        {region.kiedy_jechac.length > 0 && (
+          <section class="blok">
+            <h2>Kiedy jechać</h2>
+            <dl class="kiedy">
+              {region.kiedy_jechac.map(([okres, opis]) => (
+                <div>
+                  <dt class="liczby">{okres}</dt>
+                  <dd>{opis}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        )}
+
+        <section class="blok" id="terminy">
+          <h2>Aktualne terminy</h2>
+          {wyprawy.length > 0 ? (
+            <div class="siatka-kart">
+              {wyprawy.map((w, i) => <KartaWyprawy wyprawa={w} pilne={i === 0} />)}
+            </div>
+          ) : (
+            <div class="brak">
+              <strong>Brak terminu w tym sezonie</strong>
+              <p>
+                Nie mamy teraz otwartej wyprawy w tym regionie. Zostaw maila w zapisach na terminy
+                — napiszemy, gdy otworzymy następną.
+              </p>
+              <a class="przycisk przycisk--obrys" href="/transport#terminarz">
+                <Ikona nazwa="mail" rozmiar="15" />
+                Daj znać o terminie
+              </a>
+            </div>
+          )}
+        </section>
+
+        {region.faq.length > 0 && (
+          <section class="blok">
+            <h2>Pytania o ten region</h2>
+            <Faq pytania={region.faq} pierwszeOtwarte daneStrukturalne />
+          </section>
+        )}
+
+        {relacje.length > 0 && (
+          <section class="blok">
+            <h2>Przeczytaj przed wyjazdem</h2>
+            <ul class="lista-relacji">
+              {relacje.map((r) => (
+                <li>
+                  <a href={`/relacje/${r.slug}`}>
+                    <span class="tytul">{r.tytul}</span>
+                    <span class="meta liczby">{data(r.data)} · {r.czas_czytania_min} min</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+      </div>
+
+      <aside class="bok">
+        {kierunek ? (
+          <div class="pudlo-transport">
+            <Ikona nazwa="ship" rozmiar="22" />
+            <h2>Wyślij tu swój motocykl</h2>
+            <p>
+              Ten region obsługujemy też transportem — kontener z Ciechanowa do
+              {' '}{kierunek.miasto_odbioru ?? kierunek.nazwa}.
+            </p>
+            <dl class="dane-transportu liczby">
+              {kierunek.cena_jedna_eur !== null && (
+                <div><dt>⇒ w jedną stronę</dt><dd>{euro(kierunek.cena_jedna_eur)}</dd></div>
+              )}
+              {kierunek.cena_obie_eur !== null && (
+                <div><dt>⇔ w obie strony</dt><dd>{euro(kierunek.cena_obie_eur)}</dd></div>
+              )}
+              {najblizszePakowanie && (
+                <div><dt>Najbliższe pakowanie</dt><dd>{data(najblizszePakowanie)}</dd></div>
+              )}
+            </dl>
+            <a class="przycisk pelna" href={`/transport/${kierunek.slug}`}>
+              Terminarz tego kierunku
+              <Ikona nazwa="arrow-right" rozmiar="15" />
+            </a>
+          </div>
+        ) : (
+          <div class="pudlo-transport">
+            <Ikona nazwa="bike" rozmiar="22" />
+            <h2>Na naszym sprzęcie</h2>
+            <p>
+              Do tego regionu nie wysyłamy kontenera — jedzie się na motocyklu przygotowanym
+              na miejscu albo na własnym, dowiezionym inaczej. Zapytaj, jak to wygląda dla Twojego terminu.
+            </p>
+            <button type="button" class="przycisk pelna" data-otworz-zapytanie data-zrodlo="formularz">
+              <Ikona nazwa="send" rozmiar="15" />
+              Zapytaj o ten region
+            </button>
+          </div>
+        )}
+      </aside>
+    </div>
+
+    {inne.length > 0 && (
+      <section class="tresc blok-inne">
+        <h2>Inne regiony</h2>
+        <ul class="lista-regionow">
+          {inne.map((r) => (
+            <li>
+              <a href={`/wyprawy/region/${r.slug}`}>
+                <span class="nazwa">{r.nazwa}</span>
+                <Ikona nazwa="arrow-right" rozmiar="14" />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+  </article>
+</Base>
+
+<style>
+  .czapka { position: relative; background: var(--ciemny); color: var(--tekst-na-ciemnym); isolation: isolate; }
+  .czapka .tlo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .4; z-index: -1; }
+  .czapka::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(180deg, rgba(28,27,23,.3), rgba(28,27,23,.93));
+  }
+  .wnetrze { padding-block: 52px 46px; max-width: 900px; }
+
+  .powrot {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 24px;
+    font: 700 11.5px var(--font-tekst);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--tekst-na-ciemnym-2);
+  }
+  .powrot:hover { color: var(--akcent-jasny); }
+
+  h1 { font-size: clamp(32px, 5.5vw, 60px); }
+  .lead { margin-top: 16px; font-size: 17px; line-height: 1.55; color: var(--tekst-na-ciemnym-2); max-width: 60ch; }
+
+  .liczby-pas { background: var(--ciemny-2); color: var(--tekst-na-ciemnym); }
+  .siatka-faktow {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
+    gap: 1px;
+    background: var(--kreska-ciemna);
+    border-block: 1px solid var(--kreska-ciemna);
+  }
+  .kafel { background: var(--ciemny-2); padding: 20px 24px; }
+  .kafel dt {
+    font: 700 10.5px var(--font-tekst);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--tekst-4);
+    margin-bottom: 5px;
+  }
+  .kafel dd { margin: 0; font-size: 14.5px; font-weight: 600; }
+
+  .uklad {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 48px;
+    align-items: start;
+    padding-block: 48px;
+  }
+  @media (max-width: 960px) { .uklad { grid-template-columns: 1fr; gap: 32px; } }
+
+  .blok { margin-bottom: 44px; }
+  .blok h2 { font-size: clamp(24px, 3vw, 32px); margin-bottom: 16px; }
+  .blok p { font-size: 16px; line-height: 1.65; color: var(--tekst-2); max-width: 68ch; }
+
+  .kiedy { margin: 0; display: grid; gap: 0; border-top: 1px solid var(--kreska); }
+  .kiedy > div {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 20px;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--kreska);
+  }
+  @media (max-width: 560px) { .kiedy > div { grid-template-columns: 1fr; gap: 4px; } }
+  .kiedy dt { font: 600 13px var(--font-liczby); color: var(--akcent); text-transform: uppercase; letter-spacing: .04em; }
+  .kiedy dd { margin: 0; font-size: 15px; color: var(--tekst-2); }
+
+  .siatka-kart {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+    gap: 18px;
+  }
+
+  .brak { padding: 26px; background: var(--tlo-zatopione); border-radius: var(--r-m); }
+  .brak strong { display: block; font-size: 18px; margin-bottom: 8px; }
+  .brak p { margin-bottom: 16px; }
+
+  .lista-relacji { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--kreska); }
+  .lista-relacji a {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--kreska);
+    color: var(--tekst);
+  }
+  .lista-relacji a:hover { color: var(--akcent); }
+  .lista-relacji .tytul { font-weight: 600; font-size: 15.5px; }
+  .lista-relacji .meta { font-size: 12.5px; color: var(--tekst-3); white-space: nowrap; }
+
+  .bok { position: sticky; top: 100px; }
+  @media (max-width: 960px) { .bok { position: static; } }
+
+  .pudlo-transport { padding: 24px; background: var(--ciemny); color: var(--tekst-na-ciemnym); border-radius: var(--r-m); }
+  .pudlo-transport > :global(svg) { color: var(--akcent-jasny); }
+  .pudlo-transport h2 { font-size: 22px; margin: 10px 0 10px; }
+  .pudlo-transport p { font-size: 14px; color: var(--tekst-na-ciemnym-2); }
+
+  .dane-transportu { margin: 16px 0 0; padding: 14px 0 0; border-top: 1px solid var(--kreska-ciemna); display: grid; gap: 8px; }
+  .dane-transportu > div { display: flex; justify-content: space-between; gap: 14px; font-size: 13px; }
+  .dane-transportu dt { color: var(--tekst-na-ciemnym-2); }
+  .dane-transportu dd { margin: 0; font-weight: 600; }
+
+  .pelna { width: 100%; justify-content: center; margin-top: 16px; }
+
+  .blok-inne { padding-block: 0 8px; }
+  .blok-inne h2 { margin-bottom: 18px; }
+  .lista-regionow { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--kreska); }
+  .lista-regionow a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--kreska);
+    color: var(--tekst);
+    font-weight: 600;
+    font-size: 15px;
+  }
+  .lista-regionow a:hover { color: var(--akcent); }
+</style>

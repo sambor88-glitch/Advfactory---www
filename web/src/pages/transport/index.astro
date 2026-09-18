@@ -2,7 +2,8 @@
 import Base from '../../layouts/Base.astro';
 import Ikona from '../../components/Ikona.astro';
 import MapaKierunkow from '../../components/MapaKierunkow.astro';
-import { pobierzOferte, kierunkiOpublikowane, kierunkiWKonfiguratorze, faqSekcji } from '../../data/oferta';
+import Faq from '../../components/Faq.astro';
+import { pobierzOferte, kierunkiOpublikowane, kierunkiWKonfiguratorze, faqSekcji, terminyAktualne } from '../../data/oferta';
 import { POJAZDY } from '../../lib/konfigurator';
 import { data, euro } from '../../lib/format';
 
@@ -10,6 +11,10 @@ const oferta = await pobierzOferte();
 const kierunki = kierunkiOpublikowane(oferta);
 const doKonfiguratora = kierunkiWKonfiguratorze(oferta);
 const magazyny = oferta.magazyny.filter((m) => m.widoczny);
+
+// Kierunek zostaje w tabeli nawet bez aktualnego terminu — to też cennik.
+// Zamiast dat pokazuje wtedy jeden wiersz z informacją, że termin dopiero będzie.
+const wiersze = kierunki.map((k) => ({ kierunek: k, terminy: terminyAktualne(k) }));
 const faq = faqSekcji(oferta, 'transport');
 
 // Konfigurator liczy w przeglądarce, więc potrzebuje surowych liczb.
@@ -56,7 +61,7 @@ const daneKonfiguratora = doKonfiguratora.map((k) => ({
               <label>
                 <input type="radio" name="pojazd" value={p.id} checked={i === 0} />
                 <span class="kafelek">
-                  <Ikona nazwa={p.ikona as 'bike'} rozmiar="20" />
+                  <Ikona nazwa={p.ikona} rozmiar="20" />
                   <strong>{p.etykieta}</strong>
                   <em>{p.podtytul}</em>
                 </span>
@@ -140,30 +145,39 @@ const daneKonfiguratora = doKonfiguratora.map((k) => ({
           </tr>
         </thead>
         <tbody>
-          {kierunki.map((k) => (
-            <>
-              {k.terminy.map((t, i) => (
+          {wiersze.map(({ kierunek: k, terminy }) => {
+            const ile = Math.max(1, terminy.length);
+            const naglowek = (
+              <th scope="row" rowspan={ile}>
+                <a href={k.strona ? `/transport/${k.slug}` : undefined}>{k.nazwa}</a>
+                {k.uwagi && <span class="uwaga">{k.uwagi}</span>}
+              </th>
+            );
+            const ceny = (
+              <td class="ceny" rowspan={ile}>
+                {k.cena_jedna_eur !== null && <span>⇒ {euro(k.cena_jedna_eur)}</span>}
+                {k.cena_obie_eur !== null && <span>⇔ {euro(k.cena_obie_eur)}</span>}
+              </td>
+            );
+            return terminy.length === 0 ? (
+              <tr>
+                {naglowek}
+                <td colspan="4" class="bez-terminu">Termin na kolejny sezon ustalamy — zapisz się na powiadomienie</td>
+                {ceny}
+              </tr>
+            ) : (
+              terminy.map((t, i) => (
                 <tr>
-                  {i === 0 && (
-                    <th scope="row" rowspan={k.terminy.length}>
-                      {k.nazwa}
-                      {k.uwagi && <span class="uwaga">{k.uwagi}</span>}
-                    </th>
-                  )}
+                  {i === 0 && naglowek}
                   <td>{data(t.pakowanie_pl)}</td>
                   <td>{data(t.dostawa)}</td>
                   <td>{data(t.powrot_z_miejsca)}</td>
                   <td>{data(t.powrot_pl)}</td>
-                  {i === 0 && (
-                    <td class="ceny" rowspan={k.terminy.length}>
-                      {k.cena_jedna_eur !== null && <span>⇒ {euro(k.cena_jedna_eur)}</span>}
-                      {k.cena_obie_eur !== null && <span>⇔ {euro(k.cena_obie_eur)}</span>}
-                    </td>
-                  )}
+                  {i === 0 && ceny}
                 </tr>
-              ))}
-            </>
-          ))}
+              ))
+            );
+          })}
         </tbody>
       </table>
     </div>
@@ -206,14 +220,7 @@ const daneKonfiguratora = doKonfiguratora.map((k) => ({
     <section class="tresc sekcja">
       <p class="nadtytul">Najczęstsze pytania</p>
       <h2>Zanim zapytasz</h2>
-      <div class="faq">
-        {faq.map((f, i) => (
-          <details open={i === 0}>
-            <summary>{f.pytanie}<Ikona nazwa="chevron-down" rozmiar="18" /></summary>
-            <p>{f.odpowiedz}</p>
-          </details>
-        ))}
-      </div>
+      <Faq pytania={faq.map((f) => ({ q: f.pytanie, a: f.odpowiedz }))} pierwszeOtwarte />
     </section>
   )}
 </Base>
@@ -345,6 +352,9 @@ const daneKonfiguratora = doKonfiguratora.map((k) => ({
     min-width: 200px;
   }
   .terminarz .uwaga { display: block; margin-top: 3px; font-size: 11.5px; font-weight: 400; color: var(--tekst-3); }
+  .terminarz tbody th a { color: var(--tekst); }
+  .terminarz tbody th a[href]:hover { color: var(--akcent); }
+  .bez-terminu { color: var(--tekst-3) !important; font-style: italic; white-space: normal !important; }
   .terminarz td { white-space: nowrap; color: var(--tekst-2); }
   .ceny { vertical-align: top; }
   .ceny span { display: block; font-weight: 600; color: var(--tekst); }
@@ -399,23 +409,6 @@ const daneKonfiguratora = doKonfiguratora.map((k) => ({
   .komunikat[hidden] { display: none; }
   .komunikat.blad { background: rgba(191, 49, 38, .08); border-left-color: var(--blad); color: var(--blad); }
 
-  /* ── FAQ ──────────────────────────────────────────────────────────── */
-  .faq { border-top: 1px solid var(--kreska); }
-  .faq details { border-bottom: 1px solid var(--kreska); }
-  .faq summary {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 18px 0;
-    font: 600 16px var(--font-tekst);
-    cursor: pointer;
-    list-style: none;
-  }
-  .faq summary::-webkit-details-marker { display: none; }
-  .faq summary > :global(svg) { color: var(--tekst-4); transition: transform .18s ease; flex: none; }
-  .faq details[open] summary > :global(svg) { transform: rotate(180deg); }
-  .faq p { padding: 0 0 20px; margin: 0; color: var(--tekst-2); max-width: 74ch; }
 </style>
 
 <script>
