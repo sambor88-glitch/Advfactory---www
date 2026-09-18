@@ -39,13 +39,13 @@ To przesądza o dwóch rzeczach w tej architekturze:
                      przeglądarka                    API Gateway → Lambda → SQS
 ```
 
-## Podgląd pull requestów
+## Vercel a ta architektura
 
-Produkcja i staging stoją na AWS, jak niżej. Niezależnie od tego repozytorium ma
-podpięty **Vercel**, który buduje podgląd każdego pull requesta — do pokazania
-zmiany klientowi, zanim trafi na produkcję. Nie jest częścią ścieżki produkcyjnej
-i nie ma go w Terraformie. Konfiguracja i jedno ustawienie do zmiany w panelu:
-`docs/vercel.md`.
+Repozytorium ma podpięty Vercel, ale serwuje on katalog `deploy/`, czyli klikalny
+prototyp do oceny — nie stronę z `web/`. Jest poza tą architekturą i poza
+Terraformem, i tak ma zostać. Szczegóły: `docs/vercel.md`.
+
+Produkcja i staging strony idą na AWS, jak niżej.
 
 ## Frontend — Astro (SSG)
 

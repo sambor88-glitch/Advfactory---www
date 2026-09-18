@@ -1,10 +1,57 @@
 # ADVfactory — nowa strona www + integracja z CRM
 
-Repozytorium nowej strony advfactory.com, spiętej z CRM (`sambor88-glitch/advfactory-crm`).
+Repozytorium nowej strony advfactory.com, spiętej z CRM
+(`sambor88-glitch/advfactory-crm` — Laravel na Forge).
 
-**Stan:** paczka projektowa (prototypy + kontrakt danych) z 18.09.2026. Kodu produkcyjnego jeszcze nie ma.
+W repozytorium żyją równolegle dwie rzeczy i łatwo je pomylić:
 
----
+| Katalog | Co to jest | Status |
+|---|---|---|
+| `deploy/` | klikalny prototyp PL/EN + makiety widoków CRM, statyczne HTML | podgląd dla oceniającego, wdrożony na Vercelu |
+| `web/` | **właściwa strona** w Astro, budowana z `docs/oferta.json` | 28 stron, docelowo AWS |
+| `docs/` | kontrakt danych i dokumentacja wdrożeniowa | źródło prawdy dla obu |
+
+Prototyp z `deploy/` jest materiałem do oceny wyglądu i przepływów. Kod produkcyjny
+powstaje w `web/`.
+
+## `deploy/` — klikalny prototyp (wrzesień 2026)
+
+Statyczny prototyp strony PL/EN wraz z panelem CRM do zarządzania jej treścią.
+Same pliki HTML — nic nie trzeba budować.
+
+Strona startowa dla oceniającego: **`/podglad`**
+
+| Adres | Zawartość |
+|---|---|
+| `/podglad` | spis treści prototypu, linki do wszystkiego |
+| `/` · `/en` | strona główna PL · EN |
+| `/mapa-transportow` | mapa kierunków transportu |
+| `/stany` | stany błędów i ładowania |
+| `/crm/wyprawy` | katalog wypraw |
+| `/crm/transport` | terminarz transportów |
+| `/crm/tresci` | treści strony (FAQ, relacje, opinie) |
+| `/crm/zainteresowani` | zapisy na powiadomienia o terminach |
+| `/crm/ustawienia` | ustawienia strony |
+| `/crm/leady-www` | lead ze strony w skrzynce CRM |
+
+`deploy/vercel.json` włącza `cleanUrls` (adresy bez `.html`) i nagłówek
+`X-Robots-Tag: noindex`, żeby prototyp nie trafił do Google.
+
+Szczegóły publikacji: [`deploy/README.md`](deploy/README.md).
+
+### Zależności zewnętrzne
+
+Prototyp nie jest samowystarczalny — do poprawnego wyświetlenia potrzebuje internetu:
+
+- zdjęcia pobierane z `advfactory.com`,
+- fonty z Google Fonts (Anton, Archivo, IBM Plex Mono),
+- `mapa-transportow` ładuje d3 i topojson z unpkg.com oraz dane granic
+  państw z cdn.jsdelivr.net; bez nich pokazuje pustą planszę.
+
+### Ograniczenia prototypu
+
+- Dane są przykładowe, nie ma połączenia z bazą.
+- Formularze nie wysyłają nigdzie danych.
 
 ## Co jest w środku
 
@@ -60,7 +107,7 @@ Pliki `.dc.html` otwierają się w przeglądarce bezpośrednio z dysku (potrzebu
 2. **Zakres oferty z CRM:** wyprawy i transport. Bez trzeciej encji.
 3. **Strony kierunków i regionów:** treść przenosi się z kodu do CRM — rozbudowa widoku Terminarz + nowy widok „Strony regionów”.
 4. **Architektura:** CRM publikuje `oferta.json` na S3, strona budowana statycznie (SSG) na AWS eu-central-1. Szczegóły i koszty w `docs/architektura.md`.
-5. **Hosting:** produkcja i staging na AWS (S3 + CloudFront, Terraform). Vercel zostaje tylko jako podgląd PR-ów — trzeba go przepiąć z katalogu `deploy` na korzeń repo, patrz `docs/vercel.md`.
+5. **Hosting:** produkcja i staging strony z `web/` na AWS (S3 + CloudFront, Terraform). Vercel zostaje przy prototypie z `deploy/` i nie jest częścią ścieżki produkcyjnej — `docs/vercel.md`.
 6. **CRM stoi na Laravel Forge** (środowisko testowe i produkcyjne). Leady idą wprost do Laravela — bez bufora Lambda + SQS, który planowałem, zanim to było wiadome. Uzasadnienie i kompromis w `docs/architektura.md`.
 
 ## Kod strony (`web/`)

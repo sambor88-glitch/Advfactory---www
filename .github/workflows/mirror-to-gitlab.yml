@@ -1,0 +1,84 @@
+# Kopia tego repozytorium na GitLabie (gitlab.com/sambor88/<nazwa-repo>), aktualizowana
+# przy każdym pushu na GitHub. Projekt na GitLabie tworzy się sam przy pierwszym pushu
+# (jako prywatny).
+#
+# Wymaga sekretu GITLAB_TOKEN (Settings → Secrets and variables → Actions): token GitLab
+# z zakresem write_repository. Bez tego sekretu workflow niczego nie robi.
+#
+# GitHub jest źródłem prawdy: jego gałęzie i tagi nadpisują te na GitLabie.
+# Gałęzie, które istnieją tylko na GitLabie (np. konrad/*), nie są ruszane.
+name: Mirror to GitLab
+
+on:
+  push:
+  delete:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gitlab-mirror-${{ github.event_name == 'delete' && format('delete-{0}', github.event.ref) || 'sync' }}
+  cancel-in-progress: false
+
+env:
+  GITLAB_NAMESPACE: gitlab.com/sambor88
+
+jobs:
+  mirror:
+    if: github.actor != 'dependabot[bot]' && !github.event.deleted
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Pobierz wszystkie gałęzie i tagi
+        if: github.event_name != 'delete'
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Wypchnij na GitLab
+        env:
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+          EVENT: ${{ github.event_name }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          DELETED_REF: ${{ github.event.ref }}
+          DELETED_REF_TYPE: ${{ github.event.ref_type }}
+        run: |
+          set -euo pipefail
+          if [ -z "$GITLAB_TOKEN" ]; then
+            echo "::warning::Brak sekretu GITLAB_TOKEN, kopia na GitLab jest wyłączona"
+            exit 0
+          fi
+          # GitLab nie przyjmie ścieżki z kilkoma znakami specjalnymi z rzędu ani na jej brzegach.
+          project=$(echo "${GITHUB_REPOSITORY#*/}" | sed -E 's/[-_.]{2,}/-/g; s/^[-_.]+//; s/[-_.]+$//')
+          url="https://${GITLAB_NAMESPACE}/${project}.git"
+          export GIT_TERMINAL_PROMPT=0
+
+          # Token trafia do gita przez credential helper, nigdy do URL-a ani argumentów.
+          gitlab() {
+            git -c credential.helper= \
+                -c credential.helper='!f() { echo username=oauth2; echo "password=${GITLAB_TOKEN}"; }; f' \
+                "$@"
+          }
+
+          if [ "$EVENT" = delete ]; then
+            git init -q
+            if [ "$DELETED_REF_TYPE" = tag ]; then ref="refs/tags/$DELETED_REF"; else ref="refs/heads/$DELETED_REF"; fi
+            rc=0
+            gitlab ls-remote --exit-code "$url" "$ref" > /dev/null || rc=$?
+            case "$rc" in
+              0) gitlab push "$url" --delete "$ref" ;;
+              2) echo "$ref nie istnieje na GitLabie, nie ma czego usuwać" ;;
+              *) exit "$rc" ;;
+            esac
+          else
+            # Nowszy git sam tworzy origin/HEAD; bez tego trafiłby na GitLab jako gałąź "HEAD".
+            git remote set-head origin --delete 2> /dev/null || true
+            # ci.skip: kopia nie uruchamia pipeline'ów GitLaba (np. GitLab Pages z .gitlab-ci.yml).
+            # Domyślna gałąź idzie pierwsza, żeby nowy projekt na GitLabie przyjął ją jako domyślną.
+            if git rev-parse -q --verify "refs/remotes/origin/$DEFAULT_BRANCH" > /dev/null; then
+              gitlab push -o ci.skip "$url" "+refs/remotes/origin/$DEFAULT_BRANCH:refs/heads/$DEFAULT_BRANCH"
+            fi
+            gitlab push -o ci.skip "$url" '+refs/remotes/origin/*:refs/heads/*' '+refs/tags/*:refs/tags/*'
+          fi
