@@ -8,7 +8,7 @@ W repozytorium żyją równolegle dwie rzeczy i łatwo je pomylić:
 | Katalog | Co to jest | Status |
 |---|---|---|
 | `deploy/` | klikalny prototyp PL/EN + makiety widoków CRM, statyczne HTML | podgląd dla oceniającego, wdrożony na Vercelu |
-| `web/` | **właściwa strona** w Astro, budowana z `docs/oferta.json` | 28 stron, docelowo AWS |
+| `web/` | **właściwa strona** w Astro, budowana z `docs/oferta.json` | podgląd: `advfactory-web.vercel.app`, docelowo AWS |
 | `docs/` | kontrakt danych i dokumentacja wdrożeniowa | źródło prawdy dla obu |
 
 Prototyp z `deploy/` jest materiałem do oceny wyglądu i przepływów. Kod produkcyjny

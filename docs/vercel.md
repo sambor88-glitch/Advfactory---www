@@ -1,44 +1,73 @@
-# Vercel — podgląd prototypu
+# Vercel — dwa projekty, dwa podglądy
 
-**Projekt `advfactory-www` na Vercelu serwuje katalog `deploy/`, czyli klikalny
-prototyp. Tak ma zostać.** Root Directory = `deploy`, konfiguracja w
-`deploy/vercel.json` (`cleanUrls` i `X-Robots-Tag: noindex`), strona startowa
-dla oceniającego: `/podglad`.
+Z tego samego repozytorium budują się **dwa niezależne projekty**. Żaden nie
+przykrywa drugiego, bo każdy ma własny Root Directory i własny `vercel.json`.
 
-## Czego tu nie ma
+| Projekt | Root Directory | Serwuje | Adres |
+|---|---|---|---|
+| `advfactory-www` | `deploy` | klikalny prototyp do oceny | `…/podglad` |
+| `advfactory-web` | `web` | właściwa strona w Astro | `advfactory-web.vercel.app` |
 
-Podgląd **nie pokazuje** strony z `web/`. To dwie różne rzeczy:
+Oba mają `X-Robots-Tag: noindex`, żeby nie konkurowały w Google z advfactory.com.
 
-- `deploy/` — statyczny prototyp do oceny wyglądu i przepływów, bez buildu,
-- `web/` — właściwa strona w Astro, budowana z `docs/oferta.json`, docelowo
-  na AWS (S3 + CloudFront, `docs/architektura.md`).
+**To nie jest docelowy hosting strony.** Produkcja i staging idą na AWS
+(S3 + CloudFront, `docs/architektura.md`). Vercel służy do oglądania zmian
+pod linkiem, zanim trafią na produkcję.
 
-## Błąd, który tu popełniłem
+## Jak to działa na co dzień
 
-Zobaczyłem, że Vercel serwuje `deploy/`, uznałem to za pozostałość po paczce
-projektowej i dołożyłem `vercel.json` w korzeniu repozytorium, kierujący build
-do `web/`. Vercel czyta konfigurację z korzenia **przed** tą z Root Directory,
-więc mój plik przykrył `deploy/vercel.json` i położył podgląd prototypu — dwa
-deploye z rzędu zakończone błędem.
+Każdy push na gałąź buduje oba projekty i daje dwa adresy podglądu. Można je
+otworzyć obok siebie i porównać: prototyp pokazuje, jak zaprojektowano,
+`advfactory-web` — co faktycznie stoi.
 
-`deploy/` nie jest pozostałością. To osobno utrzymywany prototyp z własnym
-`/podglad`, makietami widoków CRM i świadomym `noindex`. Plik z korzenia został
-usunięty i podgląd wrócił do działania.
+Różnice są oczekiwane. Część to świadome decyzje (mapa renderowana w buildzie,
+własne fonty, ceny z separatorem tysięcy, puste opisy chowające całe sekcje),
+część to widoki, których jeszcze nie ma w `web/`: panel klienta, relacje,
+archiwum, „o nas", polityki i wersja EN.
 
-**Wniosek na przyszłość:** zanim podłoży się konfigurację globalną, sprawdzić,
-czy to, co wygląda na porzucone, nie jest czyjąś działającą robotą.
+## Skąd podgląd bierze dane
 
-## Gdyby kiedyś potrzebny był podgląd strony z `web/`
+Z **fixture w repozytorium** (`docs/oferta.json`), bo `OFERTA_URL` nie jest
+ustawione. Ceny i terminy są prawdziwe, ale zamrożone; formularz nie wysyła
+nigdzie leadów.
 
-Nie przez ten projekt — przykryłby prototyp. Dwie czyste drogi:
+Gdy CRM zacznie publikować ofertę, wystarczy ustawić `OFERTA_URL` w zmiennych
+środowiskowych projektu `advfactory-web` (scope: Preview) na CRM testowy. Wtedy
+podgląd pokazuje realne dane — i przy okazji zaczyna wyłapywać rozjazd kontraktu,
+bo build waliduje ofertę i pada, gdy się nie zgadza.
 
-1. **Drugi projekt na Vercelu** z tego samego repozytorium, z Root Directory
-   w korzeniu i budowaniem `cd web && npm ci` / `cd web && npm run build`,
-   katalog wyjściowy `web/dist`. Musi być korzeń, nie `web` — build importuje
-   `docs/schema.ts` i `docs/oferta.json`, czyli pliki spoza tego katalogu.
-2. **Podgląd na AWS z GitHub Actions** — deploy do prefiksu z numerem PR-a
-   w tym samym buckecie. Zostaje wtedy jeden dostawca i jeden rachunek.
+## Czego tu nie robić
 
-Uwaga przy okazji: `npm ci --prefix web` nie zadziała. `--prefix` ustawia katalog
-docelowy instalacji, ale `npm ci` szuka `package-lock.json` w katalogu bieżącym —
-npm 10 to wybacza, npm 11 na Vercelu już nie. Forma z `cd` działa wszędzie.
+**Nie dokładać `vercel.json` w korzeniu repozytorium.** Vercel czyta go
+niezależnie od Root Directory, więc taki plik trafia do OBU projektów naraz.
+
+Raz już tak zrobiłem: uznałem `deploy/` za pozostałość po paczce projektowej
+i wstawiłem w korzeniu konfigurację kierującą build do `web/`. Przykryła
+`deploy/vercel.json` i położyła podgląd prototypu — dwa deploye z rzędu
+zakończone błędem, ostatni na `cd: web: No such file or directory`, bo polecenie
+wykonywało się w `deploy/`. Plik usunięty, podgląd wrócił.
+
+Wniosek: zanim podłoży się konfigurację globalną, sprawdzić, czy to, co wygląda
+na porzucone, nie jest czyjąś działającą robotą.
+
+**Nie czyścić Root Directory w `advfactory-www`.** Zdejmie to Vercela z `deploy/`
+i `/podglad` przestanie się otwierać. Konfiguracja obu projektów jest już
+poprawna i nic w panelu nie wymaga zmiany.
+
+## Drobiazg techniczny
+
+`npm ci --prefix web` nie działa: `--prefix` ustawia katalog docelowy instalacji,
+ale `npm ci` szuka `package-lock.json` w katalogu bieżącym. npm 10 to wybacza,
+npm 11 na Vercelu już nie. Nie jest to dziś potrzebne — `advfactory-web` ma
+Root Directory ustawione na `web`, więc npm pracuje we właściwym miejscu — ale
+warto wiedzieć, gdyby ktoś wracał do pomysłu budowania z korzenia.
+
+Build z Root Directory = `web` **widzi pliki spoza tego katalogu**: Vercel klonuje
+całe repozytorium. Sprawdzone — `astro check` odpalił się w `/vercel/path0/web`
+i bez problemu zaciągnął `docs/schema.ts` oraz `docs/oferta.json`.
+
+## Uwaga o kosztach
+
+Darmowy plan Hobby jest przeznaczony do użytku niekomercyjnego. Dwa projekty
+firmowe formalnie wymagają planu Pro — sprawdź aktualny cennik i regulamin,
+zanim to zostanie na stałe.
