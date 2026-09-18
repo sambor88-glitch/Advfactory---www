@@ -1,7 +1,7 @@
 ---
 import { pobierzOferte, kierunkiOpublikowane } from '../data/oferta';
 import { NAWIGACJA_GLOWNA, gotowe } from '../lib/nawigacja';
-import { data } from '../lib/format';
+import { euro } from '../lib/format';
 import Ikona from './Ikona.astro';
 
 const oferta = await pobierzOferte();
@@ -9,19 +9,21 @@ const sciezka = Astro.url.pathname.replace(/\/$/, '') || '/';
 const pozycje = gotowe(NAWIGACJA_GLOWNA);
 
 /**
- * Pasek pod nagłówkiem pokazuje najbliższe pakowanie dla każdego kierunku.
- * Terminy, które już minęły, nie mają czego reklamować — odpadają.
+ * Pasek pod nagłówkiem pokazuje cenę transportu dla każdego kierunku — to ona
+ * decyduje, czy ktoś w ogóle zostaje na stronie. Data pakowania jest
+ * w terminarzu; tutaj mówiłaby „kiedy”, zanim klient zapytał „za ile”.
+ *
+ * Kwota bez ceny nie udaje oferty: kierunek bez żadnej ceny wypada z paska.
+ * Strzałka rozróżnia wariant tak, jak cennik: ⇔ w obie strony, ⇒ w jedną.
  */
-const dzisiaj = new Date().toISOString().slice(0, 10);
 const paskiKierunkow = kierunkiOpublikowane(oferta)
   .map((k) => {
-    const najblizsze = k.terminy
-      .map((t) => t.pakowanie_pl)
-      .filter((d): d is string => Boolean(d) && d! >= dzisiaj)
-      .sort()[0];
-    return najblizsze ? { nazwa: k.nazwa, kiedy: data(najblizsze) } : null;
+    const obie = k.cena_obie_eur ?? null;
+    const kwota = obie ?? k.cena_jedna_eur ?? null;
+    if (kwota === null) return null;
+    return { nazwa: k.miasto_odbioru || k.nazwa, cena: euro(kwota), strzalka: obie === null ? '⇒' : '⇔' };
   })
-  .filter((x): x is { nazwa: string; kiedy: string } => x !== null);
+  .filter((x): x is { nazwa: string; cena: string; strzalka: string } => x !== null);
 ---
 <header id="naglowek">
   <div id="postep" aria-hidden="true"></div>
@@ -68,7 +70,7 @@ const paskiKierunkow = kierunkiOpublikowane(oferta)
           paskiKierunkow.map((k) => (
             <span class="pozycja-tasmy">
               <span class="miasto">{k.nazwa}</span>
-              <span class="kiedy liczby">pakowanie {k.kiedy}</span>
+              <span class="kiedy liczby">{k.strzalka} {k.cena}</span>
             </span>
           ))
         )}

@@ -250,6 +250,26 @@ const idYouTube = (url: string): string | null => {
   }
   .wnetrze { padding-block: clamp(72px, 12vw, 148px); max-width: 940px; }
   .nadtytul.jasny { color: var(--akcent-jasny); }
+
+  /*
+   * Nadtytuł hero jako plakietka, nie szary podpis. Niesie rzecz najbardziej
+   * nietrwałą na stronie — otwarte zapisy na sezon — a w formie zwykłego
+   * tekstu ginął nad nagłówkiem wielkości pół ekranu.
+   *
+   * Treść przychodzi z CRM (ustawienia.hero.nadtytul), więc plakietka musi
+   * znieść i dwa słowa, i całe zdanie: stąd inline-flex zamiast stałej
+   * szerokości. Pusty nadtytuł nie zostawia wiszącego prostokąta.
+   */
+  .hero .nadtytul.jasny {
+    display: inline-flex;
+    align-items: center;
+    background: var(--akcent-jasny);
+    color: #fff;
+    padding: 7px 12px;
+    border-radius: 4px;
+  }
+  .hero .nadtytul.jasny:empty { display: none; }
+
   .hero h1 { margin: 14px 0 18px; }
   .lead { font-size: clamp(16px, 2vw, 19px); line-height: 1.55; color: var(--tekst-na-ciemnym-2); max-width: 62ch; }
   .cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 30px; }
