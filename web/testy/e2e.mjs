@@ -64,6 +64,8 @@ const cfg = JSON.parse(await p.getAttribute('#zapytaj-konfigurator', 'data-konfi
 console.log('        payload:', JSON.stringify(cfg));
 sprawdz('payload zgodny z KonfiguracjaTransportu',
   cfg.kierunek_id === 'kier-is' && cfg.pojazd === 'quad' && cfg.kierunek_podrozy === 'obie' && cfg.wycena_do_eur > cfg.wycena_od_eur);
+// Nazwa obok identyfikatora — bez niej CRM zapisze zapytanie „o kier-is”, czego biuro nie przeczyta.
+sprawdz('konfiguracja niesie nazwę kierunku', typeof cfg.kierunek_nazwa === 'string' && cfg.kierunek_nazwa.length > 0);
 
 console.log('\n— SZUFLADA I LEAD —');
 await p.click('#zapytaj-konfigurator');

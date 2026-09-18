@@ -238,14 +238,18 @@ const ENDPOINT = import.meta.env.PUBLIC_LEADS_URL ?? '';
 
     let zrodlo = 'formularz';
     let wyprawaId: string | null = null;
+    let wyprawaNazwa: string | null = null;
     let kierunekId: string | null = null;
+    let kierunekNazwa: string | null = null;
     let konfiguracja: Record<string, unknown> | null = null;
     let ostatnioAktywny: HTMLElement | null = null;
 
     const otworz = (przycisk: HTMLElement) => {
       zrodlo = przycisk.dataset.zrodlo ?? 'formularz';
       wyprawaId = przycisk.dataset.wyprawaId ?? null;
+      wyprawaNazwa = przycisk.dataset.wyprawaNazwa ?? null;
       kierunekId = przycisk.dataset.kierunekId ?? null;
+      kierunekNazwa = przycisk.dataset.kierunekNazwa ?? null;
       konfiguracja = przycisk.dataset.konfiguracja ? JSON.parse(przycisk.dataset.konfiguracja) : null;
 
       // Kontekst nad formularzem: klient ma widzieć, o co właśnie pyta.
@@ -324,7 +328,9 @@ const ENDPOINT = import.meta.env.PUBLIC_LEADS_URL ?? '';
         jezyk: 'pl',
         preferowany_kanal: String(dane.get('preferowany_kanal') ?? 'whatsapp'),
         wyprawa_id: wyprawaId,
+        wyprawa_nazwa: wyprawaNazwa,
         kierunek_id: kierunekId,
+        kierunek_nazwa: kierunekNazwa,
         konfiguracja,
         // `ip` dopisuje serwer — przeglądarka swojego adresu nie zna i nie powinna zgadywać.
         zgoda_rodo: { timestamp: new Date().toISOString(), wersja_polityki: WERSJA },
@@ -339,7 +345,7 @@ const ENDPOINT = import.meta.env.PUBLIC_LEADS_URL ?? '';
       try {
         if (!ENDPOINT) {
           // Tryb makiety — CRM jeszcze nie stoi. Payload zostaje widoczny w konsoli.
-          console.info('[lead] payload gotowy do POST /leads:', payload);
+          console.info('[lead] payload gotowy do POST /zgloszenia/strona:', payload);
           location.href = `/dziekujemy?nr=${encodeURIComponent('ZP-MAKIETA')}`;
           return;
         }

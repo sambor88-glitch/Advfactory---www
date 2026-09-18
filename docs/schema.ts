@@ -124,14 +124,23 @@ export type ZrodloLeada = 'formularz' | 'konfigurator' | 'karta_wyprawy' | 'stro
 export type Kanal = 'whatsapp' | 'email' | 'telefon';
 
 /**
- * POST /leads — trafia do istniejącej Skrzynki Zapytań jako źródło „www”.
+ * POST /zgloszenia/strona — trasa w module Lejek (ADV-81).
+ * Odpowiednik po stronie CRM: `ZgloszenieZeStronyRequest` w repozytorium advfactory-crm.
  *
- * Routing do lejka sprzedaży (reguła po stronie CRM, nie strony):
- *   zrodlo = 'konfigurator' | 'karta_wyprawy'  → wątek w Skrzynce ORAZ karta w lejku na 1. etapie,
- *                                                z wartością szacowaną = wycena_od–do lub cena wyprawy
- *   zrodlo = 'formularz' | 'strona_kierunku'   → tylko wątek w Skrzynce; kartę w lejku zakłada operator
- * Deduplikacja po e-mailu/telefonie: istniejący kontakt z otwartą kartą w lejku nie dostaje drugiej —
- * lead dopina się do tej otwartej.
+ * Skrzynka Zapytań i lejek to JEDNA tabela `zapytania` z kolumną `etap`, nie dwa byty.
+ * Każde zgłoszenie zakłada zapytanie w etapie `nowe` z kanałem `formularz` — rozróżnienia
+ * „wątek w skrzynce ALBO karta w lejku” nie ma i nie było; wcześniejszy opis tego kontraktu
+ * był zgadywaniem sprzed wglądu w kod CRM.
+ *
+ * Czego CRM NIE zakłada drugi raz: zgłoszenie tego samego kontaktu, o ten sam produkt
+ * i ten sam przedmiot, przy sprawie otwartej (etap inny niż `wygrane`/`przegrane`) dopina się
+ * do niej jako wpis w historii i dostaje TEN SAM `numer_sprawy`. Odpowiedź: 201 przy nowej
+ * sprawie, 200 przy dopisku.
+ *
+ * Uwierzytelnienie: HMAC-SHA256 z treści żądania w nagłówku `X-Advfactory-Podpis`, kluczem
+ * ze wspólnego sekretu. Strona statyczna sama go nie policzy — sekret w kodzie wysyłanym
+ * do przeglądarki przestaje być sekretem. Ostatni odcinek (przeglądarka → CRM) czeka
+ * na decyzję: pośrednik trzymający sekret albo sprawdzanie `antyspam_token` po stronie CRM.
  */
 export interface LeadWWW {
   imie_nazwisko: string; email: string; telefon: string | null;
@@ -140,15 +149,27 @@ export interface LeadWWW {
   jezyk: 'pl' | 'en';
   preferowany_kanal: Kanal;
   wyprawa_id: string | null;                           // gdy pyta z karty wyprawy
+  wyprawa_nazwa: string | null;                        // nazwa obok id — patrz niżej
   kierunek_id: string | null;                          // gdy pyta ze strony kierunku
+  kierunek_nazwa: string | null;
   konfiguracja: KonfiguracjaTransportu | null;         // gdy przyszedł z konfiguratora
-  zgoda_rodo: { timestamp: string; ip: string; wersja_polityki: string };
+  // `ip` dopisuje CRM z żądania. Przeglądarka swojego publicznego adresu nie zna,
+  // a gdyby go podawała, byłaby to wartość podana przez zgłaszającego — dowód niewart trzymania.
+  zgoda_rodo: { timestamp: string; ip?: string; wersja_polityki: string };
   sciezka: string[];                                   // np. ["start","transport","konfigurator","formularz"]
   antyspam_token: string;                              // Turnstile / hCaptcha
 }
 
+/*
+ * Dlaczego nazwy jadą obok identyfikatorów:
+ * zapytanie w CRM jest zapisem historycznym i ma mówić „Pamir 2027” także wtedy, gdy wyprawa
+ * dawno zeszła ze strony, a `wyp-001` wskazuje już na coś innego. Dopóki oferta na stronie nie
+ * pochodzi z CRM-u, katalog strony i katalog CRM-u to dwa różne zbiory — nie ma czego wiązać
+ * kluczem obcym, a sam identyfikator nic biuru nie mówi.
+ */
+
 export interface KonfiguracjaTransportu {
-  kierunek_id: string; kierunek_podrozy: 'jedna' | 'obie';
+  kierunek_id: string; kierunek_nazwa: string; kierunek_podrozy: 'jedna' | 'obie';
   pojazd: 'motocykl' | 'quad' | 'samochod';
   wycena_od_eur: number; wycena_do_eur: number | null;  // widelec, który klient WIDZIAŁ — oferta może się różnić
 }

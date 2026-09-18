@@ -62,6 +62,8 @@ export function policz(kierunek: Kierunek, pojazdId: Pojazd, strony: 'jedna' | '
 export function doLeada(kierunek: Kierunek, pojazd: Pojazd, wycena: Wycena): KonfiguracjaTransportu {
   return {
     kierunek_id: kierunek.id,
+    // Nazwa obok identyfikatora: biuro czyta „Islandia — Reykjavik”, nie „kier-is”.
+    kierunek_nazwa: kierunek.nazwa,
     kierunek_podrozy: wycena.strony,
     pojazd,
     wycena_od_eur: wycena.od,
