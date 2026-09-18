@@ -1,0 +1,234 @@
+---
+import { pobierzOferte, kierunkiOpublikowane } from '../data/oferta';
+import { NAWIGACJA_GLOWNA, gotowe } from '../lib/nawigacja';
+import { data } from '../lib/format';
+import Ikona from './Ikona.astro';
+
+const oferta = await pobierzOferte();
+const sciezka = Astro.url.pathname.replace(/\/$/, '') || '/';
+const pozycje = gotowe(NAWIGACJA_GLOWNA);
+
+/**
+ * Pasek pod nagłówkiem pokazuje najbliższe pakowanie dla każdego kierunku.
+ * Terminy, które już minęły, nie mają czego reklamować — odpadają.
+ */
+const dzisiaj = new Date().toISOString().slice(0, 10);
+const paskiKierunkow = kierunkiOpublikowane(oferta)
+  .map((k) => {
+    const najblizsze = k.terminy
+      .map((t) => t.pakowanie_pl)
+      .filter((d): d is string => Boolean(d) && d! >= dzisiaj)
+      .sort()[0];
+    return najblizsze ? { nazwa: k.nazwa, kiedy: data(najblizsze) } : null;
+  })
+  .filter((x): x is { nazwa: string; kiedy: string } => x !== null);
+---
+<header id="naglowek">
+  <div id="postep" aria-hidden="true"></div>
+
+  <div class="pas">
+    <a href="/" class="logo" aria-label="ADVfactory — strona główna">
+      <img src="/assets/logo-white.png" alt="ADVfactory" width="120" height="26" />
+    </a>
+
+    <nav class="nawigacja" aria-label="Główna">
+      {pozycje.map((p) => (
+        <a
+          href={p.url}
+          class:list={['pozycja', { aktywna: sciezka === p.url || sciezka.startsWith(`${p.url}/`) }]}
+          aria-current={sciezka === p.url ? 'page' : undefined}
+        >
+          {p.etykieta}
+        </a>
+      ))}
+    </nav>
+
+    <div class="akcje">
+      <button type="button" class="zapytaj" data-otworz-zapytanie data-zrodlo="formularz">
+        <Ikona nazwa="send" rozmiar="15" />
+        Wyślij zapytanie
+      </button>
+      <button type="button" class="hamburger" aria-expanded="false" aria-controls="menu-mobilne" data-menu>
+        <Ikona nazwa="menu" rozmiar="22" />
+        <span class="tylko-czytnik">Menu</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="menu-mobilne" hidden>
+    <nav aria-label="Główna — mobilna">
+      {pozycje.map((p) => <a href={p.url}>{p.etykieta}</a>)}
+    </nav>
+  </div>
+
+  {paskiKierunkow.length > 0 && (
+    <div class="marquee" aria-hidden="true">
+      <div class="tasma">
+        {[0, 1].map(() =>
+          paskiKierunkow.map((k) => (
+            <span class="pozycja-tasmy">
+              <span class="miasto">{k.nazwa}</span>
+              <span class="kiedy liczby">pakowanie {k.kiedy}</span>
+            </span>
+          ))
+        )}
+      </div>
+    </div>
+  )}
+</header>
+
+<style>
+  #naglowek {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--ciemny);
+    border-bottom: 1px solid var(--kreska-ciemna);
+  }
+
+  #postep {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 2px;
+    width: 0;
+    background: var(--akcent-jasny);
+    z-index: 3;
+    transition: width .1s linear;
+  }
+
+  .pas {
+    max-width: var(--szer-tresci);
+    margin: 0 auto;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .logo img { height: 26px; width: auto; }
+
+  .nawigacja {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+  }
+
+  .pozycja {
+    padding: 9px 12px;
+    font: 700 12px/1 var(--font-tekst);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    white-space: nowrap;
+    color: var(--tekst-na-ciemnym-2);
+    border-bottom: 2px solid transparent;
+    transition: color .18s ease, border-color .18s ease;
+  }
+  .pozycja:hover { color: var(--tekst-na-ciemnym); }
+  .pozycja.aktywna { color: var(--tekst-na-ciemnym); border-bottom-color: var(--akcent-jasny); }
+
+  .akcje { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+
+  .zapytaj {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 40px;
+    padding: 0 16px;
+    border: 0;
+    border-radius: var(--r-s);
+    background: var(--akcent-jasny);
+    color: #fff;
+    font: 700 11px/1 var(--font-tekst);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    cursor: pointer;
+    transition: background-color .18s ease;
+  }
+  .zapytaj:hover { background: var(--akcent-ciemny); }
+
+  .hamburger {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--kreska-ciemna);
+    border-radius: var(--r-s);
+    background: transparent;
+    color: var(--tekst-na-ciemnym);
+    cursor: pointer;
+  }
+
+  #menu-mobilne { border-top: 1px solid var(--kreska-ciemna); }
+  #menu-mobilne nav { display: grid; padding: 8px 24px 16px; }
+  #menu-mobilne a {
+    padding: 13px 0;
+    font: 700 13px var(--font-tekst);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--tekst-na-ciemnym);
+    border-bottom: 1px solid var(--kreska-ciemna);
+  }
+
+  .marquee {
+    overflow: hidden;
+    border-top: 1px solid rgba(242, 239, 231, .14);
+    padding: 10px 0;
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+  .tasma {
+    display: flex;
+    width: max-content;
+    animation: przesuw 48s linear infinite;
+  }
+  .pozycja-tasmy { display: inline-flex; align-items: center; gap: 12px; padding-right: 26px; white-space: nowrap; }
+  .miasto {
+    font: 700 12px var(--font-tekst);
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    color: var(--tekst-na-ciemnym-2);
+  }
+  .kiedy { font: 600 11px var(--font-liczby); color: var(--akcent-jasny); }
+
+  @keyframes przesuw { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) { .tasma { animation: none; } }
+
+  @media (max-width: 1080px) {
+    .nawigacja { display: none; }
+    .hamburger { display: inline-flex; }
+    #menu-mobilne[hidden] { display: none; }
+  }
+  @media (max-width: 640px) {
+    .pas { padding: 12px 16px; }
+    .zapytaj span { display: none; }
+  }
+</style>
+
+<script>
+  // Pasek postępu czytania — jedyny powód, dla którego nagłówek ma w ogóle JS.
+  const postep = document.getElementById('postep');
+  if (postep) {
+    let czeka = false;
+    const przelicz = () => {
+      czeka = false;
+      const wysokosc = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+      postep.style.width = `${Math.min(100, (window.scrollY / wysokosc) * 100)}%`;
+    };
+    addEventListener('scroll', () => {
+      if (czeka) return;
+      czeka = true;
+      requestAnimationFrame(przelicz);
+    }, { passive: true });
+    przelicz();
+  }
+
+  const guzik = document.querySelector<HTMLButtonElement>('[data-menu]');
+  const menu = document.getElementById('menu-mobilne');
+  guzik?.addEventListener('click', () => {
+    const otwarte = guzik.getAttribute('aria-expanded') === 'true';
+    guzik.setAttribute('aria-expanded', String(!otwarte));
+    if (menu) menu.hidden = otwarte;
+  });
+</script>

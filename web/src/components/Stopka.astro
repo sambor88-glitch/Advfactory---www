@@ -1,0 +1,134 @@
+---
+import { pobierzOferte, kierunkiOpublikowane, regionyOpublikowane } from '../data/oferta';
+import { STOPKA_OFERTA, STOPKA_INFORMACJE, gotowe } from '../lib/nawigacja';
+import Ikona from './Ikona.astro';
+
+const oferta = await pobierzOferte();
+const { firma, magazyny } = oferta;
+
+const kierunki = kierunkiOpublikowane(oferta);
+const regiony = regionyOpublikowane(oferta);
+const widoczneMagazyny = magazyny.filter((m) => m.widoczny).map((m) => m.miasto);
+const rok = new Date().getFullYear();
+
+// Linki do stron kierunków i regionów powstają w kroku 1b — do tego czasu
+// kolumny pokazują same nazwy, żeby stopka nie prowadziła w 404.
+const STRONY_SEO_GOTOWE = false;
+---
+<footer>
+  <div class="tresc siatka">
+    <div class="marka">
+      <img src="/assets/logo-white.png" alt="ADVfactory" width="120" height="26" />
+      <p>Wyprawy motocyklowe i transport pojazdów. Nigdy nie zabierzemy Was w miejsce, w którym nie byliśmy.</p>
+    </div>
+
+    <div>
+      <h2 class="tytul-kolumny">Transport motocykla do</h2>
+      <ul class="lista przygaszona">
+        {kierunki.map((k) => (
+          <li>{STRONY_SEO_GOTOWE ? <a href={`/transport/${k.slug}`}>{k.nazwa}</a> : k.nazwa}</li>
+        ))}
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="tytul-kolumny">Wyprawy motocyklowe</h2>
+      <ul class="lista przygaszona">
+        {regiony.map((r) => (
+          <li>{STRONY_SEO_GOTOWE ? <a href={`/wyprawy/region/${r.slug}`}>{r.nazwa}</a> : r.nazwa}</li>
+        ))}
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="tytul-kolumny">Oferta</h2>
+      <ul class="lista">
+        {gotowe(STOPKA_OFERTA).map((p) => <li><a href={p.url}>{p.etykieta}</a></li>)}
+      </ul>
+
+      <h2 class="tytul-kolumny odstep">Informacje</h2>
+      <ul class="lista">
+        {gotowe(STOPKA_INFORMACJE).map((p) => <li><a href={p.url}>{p.etykieta}</a></li>)}
+        <li><button type="button" class="jak-link" data-ustawienia-cookies>Ustawienia cookies</button></li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="tytul-kolumny">Kontakt</h2>
+      <ul class="lista liczby dane">
+        <li>WhatsApp {firma.whatsapp}</li>
+        <li><a href={`mailto:${firma.email}`}>{firma.email}</a></li>
+        <li>{firma.adres}</li>
+        <li>NIP {firma.nip}</li>
+        {widoczneMagazyny.length > 0 && <li>Magazyny: {widoczneMagazyny.join(' · ')}</li>}
+      </ul>
+      <button type="button" class="przycisk zapytaj" data-otworz-zapytanie data-zrodlo="formularz">
+        <Ikona nazwa="send" rozmiar="15" />
+        Wyślij zapytanie
+      </button>
+    </div>
+  </div>
+
+  <div class="stopka-stopki liczby">
+    {firma.nazwa} · transport pojazdów od 2008 · © {rok}
+  </div>
+</footer>
+
+<style>
+  footer { margin-top: 80px; background: var(--ciemny); color: var(--tekst-na-ciemnym); }
+
+  .siatka {
+    padding-block: 52px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+    gap: 32px;
+  }
+
+  .marka p {
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: var(--tekst-na-ciemnym-2);
+    margin-top: 14px;
+    max-width: 34ch;
+  }
+
+  .tytul-kolumny {
+    font: 700 10.5px/1.4 var(--font-tekst);
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    color: var(--tekst-4);
+  }
+  .tytul-kolumny.odstep { margin-top: 26px; }
+
+  .lista { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 9px; }
+  .lista li { font-size: 14.5px; line-height: 1.45; }
+  .lista a { color: var(--tekst-na-ciemnym); }
+  .lista a:hover { color: var(--akcent-jasny); }
+
+  .przygaszona li { color: var(--tekst-na-ciemnym-2); font-size: 13.5px; }
+  .przygaszona a { color: var(--tekst-na-ciemnym-2); }
+
+  .dane { font-size: 12.5px; color: var(--tekst-na-ciemnym-2); }
+  .dane a { color: var(--tekst-na-ciemnym-2); }
+
+  .jak-link {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--tekst-na-ciemnym);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+  .jak-link:hover { color: var(--akcent-jasny); }
+
+  .zapytaj { margin-top: 16px; background: var(--akcent-jasny); }
+
+  .stopka-stopki {
+    border-top: 1px solid var(--kreska-ciemna);
+    padding: 18px 24px;
+    text-align: center;
+    font-size: 11.5px;
+    color: var(--tekst-4);
+  }
+</style>

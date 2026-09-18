@@ -1,0 +1,179 @@
+/* ── Tokeny wizualne ─────────────────────────────────────────────────────────
+   Przeniesione 1:1 z prototypu (`Strona ADVfactory.dc.html`). Wartości są
+   policzone z tego, co w prototypie faktycznie występuje, nie wymyślone.
+   Strona nie ma trybu ciemnego — ciemne są wybrane sekcje, zawsze te same. */
+:root {
+  /* Tło i płaszczyzny */
+  --tlo: #F2EFE7;
+  --tlo-karta: #FBFAF7;
+  --tlo-zatopione: #E7E2D6;
+  --kreska: #D8D2C4;
+
+  /* Tekst na jasnym */
+  --tekst: #1C1B17;
+  --tekst-2: #55524A;
+  --tekst-3: #6F6A60;
+  --tekst-4: #8F897D;
+
+  /* Sekcje ciemne */
+  --ciemny: #1C1B17;
+  --ciemny-2: #161512;
+  --ciemny-3: #201F1B;
+  --kreska-ciemna: #3A3831;
+  --tekst-na-ciemnym: #F2EFE7;
+  --tekst-na-ciemnym-2: #B9B3A6;
+
+  /* Akcent — enduro orange */
+  --akcent: #EA5A0B;
+  --akcent-jasny: #F26A1B;
+  --akcent-ciemny: #C94A06;
+  --akcent-ciemniejszy: #A83D03;
+
+  /* Sygnały */
+  --ok: #4C7A34;
+  --ok-jasny: #6FA352;
+  --blad: #BF3126;
+  --uwaga: #D98E1B;
+  --info: #3D6A8F;
+  --whatsapp: #25D366;
+
+  /* Kształt i rytm */
+  --r-s: 4px;
+  --r-m: 8px;
+  --r-pigulka: 99px;
+  --szer-tresci: 1280px;
+
+  /* Typografia */
+  --font-naglowek: 'Anton', 'Archivo', system-ui, sans-serif;
+  --font-tekst: 'Archivo', system-ui, -apple-system, sans-serif;
+  --font-liczby: 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+
+body {
+  margin: 0;
+  background: var(--tlo);
+  color: var(--tekst);
+  font-family: var(--font-tekst);
+  font-size: 16px;
+  line-height: 1.6;
+  text-wrap: pretty;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Liczby, daty i ceny trzymają stałą szerokość znaku — inaczej tabele terminów
+   skaczą przy każdej zmianie cyfry. */
+[data-liczby], .liczby, td, th { font-variant-numeric: tabular-nums; }
+.liczby { font-family: var(--font-liczby); }
+
+h1, h2, h3 {
+  font-family: var(--font-naglowek);
+  font-weight: 400;
+  line-height: .96;
+  letter-spacing: -.01em;
+  text-transform: uppercase;
+  margin: 0;
+}
+h1 { font-size: clamp(38px, 7vw, 76px); }
+h2 { font-size: clamp(30px, 5vw, 52px); }
+h3 { font-size: clamp(20px, 3vw, 28px); }
+
+p { margin: 0 0 1em; }
+p:last-child { margin-bottom: 0; }
+
+a { color: var(--akcent); text-decoration: none; }
+a:hover { color: var(--akcent-ciemny); }
+
+img { max-width: 100%; display: block; }
+
+:focus-visible {
+  outline: 2px solid var(--akcent);
+  outline-offset: 2px;
+  border-radius: var(--r-s);
+}
+
+/* ── Elementy wspólne ──────────────────────────────────────────────────────── */
+
+.tresc {
+  max-width: var(--szer-tresci);
+  margin: 0 auto;
+  padding-inline: 24px;
+}
+@media (max-width: 640px) { .tresc { padding-inline: 16px; } }
+
+.nadtytul {
+  font: 700 12px/1.4 var(--font-tekst);
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--tekst-3);
+}
+
+.przycisk {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 22px;
+  border: 0;
+  border-radius: var(--r-s);
+  background: var(--akcent);
+  color: #fff;
+  font: 700 13px/1 var(--font-tekst);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  cursor: pointer;
+  transition: background-color .18s ease, transform .16s ease;
+}
+.przycisk:hover { background: var(--akcent-ciemny); color: #fff; }
+.przycisk:active { transform: translateY(1px); }
+
+.przycisk--obrys {
+  background: transparent;
+  color: var(--tekst);
+  border: 1px solid var(--kreska);
+}
+.przycisk--obrys:hover { background: var(--tlo-zatopione); color: var(--tekst); }
+
+.przycisk--whatsapp {
+  background: transparent;
+  color: var(--tekst);
+  border: 1px solid var(--whatsapp);
+}
+.przycisk--whatsapp:hover { background: rgba(37, 211, 102, .1); color: var(--tekst); }
+
+.karta {
+  background: var(--tlo-karta);
+  border: 1px solid var(--kreska);
+  border-radius: var(--r-m);
+  overflow: hidden;
+}
+
+/* Tekst czytany tylko przez czytniki ekranu. */
+.tylko-czytnik {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Pominięcie nawigacji — pierwsze, co łapie Tab. */
+.pomin-nawigacje {
+  position: absolute;
+  left: 8px; top: -60px;
+  z-index: 100;
+  padding: 12px 18px;
+  background: var(--akcent);
+  color: #fff;
+  border-radius: var(--r-s);
+  font: 700 13px var(--font-tekst);
+  transition: top .18s ease;
+}
+.pomin-nawigacje:focus { top: 8px; color: #fff; }

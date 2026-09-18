@@ -1,0 +1,213 @@
+---
+import { pobierzOferte } from '../data/oferta';
+import { KLUCZ_ZGODY, WERSJA_POLITYKI } from '../lib/stale';
+
+const oferta = await pobierzOferte();
+const { analityka } = oferta.ustawienia;
+---
+<div
+  id="zgoda-cookies"
+  hidden
+  role="dialog"
+  aria-modal="false"
+  aria-labelledby="zgoda-tytul"
+  data-klucz={KLUCZ_ZGODY}
+  data-wersja={WERSJA_POLITYKI}
+  data-ga4={analityka.ga4 ?? ''}
+  data-pixel={analityka.meta_pixel ?? ''}
+>
+  <div class="pudelko">
+    <div class="tekst">
+      <h2 id="zgoda-tytul">Cookies</h2>
+      <p>
+        Niezbędne pliki są zawsze włączone. Analityczne i marketingowe — tylko za Twoją zgodą.
+        Do czasu zgody nie ładujemy YouTube ani Map Google, bo one ustawiają własne cookies.
+      </p>
+      <div id="szczegoly-zgody" hidden>
+        <label class="przelacznik">
+          <input type="checkbox" checked disabled />
+          <span><strong>Niezbędne</strong> — bez nich strona nie działa. Zawsze włączone.</span>
+        </label>
+        <label class="przelacznik">
+          <input type="checkbox" id="zgoda-analityka" />
+          <span><strong>Analityczne</strong> — anonimowa statystyka odwiedzin.</span>
+        </label>
+        <label class="przelacznik">
+          <input type="checkbox" id="zgoda-marketing" />
+          <span><strong>Marketingowe</strong> — filmy YouTube, mapy Google, remarketing.</span>
+        </label>
+      </div>
+    </div>
+    <div class="guziki">
+      <button type="button" class="przycisk" data-zgoda="wszystko">Akceptuję wszystkie</button>
+      <button type="button" class="przycisk przycisk--obrys" data-zgoda="niezbedne">Tylko niezbędne</button>
+      <button type="button" class="przycisk przycisk--obrys" data-zgoda="wybor" hidden>Zapisz wybór</button>
+      <button type="button" class="jak-link" data-rozwin>Dostosuj</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  #zgoda-cookies {
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 90;
+    padding: 16px;
+    background: var(--ciemny-2);
+    border-top: 1px solid var(--kreska-ciemna);
+    color: var(--tekst-na-ciemnym);
+    box-shadow: 0 -12px 40px rgba(0, 0, 0, .3);
+  }
+  #zgoda-cookies[hidden] { display: none; }
+
+  .pudelko {
+    max-width: var(--szer-tresci);
+    margin: 0 auto;
+    display: flex;
+    gap: 28px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .tekst { flex: 1 1 420px; }
+  .tekst h2 { font-size: 20px; margin-bottom: 8px; }
+  .tekst p { font-size: 14px; line-height: 1.55; color: var(--tekst-na-ciemnym-2); max-width: 70ch; }
+
+  #szczegoly-zgody { display: grid; gap: 10px; margin-top: 14px; }
+  #szczegoly-zgody[hidden] { display: none; }
+
+  .przelacznik { display: flex; gap: 10px; align-items: flex-start; font-size: 13.5px; color: var(--tekst-na-ciemnym-2); }
+  .przelacznik strong { color: var(--tekst-na-ciemnym); }
+  .przelacznik input { margin-top: 3px; accent-color: var(--akcent); }
+
+  .guziki { display: flex; flex-direction: column; gap: 10px; flex: 0 0 auto; }
+  .guziki .przycisk--obrys { color: var(--tekst-na-ciemnym); border-color: var(--kreska-ciemna); }
+  .guziki .przycisk--obrys:hover { background: var(--ciemny-3); color: var(--tekst-na-ciemnym); }
+
+  .jak-link {
+    padding: 4px;
+    border: 0;
+    background: none;
+    color: var(--tekst-na-ciemnym-2);
+    font: 600 12px var(--font-tekst);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  @media (max-width: 640px) {
+    .guziki { flex-direction: row; flex-wrap: wrap; width: 100%; }
+    .guziki .przycisk { flex: 1 1 140px; justify-content: center; }
+  }
+</style>
+
+<script>
+  interface Zgoda { analityka: boolean; marketing: boolean; wersja: string; ts: string }
+
+  const panel = document.getElementById('zgoda-cookies');
+  if (panel) {
+    const KLUCZ = panel.dataset.klucz!;
+    const WERSJA = panel.dataset.wersja!;
+    const GA4 = panel.dataset.ga4 || '';
+    const PIXEL = panel.dataset.pixel || '';
+
+    const czytaj = (): Zgoda | null => {
+      try {
+        const surowe = localStorage.getItem(KLUCZ);
+        if (!surowe) return null;
+        const z = JSON.parse(surowe) as Zgoda;
+        // Nowa wersja polityki unieważnia starą zgodę — pytamy jeszcze raz.
+        return z.wersja === WERSJA ? z : null;
+      } catch {
+        return null;
+      }
+    };
+
+    /** Odblokowuje embedy, które czekały na zgodę marketingową. */
+    const odblokujEmbedy = () => {
+      document.querySelectorAll<HTMLElement>('[data-embed-marketing]').forEach((miejsce) => {
+        const src = miejsce.dataset.embedMarketing;
+        if (!src || miejsce.dataset.zaladowany) return;
+        miejsce.dataset.zaladowany = '1';
+        const ramka = document.createElement('iframe');
+        ramka.src = src;
+        ramka.title = miejsce.dataset.tytul ?? 'Materiał zewnętrzny';
+        ramka.loading = 'lazy';
+        ramka.allowFullscreen = true;
+        ramka.referrerPolicy = 'strict-origin-when-cross-origin';
+        ramka.style.cssText = 'width:100%;height:100%;border:0;display:block';
+        miejsce.replaceChildren(ramka);
+      });
+    };
+
+    const wstrzyknijSkrypt = (src: string, poZaladowaniu?: () => void) => {
+      const s = document.createElement('script');
+      s.async = true;
+      s.src = src;
+      if (poZaladowaniu) s.addEventListener('load', poZaladowaniu, { once: true });
+      document.head.appendChild(s);
+    };
+
+    const zastosuj = (z: Zgoda) => {
+      if (z.analityka && GA4) {
+        wstrzyknijSkrypt(`https://www.googletagmanager.com/gtag/js?id=${GA4}`, () => {
+          const w = window as unknown as { dataLayer: unknown[] };
+          w.dataLayer = w.dataLayer || [];
+          const gtag = (...a: unknown[]) => w.dataLayer.push(a);
+          gtag('js', new Date());
+          gtag('config', GA4);
+        });
+      }
+      if (z.marketing) {
+        odblokujEmbedy();
+        if (PIXEL) wstrzyknijSkrypt(`https://connect.facebook.net/en_US/fbevents.js`);
+      }
+    };
+
+    const zapisz = (analityka: boolean, marketing: boolean) => {
+      const z: Zgoda = { analityka, marketing, wersja: WERSJA, ts: new Date().toISOString() };
+      try { localStorage.setItem(KLUCZ, JSON.stringify(z)); } catch { /* tryb prywatny — trudno */ }
+      panel.hidden = true;
+      zastosuj(z);
+    };
+
+    const zapisana = czytaj();
+    if (zapisana) {
+      zastosuj(zapisana);
+    } else {
+      setTimeout(() => { panel.hidden = false; }, 900);
+    }
+
+    const analityka = document.getElementById('zgoda-analityka') as HTMLInputElement | null;
+    const marketing = document.getElementById('zgoda-marketing') as HTMLInputElement | null;
+
+    panel.querySelector('[data-rozwin]')?.addEventListener('click', () => {
+      const szczegoly = document.getElementById('szczegoly-zgody');
+      const zapiszWybor = panel.querySelector<HTMLElement>('[data-zgoda="wybor"]');
+      if (szczegoly) szczegoly.hidden = !szczegoly.hidden;
+      if (zapiszWybor) zapiszWybor.hidden = !zapiszWybor.hidden;
+    });
+
+    panel.querySelectorAll<HTMLElement>('[data-zgoda]').forEach((guzik) => {
+      guzik.addEventListener('click', () => {
+        const tryb = guzik.dataset.zgoda;
+        if (tryb === 'wszystko') zapisz(true, true);
+        else if (tryb === 'niezbedne') zapisz(false, false);
+        else zapisz(Boolean(analityka?.checked), Boolean(marketing?.checked));
+      });
+    });
+
+    // Link „Ustawienia cookies" w stopce otwiera panel z aktualnym stanem.
+    document.querySelectorAll('[data-ustawienia-cookies]').forEach((link) => {
+      link.addEventListener('click', () => {
+        const teraz = czytaj();
+        if (analityka) analityka.checked = Boolean(teraz?.analityka);
+        if (marketing) marketing.checked = Boolean(teraz?.marketing);
+        const szczegoly = document.getElementById('szczegoly-zgody');
+        const zapiszWybor = panel.querySelector<HTMLElement>('[data-zgoda="wybor"]');
+        if (szczegoly) szczegoly.hidden = false;
+        if (zapiszWybor) zapiszWybor.hidden = false;
+        panel.hidden = false;
+      });
+    });
+  }
+</script>

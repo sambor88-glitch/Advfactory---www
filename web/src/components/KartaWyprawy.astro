@@ -1,0 +1,154 @@
+---
+import type { Wyprawa } from '../types/oferta';
+import { zakresDat, liczbaDni, euro, etykietaTrudnosci, pasmoTrudnosci } from '../lib/format';
+import Ikona from './Ikona.astro';
+
+interface Props {
+  wyprawa: Wyprawa;
+  /** Pierwsze karty na stronie ładują zdjęcie od razu, reszta leniwie. */
+  pilne?: boolean;
+}
+
+const { wyprawa: w, pilne = false } = Astro.props;
+const dni = liczbaDni(w.termin.od, w.termin.do);
+const pasmo = pasmoTrudnosci(w.trudnosc);
+---
+<article class="karta">
+  <a class="zdjecie" href={`/wyprawy/${w.slug}`} tabindex="-1" aria-hidden="true">
+    <img
+      src={w.zdjecie}
+      alt=""
+      loading={pilne ? 'eager' : 'lazy'}
+      decoding="async"
+      fetchpriority={pilne ? 'high' : 'auto'}
+    />
+    {w.na_naszym_sprzecie && (
+      <span class="plakietka">
+        <Ikona nazwa="bike" rozmiar="13" />
+        Na naszym sprzęcie
+      </span>
+    )}
+  </a>
+
+  <div class="srodek">
+    <p class="region nadtytul">{w.region}</p>
+    <h3><a href={`/wyprawy/${w.slug}`}>{w.tytul}</a></h3>
+
+    <dl class="fakty liczby">
+      <div>
+        <dt><Ikona nazwa="calendar" rozmiar="13" /> Termin</dt>
+        <dd>{zakresDat(w.termin.od, w.termin.do)}</dd>
+      </div>
+      {dni !== null && (
+        <div>
+          <dt><Ikona nazwa="clock" rozmiar="13" /> Długość</dt>
+          <dd>{dni} dni</dd>
+        </div>
+      )}
+      <div>
+        <dt><Ikona nazwa="mountain" rozmiar="13" /> Trudność</dt>
+        <dd><span class:list={['trudnosc', pasmo]}>{w.trudnosc}/10 · {etykietaTrudnosci(w.trudnosc)}</span></dd>
+      </div>
+    </dl>
+  </div>
+
+  <div class="dol">
+    <div class="cena">
+      <span class="etykieta">Kierowca</span>
+      <strong class="liczby">{euro(w.cena.kierowca_eur)}</strong>
+      {w.cena.pasazer_eur !== null && (
+        <span class="pasazer liczby">pasażer {euro(w.cena.pasazer_eur)}</span>
+      )}
+    </div>
+    <a class="wiecej" href={`/wyprawy/${w.slug}`}>
+      Zobacz wyprawę
+      <Ikona nazwa="arrow-right" rozmiar="15" />
+    </a>
+  </div>
+</article>
+
+<style>
+  .karta {
+    display: flex;
+    flex-direction: column;
+    background: var(--tlo-karta);
+    border: 1px solid var(--kreska);
+    border-radius: var(--r-m);
+    overflow: hidden;
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+  .karta:hover { transform: translateY(-3px); box-shadow: 0 14px 34px rgba(28, 27, 23, .12); }
+
+  .zdjecie { position: relative; display: block; aspect-ratio: 16 / 10; background: var(--tlo-zatopione); }
+  .zdjecie img { width: 100%; height: 100%; object-fit: cover; }
+
+  .plakietka {
+    position: absolute;
+    left: 12px;
+    bottom: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: var(--r-pigulka);
+    background: rgba(28, 27, 23, .86);
+    color: var(--tlo);
+    font: 700 10.5px var(--font-tekst);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+  }
+
+  .srodek { padding: 18px 18px 8px; flex: 1; }
+  .region { margin: 0 0 6px; }
+  h3 { font-size: 22px; line-height: 1.02; }
+  h3 a { color: var(--tekst); }
+  h3 a:hover { color: var(--akcent); }
+
+  .fakty { margin: 14px 0 0; display: grid; gap: 7px; }
+  .fakty > div { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+  .fakty dt {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font: 600 11.5px var(--font-tekst);
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--tekst-4);
+  }
+  .fakty dd { margin: 0; font: 600 13px var(--font-liczby); text-align: right; }
+
+  .trudnosc { padding: 2px 7px; border-radius: var(--r-s); }
+  .trudnosc.spokojne { background: rgba(76, 122, 52, .14); color: var(--ok); }
+  .trudnosc.srednie { background: rgba(217, 142, 27, .16); color: #8A5A0A; }
+  .trudnosc.mocne { background: rgba(191, 49, 38, .12); color: var(--blad); }
+
+  .dol {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 14px 18px 18px;
+    border-top: 1px solid var(--kreska);
+    margin-top: 14px;
+  }
+
+  .cena { display: grid; gap: 1px; }
+  .etykieta {
+    font: 600 10.5px var(--font-tekst);
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    color: var(--tekst-4);
+  }
+  .cena strong { font-size: 20px; font-weight: 600; }
+  .pasazer { font-size: 11.5px; color: var(--tekst-3); }
+
+  .wiecej {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font: 700 11.5px var(--font-tekst);
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    white-space: nowrap;
+  }
+</style>

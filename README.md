@@ -57,6 +57,18 @@ Pliki `.dc.html` otwierają się w przeglądarce bezpośrednio z dysku (potrzebu
 3. **Strony kierunków i regionów:** treść przenosi się z kodu do CRM — rozbudowa widoku Terminarz + nowy widok „Strony regionów”.
 4. **Architektura:** CRM publikuje `oferta.json` na S3, strona budowana statycznie (SSG) na AWS eu-central-1. Szczegóły i koszty w `docs/architektura.md`.
 
+## Kod strony (`web/`)
+
+Front w Astro (SSG), budowany z `docs/oferta.json`. Zbudowany zakres to rdzeń
+sprzedażowy: strona główna, lista wypraw, karta wyprawy, transport z konfiguratorem,
+szuflada zapytania, „dziękujemy" i 404.
+
+```bash
+cd web && npm install && npm run dev
+```
+
+Instrukcja wdrożenia, zmienne środowiskowe i opis struktury: `web/README.md`.
+
 ## Tokeny wizualne
 
 Anton (nagłówki), Archivo (tekst), IBM Plex Mono (liczby, daty). Akcent `#EA5A0B` / `#F26A1B`, tło strony `#F2EFE7`, ciemne `#1C1B17` / `#161512`, CRM `#0F0E0C`. Promienie 4–8 px. Ikony: lucide.

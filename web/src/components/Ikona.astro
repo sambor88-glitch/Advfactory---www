@@ -1,0 +1,30 @@
+---
+import { IKONY } from '../lib/ikony';
+
+interface Props {
+  nazwa: keyof typeof IKONY;
+  rozmiar?: number | string;
+  grubosc?: number;
+  klasa?: string;
+}
+
+const { nazwa, rozmiar = '1em', grubosc = 2, klasa } = Astro.props;
+const sciezki = IKONY[nazwa];
+if (!sciezki) throw new Error(`Nie ma ikony "${nazwa}" w src/lib/ikony.ts — dołóż ją do listy w generatorze.`);
+---
+<svg
+  class={klasa}
+  xmlns="http://www.w3.org/2000/svg"
+  width={rozmiar}
+  height={rozmiar}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width={grubosc}
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  focusable="false"
+  style="display:block;flex:none"
+  set:html={sciezki}
+/>

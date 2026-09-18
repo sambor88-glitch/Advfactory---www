@@ -1,0 +1,79 @@
+---
+import Base from '../layouts/Base.astro';
+import Ikona from '../components/Ikona.astro';
+import { pobierzOferte, wyprawyOpublikowane } from '../data/oferta';
+
+const oferta = await pobierzOferte();
+const najblizsze = wyprawyOpublikowane(oferta).slice(0, 3);
+---
+<Base tytul="Nie ma takiej strony" opis="Strona, której szukasz, nie istnieje lub zmieniła adres.">
+  <section class="tresc pusto">
+    <p class="kod liczby">404</p>
+    <h1>Tu nic nie ma</h1>
+    <p class="lead">
+      Ta strona nie istnieje albo zmieniła adres. Nie zgubiliśmy jeszcze żadnego motocykla,
+      więc tę jedną stronę jakoś przeżyjemy.
+    </p>
+
+    <div class="guziki">
+      <a class="przycisk" href="/wyprawy">
+        <Ikona nazwa="mountain" rozmiar="16" />
+        Wyprawy
+      </a>
+      <a class="przycisk przycisk--obrys" href="/transport">
+        <Ikona nazwa="ship" rozmiar="16" />
+        Transport pojazdów
+      </a>
+      <button type="button" class="przycisk przycisk--obrys" data-otworz-zapytanie data-zrodlo="formularz">
+        <Ikona nazwa="send" rozmiar="15" />
+        Napisz do nas
+      </button>
+    </div>
+
+    {najblizsze.length > 0 && (
+      <div class="podpowiedzi">
+        <p class="nadtytul">A skoro już tu jesteś</p>
+        <ul>
+          {najblizsze.map((w) => (
+            <li>
+              <a href={`/wyprawy/${w.slug}`}>
+                {w.tytul}
+                <Ikona nazwa="arrow-right" rozmiar="14" />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+  </section>
+</Base>
+
+<style>
+  .pusto { padding-block: 88px 40px; max-width: 680px; }
+  .kod {
+    margin: 0;
+    font-size: clamp(64px, 14vw, 128px);
+    font-weight: 600;
+    line-height: .9;
+    color: var(--tlo-zatopione);
+    letter-spacing: -.03em;
+  }
+  h1 { margin: 6px 0 16px; }
+  .lead { font-size: 17px; color: var(--tekst-2); max-width: 54ch; }
+
+  .guziki { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 32px; }
+
+  .podpowiedzi { margin-top: 52px; padding-top: 28px; border-top: 1px solid var(--kreska); }
+  .podpowiedzi ul { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 2px; }
+  .podpowiedzi a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--kreska);
+    color: var(--tekst);
+    font-size: 15.5px;
+  }
+  .podpowiedzi a:hover { color: var(--akcent); }
+</style>

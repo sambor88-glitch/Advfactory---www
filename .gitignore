@@ -7,3 +7,7 @@ node_modules/
 vendor/
 *.log
 .thumbnail
+
+# Astro
+web/dist/
+web/.astro/

@@ -1,0 +1,191 @@
+---
+import Base from '../../layouts/Base.astro';
+import KartaWyprawy from '../../components/KartaWyprawy.astro';
+import Ikona from '../../components/Ikona.astro';
+import { pobierzOferte, wyprawyOpublikowane } from '../../data/oferta';
+import { pasmoTrudnosci } from '../../lib/format';
+
+const oferta = await pobierzOferte();
+const wyprawy = wyprawyOpublikowane(oferta);
+
+const lata = [...new Set(wyprawy.map((w) => w.termin.od?.slice(0, 4)).filter(Boolean))].sort() as string[];
+const naNaszymSprzecie = wyprawy.some((w) => w.na_naszym_sprzecie);
+---
+<Base
+  tytul="Wyprawy motocyklowe"
+  opis="Terminy, ceny i trudność wypraw motocyklowych ADVfactory. Kirgistan, Pamir, Tybet, Patagonia, Afryka, Alaska."
+>
+  <section class="tresc czapka">
+    <p class="nadtytul">Wyprawy motocyklowe · sezon {lata.join(' / ')}</p>
+    <h1>Wybierz kierunek, my zajmiemy się resztą</h1>
+    <p class="lead">
+      Ceny podajemy jawnie, trudność w skali x/10, a terminy tak, jak wychodzą z kontenerów.
+      O dostępności miejsc pytaj — potwierdzamy ją zawsze osobiście.
+    </p>
+
+    {naNaszymSprzecie && (
+      <aside class="notka">
+        <Ikona nazwa="bike" rozmiar="20" />
+        <div>
+          <strong>Niektóre kierunki możliwe na naszym sprzęcie</strong>
+          <p>
+            Na części wypraw nie musisz wysyłać własnego motocykla — czeka na Ciebie nasza Honda
+            CRF300L, przygotowana pod trasę. Wtedy odpada kontener i odprawa, a cena wyprawy jest
+            już podana z motocyklem w środku.
+          </p>
+        </div>
+      </aside>
+    )}
+  </section>
+
+  <section class="tresc">
+    <form class="filtry" id="filtry" aria-label="Filtrowanie wypraw">
+      <fieldset>
+        <legend>Trudność</legend>
+        <label><input type="radio" name="trudnosc" value="" checked /><span>Wszystkie</span></label>
+        <label><input type="radio" name="trudnosc" value="spokojne" /><span>Spokojne 1–4</span></label>
+        <label><input type="radio" name="trudnosc" value="srednie" /><span>Średnie 5–6</span></label>
+        <label><input type="radio" name="trudnosc" value="mocne" /><span>Mocne 7–10</span></label>
+      </fieldset>
+
+      {lata.length > 1 && (
+        <fieldset>
+          <legend>Termin</legend>
+          <label><input type="radio" name="rok" value="" checked /><span>Wszystkie</span></label>
+          {lata.map((r) => (
+            <label><input type="radio" name="rok" value={r} /><span>{r}</span></label>
+          ))}
+        </fieldset>
+      )}
+
+      <p class="licznik liczby" aria-live="polite">
+        <span id="widoczne">{wyprawy.length}</span> z {wyprawy.length} terminów
+      </p>
+    </form>
+
+    <div class="siatka" id="siatka-wypraw">
+      {wyprawy.map((w, i) => (
+        <div
+          class="komorka"
+          data-trudnosc={pasmoTrudnosci(w.trudnosc)}
+          data-rok={w.termin.od?.slice(0, 4) ?? ''}
+        >
+          <KartaWyprawy wyprawa={w} pilne={i < 3} />
+        </div>
+      ))}
+    </div>
+
+    <p class="pusto" id="pusto" hidden>
+      Żadna wyprawa nie pasuje do tych filtrów. Zdejmij jeden albo
+      <button type="button" class="jak-link" data-otworz-zapytanie data-zrodlo="formularz">zapytaj nas o termin</button>.
+    </p>
+  </section>
+</Base>
+
+<style>
+  .czapka { padding-block: 56px 32px; max-width: 900px; }
+  h1 { margin: 14px 0 18px; }
+  .lead { font-size: 17px; color: var(--tekst-2); max-width: 62ch; }
+
+  .notka {
+    display: flex;
+    gap: 14px;
+    margin-top: 28px;
+    padding: 18px 20px;
+    background: var(--tlo-karta);
+    border: 1px solid var(--kreska);
+    border-left: 3px solid var(--akcent);
+    border-radius: 0 var(--r-m) var(--r-m) 0;
+  }
+  .notka > :global(svg) { color: var(--akcent); flex: none; margin-top: 2px; }
+  .notka strong { display: block; margin-bottom: 4px; }
+  .notka p { font-size: 14.5px; color: var(--tekst-2); max-width: 70ch; }
+
+  .filtry {
+    display: flex;
+    gap: 32px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--kreska);
+    margin-bottom: 26px;
+  }
+  fieldset { border: 0; padding: 0; margin: 0; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  legend {
+    float: left;
+    width: 100%;
+    padding: 0 0 8px;
+    font: 700 10.5px var(--font-tekst);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--tekst-4);
+  }
+  .filtry label { cursor: pointer; }
+  .filtry input { position: absolute; opacity: 0; pointer-events: none; }
+  .filtry span {
+    display: inline-block;
+    padding: 9px 14px;
+    border: 1px solid var(--kreska);
+    border-radius: var(--r-s);
+    background: var(--tlo-karta);
+    font: 600 12.5px var(--font-tekst);
+    transition: background-color .16s ease, color .16s ease, border-color .16s ease;
+  }
+  .filtry label:hover span { border-color: var(--tekst-4); }
+  .filtry input:checked + span { background: var(--ciemny); border-color: var(--ciemny); color: var(--tlo); }
+  .filtry input:focus-visible + span { outline: 2px solid var(--akcent); outline-offset: 2px; }
+
+  .licznik { margin: 0 0 2px auto; font-size: 12.5px; color: var(--tekst-3); }
+
+  .siatka {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+    gap: 20px;
+  }
+  .komorka[hidden] { display: none; }
+
+  .pusto { margin-top: 28px; padding: 24px; text-align: center; color: var(--tekst-2); }
+  .pusto[hidden] { display: none; }
+  .jak-link {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--akcent);
+    font: inherit;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+</style>
+
+<script>
+  const filtry = document.getElementById('filtry') as HTMLFormElement | null;
+  const siatka = document.getElementById('siatka-wypraw');
+  const licznik = document.getElementById('widoczne');
+  const pusto = document.getElementById('pusto');
+
+  if (filtry && siatka && licznik && pusto) {
+    const komorki = Array.from(siatka.querySelectorAll<HTMLElement>('.komorka'));
+
+    const przefiltruj = () => {
+      const dane = new FormData(filtry);
+      const trudnosc = String(dane.get('trudnosc') ?? '');
+      const rok = String(dane.get('rok') ?? '');
+      let widoczne = 0;
+
+      for (const k of komorki) {
+        const pasuje =
+          (!trudnosc || k.dataset.trudnosc === trudnosc) &&
+          (!rok || k.dataset.rok === rok);
+        k.hidden = !pasuje;
+        if (pasuje) widoczne++;
+      }
+
+      licznik.textContent = String(widoczne);
+      pusto.hidden = widoczne > 0;
+    };
+
+    filtry.addEventListener('change', przefiltruj);
+    // Przeglądarka potrafi przywrócić zaznaczenie po cofnięciu — synchronizujemy stan.
+    przefiltruj();
+  }
+</script>

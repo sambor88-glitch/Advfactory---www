@@ -1,0 +1,414 @@
+---
+import Base from '../layouts/Base.astro';
+import KartaWyprawy from '../components/KartaWyprawy.astro';
+import Ikona from '../components/Ikona.astro';
+import MapaKierunkow from '../components/MapaKierunkow.astro';
+import { pobierzOferte, wyprawyOpublikowane, kierunkiOpublikowane } from '../data/oferta';
+import { ROK_ZALOZENIA } from '../lib/stale';
+import { data } from '../lib/format';
+
+const oferta = await pobierzOferte();
+const { hero, baner, odpowiedz_w_godzinach, wideo_youtube } = oferta.ustawienia;
+
+const wyprawy = wyprawyOpublikowane(oferta);
+const najblizsze = wyprawy.slice(0, 3);
+const kierunki = kierunkiOpublikowane(oferta);
+const zakonczone = oferta.wyprawy.filter((w) => w.status === 'archiwum').length;
+const opinie = oferta.opinie.filter((o) => o.opublikowana && o.zgoda_uczestnika);
+const filmy = wideo_youtube.filter(Boolean);
+
+// Baner pokazujemy tylko, gdy jest włączony, ma treść i jeszcze nie wygasł.
+const dzisiaj = new Date().toISOString().slice(0, 10);
+const banerWidoczny =
+  baner.wlaczony && Boolean(baner.tekst) && (!baner.wygasa || baner.wygasa >= dzisiaj);
+
+// Kafelki liczbowe — pokazujemy tylko te, pod którymi stoją realne dane.
+const liczby = [
+  { wartosc: String(ROK_ZALOZENIA), opis: 'Pierwszy transport' },
+  zakonczone > 0 ? { wartosc: String(zakonczone), opis: 'Wypraw za nami' } : null,
+  { wartosc: String(kierunki.length), opis: 'Kierunków transportu' },
+  { wartosc: `${odpowiedz_w_godzinach} h`, opis: 'Odpowiedź na zapytanie' },
+].filter((x): x is { wartosc: string; opis: string } => x !== null);
+
+const idYouTube = (url: string): string | null => {
+  const m = url.match(/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/);
+  return m?.[1] ?? null;
+};
+---
+<Base
+  tytul={hero.tytul}
+  opis={hero.lead}
+  ogImage={hero.zdjecie}
+  tytulPelny={false}
+>
+  {banerWidoczny && (
+    <div class:list={['baner', baner.ton]}>
+      <div class="tresc">
+        <Ikona nazwa="info" rozmiar="16" />
+        <span>{baner.tekst}</span>
+        {baner.link && <a href={baner.link}>Sprawdź</a>}
+      </div>
+    </div>
+  )}
+
+  <!-- ── HERO ─────────────────────────────────────────────────────────── -->
+  <section class="hero">
+    <img class="tlo" src={hero.zdjecie} alt="" fetchpriority="high" decoding="async" />
+    <div class="tresc wnetrze">
+      <p class="nadtytul jasny">{hero.nadtytul}</p>
+      <h1>{hero.tytul}</h1>
+      <p class="lead">{hero.lead}</p>
+      <div class="cta">
+        <a class="przycisk" href="/wyprawy">
+          Wybierz wyprawę
+          <Ikona nazwa="arrow-right" rozmiar="16" />
+        </a>
+        <a class="przycisk przycisk--obrys jasny-obrys" href="/transport">
+          Wyślij pojazd
+          <Ikona nazwa="ship" rozmiar="16" />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="liczby-pas">
+    <div class="tresc siatka-liczb">
+      {liczby.map((l) => (
+        <div class="kafel">
+          <strong class="liczby">{l.wartosc}</strong>
+          <span>{l.opis}</span>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- ── DWIE DROGI ───────────────────────────────────────────────────── -->
+  <section class="tresc drogi">
+    <a class="droga" href="/wyprawy">
+      <Ikona nazwa="mountain" rozmiar="28" />
+      <h2>Wyprawy motocyklowe</h2>
+      <p>Jedziesz z ludźmi, którzy tam już byli. Trasa, noclegi i asysta na miejscu — po naszej stronie.</p>
+      <span class="strzalka">Terminy {new Date().getFullYear()} / {new Date().getFullYear() + 1} <Ikona nazwa="arrow-right" rozmiar="15" /></span>
+    </a>
+    <a class="droga" href="/transport">
+      <Ikona nazwa="ship" rozmiar="28" />
+      <h2>Transport pojazdów</h2>
+      <p>Przekręcisz kluczyk i odjedziesz. Kontener, odprawa i magazyn na miejscu — cena podana jest ostateczna.</p>
+      <span class="strzalka">Terminarz i ceny <Ikona nazwa="arrow-right" rozmiar="15" /></span>
+    </a>
+  </section>
+
+  <!-- ── NAJBLIŻSZE WYPRAWY ───────────────────────────────────────────── -->
+  {najblizsze.length > 0 && (
+    <section class="tresc sekcja">
+      <header class="czapka-sekcji">
+        <div>
+          <p class="nadtytul">Najbliższe terminy</p>
+          <h2>Dokąd jedziemy</h2>
+        </div>
+        <a class="wiecej" href="/wyprawy">
+          Wszystkie wyprawy ({wyprawy.length})
+          <Ikona nazwa="arrow-right" rozmiar="15" />
+        </a>
+      </header>
+      <div class="siatka-kart">
+        {najblizsze.map((w, i) => <KartaWyprawy wyprawa={w} pilne={i === 0} />)}
+      </div>
+    </section>
+  )}
+
+  <!-- ── TRANSPORT + MAPA ─────────────────────────────────────────────── -->
+  <section class="transport">
+    <div class="tresc dwie-kolumny">
+      <div>
+        <p class="nadtytul jasny">Transport pojazdów</p>
+        <h2>Zawieziemy motocykl tam, gdzie chcesz jechać</h2>
+        <p class="opis">
+          {kierunki.length} kierunków, stałe terminy pakowania i odbiór w magazynie na miejscu.
+          Podana cena jest ostateczna — nie dopłacasz po fakcie.
+        </p>
+        <ul class="kierunki liczby">
+          {kierunki.slice(0, 5).map((k) => {
+            const najblizszy = k.terminy.map((t) => t.pakowanie_pl).filter(Boolean).sort()[0];
+            return (
+              <li>
+                <span class="nazwa">{k.nazwa}</span>
+                <span class="kiedy">{najblizszy ? `pakowanie ${data(najblizszy)}` : 'termin wkrótce'}</span>
+              </li>
+            );
+          })}
+        </ul>
+        <a class="przycisk" href="/transport">
+          Terminarz i konfigurator
+          <Ikona nazwa="arrow-right" rozmiar="16" />
+        </a>
+      </div>
+      <MapaKierunkow />
+    </div>
+  </section>
+
+  <!-- ── OPINIE ───────────────────────────────────────────────────────── -->
+  {opinie.length > 0 && (
+    <section class="tresc sekcja">
+      <p class="nadtytul">Uczestnicy</p>
+      <h2>Co mówią ci, którzy już jechali</h2>
+      <div class="siatka-opinii">
+        {opinie.slice(0, 3).map((o) => (
+          <figure class="opinia karta">
+            <blockquote>{o.cytat}</blockquote>
+            <figcaption>
+              <strong>{o.imie_nazwisko}</strong>
+              <span>{o.motocykl} · {o.wyprawa}</span>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- ── WIDEO ────────────────────────────────────────────────────────── -->
+  {filmy.length > 0 && (
+    <section class="tresc sekcja">
+      <p class="nadtytul">Z trasy</p>
+      <h2>Jak to wygląda naprawdę</h2>
+      <div class="siatka-wideo" data-ile={filmy.length}>
+        {filmy.map((url, i) => {
+          const id = idYouTube(url);
+          return id ? (
+            <div
+              class:list={['ramka-wideo', { duza: i === 0 && filmy.length > 1 }]}
+              data-embed-marketing={`https://www.youtube-nocookie.com/embed/${id}`}
+              data-tytul="Film z trasy — YouTube"
+            >
+              <div class="zgoda-potrzebna">
+                <Ikona nazwa="info" rozmiar="18" />
+                <p>Film z YouTube ładuje się dopiero po zgodzie na cookies marketingowe.</p>
+                <button type="button" class="przycisk przycisk--obrys" data-ustawienia-cookies>
+                  Ustawienia cookies
+                </button>
+                <a href={url} target="_blank" rel="noopener noreferrer">
+                  Albo obejrzyj na YouTube
+                  <Ikona nazwa="external-link" rozmiar="13" />
+                </a>
+              </div>
+            </div>
+          ) : null;
+        })}
+      </div>
+    </section>
+  )}
+
+  <!-- ── KONTAKT ──────────────────────────────────────────────────────── -->
+  <section class="kontakt">
+    <div class="tresc wnetrze-kontaktu">
+      <div>
+        <h2>Masz pytanie? Zapytaj wprost.</h2>
+        <p>
+          Odpowiadamy w ciągu {odpowiedz_w_godzinach} h, w dni robocze zwykle szybciej.
+          Zapytanie trafia do naszego CRM i dostaje opiekuna — bez automatów.
+        </p>
+      </div>
+      <div class="guziki-kontaktu">
+        <button type="button" class="przycisk" data-otworz-zapytanie data-zrodlo="formularz">
+          <Ikona nazwa="send" rozmiar="16" />
+          Wyślij zapytanie
+        </button>
+        <a class="przycisk przycisk--whatsapp jasny-obrys" href={`https://wa.me/${oferta.firma.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer">
+          <Ikona nazwa="message-circle" rozmiar="16" />
+          WhatsApp {oferta.firma.whatsapp}
+        </a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* ── Baner ────────────────────────────────────────────────────────── */
+  .baner { background: var(--akcent); color: #fff; }
+  .baner.info { background: var(--info); }
+  .baner.warn { background: var(--uwaga); color: var(--ciemny); }
+  .baner .tresc { display: flex; align-items: center; gap: 10px; padding-block: 11px; font-size: 14px; }
+  .baner a { color: inherit; text-decoration: underline; font-weight: 700; white-space: nowrap; }
+
+  /* ── Hero ─────────────────────────────────────────────────────────── */
+  .hero { position: relative; background: var(--ciemny); color: var(--tekst-na-ciemnym); isolation: isolate; }
+  .hero .tlo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: .38;
+    z-index: -1;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(180deg, rgba(28,27,23,.2), rgba(28,27,23,.92));
+  }
+  .wnetrze { padding-block: clamp(72px, 12vw, 148px); max-width: 940px; }
+  .nadtytul.jasny { color: var(--akcent-jasny); }
+  .hero h1 { margin: 14px 0 18px; }
+  .lead { font-size: clamp(16px, 2vw, 19px); line-height: 1.55; color: var(--tekst-na-ciemnym-2); max-width: 62ch; }
+  .cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 30px; }
+  .jasny-obrys { color: var(--tekst-na-ciemnym); border-color: rgba(242,239,231,.34); }
+  .jasny-obrys:hover { background: rgba(242,239,231,.1); color: var(--tekst-na-ciemnym); }
+
+  /* ── Liczby ───────────────────────────────────────────────────────── */
+  .liczby-pas { background: var(--ciemny-2); color: var(--tekst-na-ciemnym); }
+  .siatka-liczb {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr));
+    gap: 1px;
+    background: var(--kreska-ciemna);
+    border-block: 1px solid var(--kreska-ciemna);
+  }
+  .kafel { background: var(--ciemny-2); padding: 24px; display: grid; gap: 4px; }
+  .kafel strong { font-size: 34px; font-weight: 600; color: var(--akcent-jasny); line-height: 1; }
+  .kafel span {
+    font: 600 11.5px var(--font-tekst);
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    color: var(--tekst-na-ciemnym-2);
+  }
+
+  /* ── Dwie drogi ───────────────────────────────────────────────────── */
+  .drogi {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+    gap: 18px;
+    padding-block: 72px 0;
+  }
+  .droga {
+    display: grid;
+    gap: 12px;
+    align-content: start;
+    padding: 30px;
+    background: var(--tlo-karta);
+    border: 1px solid var(--kreska);
+    border-radius: var(--r-m);
+    color: var(--tekst);
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  }
+  .droga:hover { transform: translateY(-3px); border-color: var(--akcent); box-shadow: 0 14px 34px rgba(28,27,23,.1); color: var(--tekst); }
+  .droga > :global(svg) { color: var(--akcent); }
+  .droga h2 { font-size: clamp(26px, 3.4vw, 36px); }
+  .droga p { color: var(--tekst-2); font-size: 15px; }
+  .strzalka {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font: 700 12px var(--font-tekst);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--akcent);
+  }
+
+  /* ── Sekcje ───────────────────────────────────────────────────────── */
+  .sekcja { padding-block: 72px 0; }
+  .czapka-sekcji {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 26px;
+  }
+  .czapka-sekcji h2 { margin-top: 6px; }
+  .wiecej {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font: 700 12px var(--font-tekst);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    white-space: nowrap;
+  }
+  .siatka-kart {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+    gap: 20px;
+  }
+
+  /* ── Transport ────────────────────────────────────────────────────── */
+  .transport { margin-top: 80px; background: var(--ciemny); color: var(--tekst-na-ciemnym); }
+  .dwie-kolumny {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    gap: 44px;
+    align-items: center;
+    padding-block: 72px;
+  }
+  @media (max-width: 900px) { .dwie-kolumny { grid-template-columns: 1fr; } }
+  .transport h2 { margin: 12px 0 16px; }
+  .opis { color: var(--tekst-na-ciemnym-2); font-size: 16px; max-width: 54ch; }
+  .kierunki { list-style: none; margin: 24px 0 28px; padding: 0; display: grid; gap: 0; }
+  .kierunki li {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--kreska-ciemna);
+    font-size: 13.5px;
+  }
+  .kierunki .nazwa { color: var(--tekst-na-ciemnym); font-weight: 600; }
+  .kierunki .kiedy { color: var(--akcent-jasny); white-space: nowrap; }
+
+
+  /* ── Opinie ───────────────────────────────────────────────────────── */
+  .siatka-opinii {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: 18px;
+    margin-top: 26px;
+  }
+  .opinia { padding: 24px; display: grid; gap: 16px; align-content: space-between; }
+  .opinia blockquote { margin: 0; font-size: 16px; line-height: 1.55; }
+  .opinia figcaption { display: grid; gap: 2px; font-size: 13px; color: var(--tekst-3); }
+
+  /* ── Wideo ────────────────────────────────────────────────────────── */
+  /* Pierwszy film idzie przez całą szerokość, pozostałe dzielą rząd po równo.
+     Bez tego przy dwóch filmach drugi zostawał sam w wąskiej kolumnie. */
+  .siatka-wideo { display: grid; gap: 18px; margin-top: 26px; }
+  .siatka-wideo[data-ile='2'] { grid-template-columns: 1fr; }
+  .siatka-wideo[data-ile='3'] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @media (max-width: 720px) { .siatka-wideo { grid-template-columns: 1fr !important; } }
+
+  .ramka-wideo {
+    aspect-ratio: 16 / 9;
+    background: var(--ciemny-2);
+    border-radius: var(--r-m);
+    overflow: hidden;
+  }
+  .ramka-wideo.duza { grid-column: 1 / -1; aspect-ratio: 16 / 7; }
+  .zgoda-potrzebna {
+    height: 100%;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 10px;
+    padding: 24px;
+    text-align: center;
+    color: var(--tekst-na-ciemnym-2);
+  }
+  .zgoda-potrzebna p { max-width: 42ch; font-size: 14px; }
+  .zgoda-potrzebna .przycisk--obrys { color: var(--tekst-na-ciemnym); border-color: var(--kreska-ciemna); }
+  .zgoda-potrzebna a { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; }
+
+  /* ── Kontakt ──────────────────────────────────────────────────────── */
+  .kontakt { margin-top: 80px; background: var(--tlo-zatopione); }
+  .wnetrze-kontaktu {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding-block: 52px;
+  }
+  .kontakt h2 { font-size: clamp(26px, 3.6vw, 40px); }
+  .kontakt p { margin-top: 12px; max-width: 54ch; color: var(--tekst-2); }
+  .guziki-kontaktu { display: grid; gap: 10px; }
+  .guziki-kontaktu .jasny-obrys { color: var(--tekst); border-color: var(--whatsapp); }
+</style>

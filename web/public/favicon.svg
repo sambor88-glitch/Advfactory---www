@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="8" fill="#1C1B17"/>
+  <text x="32" y="36" text-anchor="middle" font-family="Archivo, Arial, sans-serif" font-weight="700" font-size="21" fill="#F2EFE7">ADV</text>
+  <rect x="17" y="43" width="30" height="4" fill="#EA5A0B"/>
+</svg>
